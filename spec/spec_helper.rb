@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'bacon'
-require 'ruby_parser'
 require 'ruby2ruby'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
@@ -13,8 +12,18 @@ def watever(*args, &block)
   Proc.new(&block)
 end
 
+def code_to_sexp(code)
+  if Object.const_defined?(:ParseTree)
+    require 'parse_tree'
+    Unifier.new.process(ParseTree.translate(code))
+  else
+    require 'ruby_parser'
+    RubyParser.new.parse(code)
+  end
+end
+
 def normalize_code(code)
-  Ruby2Ruby.new.process(RubyParser.new.parse(code))
+  Ruby2Ruby.new.process(code_to_sexp(code))
 end
 
 def having_same_code_as(expected)
