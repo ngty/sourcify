@@ -7,6 +7,8 @@ module ToSource
 
         def lex
           begin
+            @do_end_counter = DoEndBlockCounter.new
+            @braced_counter = BracedBlockCounter.new
             super
           rescue EndOfBlock
             return @result
@@ -16,14 +18,17 @@ module ToSource
         def on_kw(token)
           super.tap do |rs|
             case token
+            when 'class', 'def', 'module', 'begin', 'if', 'unless', 'case'
+              # Pretty straightforward for these, each of them will consume an 'end' to
+              # mark it closed
+              @do_end_counter.increment_start unless @do_end_counter.fresh?
             when 'do'
-              @do_block_start = rs[-1] if @kw_block.nil?
-              (@kw_block ||= []) << token
+              @do_end_counter.marker = rs[-1] if @do_end_counter.fresh?
+              @do_end_counter.increment_start
             when 'end'
-              unless (@kw_block ||= []).empty?
-                @kw_block << token
-                if @kw_block.grep(/end/).size == @kw_block.grep(/do/).size
-                  @result = rs[rs.index(@do_block_start) .. -1]
+              unless @do_end_counter.fresh?
+                if @do_end_counter.increment_end.telly?
+                  @result = rs[rs.index(@do_end_counter.marker) .. -1]
                   raise EndOfBlock
                 end
               end
@@ -50,6 +55,38 @@ module ToSource
 #          super.tap do |rs|
 #          end
 #        end
+
+        class Counter
+
+          attr_accessor :marker
+
+          def initialize
+            @marker, @counter = nil, {:start => 0, :end => 0}
+          end
+
+          def fresh?
+            @counter.values == [0,0]
+          end
+
+          def telly?
+            @counter[:start] == @counter[:end]
+          end
+
+          def increment_start
+            @counter[:start] += 1
+            self
+          end
+
+          def increment_end
+            @counter[:end] += 1
+            self
+          end
+
+        end
+
+        class DoEndBlockCounter < Counter  ; end
+        class BracedBlockCounter < Counter ; end
+
       end
 
     end
