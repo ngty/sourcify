@@ -16,7 +16,7 @@ describe "Proc#to_source from do ... end block (w nested for block)" do
         for i in [1,2] do a = "ia" end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected)
+    ).should.be having_code(expected)
   end
 
   should 'handle watever(..) do ... end (wo do)' do
@@ -28,7 +28,7 @@ describe "Proc#to_source from do ... end block (w nested for block)" do
         end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected)
+    ).should.be having_code(expected)
   end
 
   should 'handle watever do ... end (w do)' do
@@ -38,7 +38,7 @@ describe "Proc#to_source from do ... end block (w nested for block)" do
         for i in [1,2] do a = "ia" end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected)
+    ).should.be having_code(expected)
   end
 
   should 'handle watever do ... end (wo do)' do
@@ -50,7 +50,7 @@ describe "Proc#to_source from do ... end block (w nested for block)" do
         end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected)
+    ).should.be having_code(expected)
   end
 
   should 'handle lambda do ... end (w do)' do
@@ -60,7 +60,7 @@ describe "Proc#to_source from do ... end block (w nested for block)" do
         for i in [1,2] do a = "ia" end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected)
+    ).should.be having_code(expected)
   end
 
   should 'handle lambda do ... end (wo do)' do
@@ -72,7 +72,7 @@ describe "Proc#to_source from do ... end block (w nested for block)" do
         end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected)
+    ).should.be having_code(expected)
   end
 
 end

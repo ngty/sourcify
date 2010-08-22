@@ -26,7 +26,7 @@ def normalize_code(code)
   Ruby2Ruby.new.process(code_to_sexp(code))
 end
 
-def having_same_code_as(expected)
+def having_code(expected)
   lambda {|_proc| normalize_code(_proc.to_source) == normalize_code(expected) }
 end
 

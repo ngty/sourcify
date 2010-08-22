@@ -23,7 +23,7 @@ describe "Proc#to_source from do ... end block (w nested do ... end block)" do
         watever do a = 'ia' end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected1)
+    ).should.be having_code(expected1)
   end
 
   should 'handle watever(..) do ... end (complex)' do
@@ -33,7 +33,7 @@ describe "Proc#to_source from do ... end block (w nested do ... end block)" do
         watever(:a, :b, {:c => 1}) do a = 'ia' end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected2)
+    ).should.be having_code(expected2)
   end
 
   should 'handle watever do ... end (simple)' do
@@ -43,7 +43,7 @@ describe "Proc#to_source from do ... end block (w nested do ... end block)" do
         watever do a = 'ia' end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected1)
+    ).should.be having_code(expected1)
   end
 
   should 'handle watever do ... end (complex)' do
@@ -53,7 +53,7 @@ describe "Proc#to_source from do ... end block (w nested do ... end block)" do
         watever(:a, :b, {:c => 1}) do a = 'ia' end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected2)
+    ).should.be having_code(expected2)
   end
 
   should 'handle lambda do ... end (simple)' do
@@ -63,7 +63,7 @@ describe "Proc#to_source from do ... end block (w nested do ... end block)" do
         watever do a = 'ia' end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected1)
+    ).should.be having_code(expected1)
   end
 
   should 'handle lambda do ... end (complex)' do
@@ -73,7 +73,7 @@ describe "Proc#to_source from do ... end block (w nested do ... end block)" do
         watever(:a, :b, {:c => 1}) do a = 'ia' end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected2)
+    ).should.be having_code(expected2)
   end
 
 end

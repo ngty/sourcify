@@ -30,7 +30,7 @@ describe "Proc#to_source from do ... end block (w nested class)" do
         class AA; a = 'ia'; end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected1)
+    ).should.be having_code(expected1)
   end
 
   should 'handle watever(..) do ... end (as subclass)' do
@@ -40,7 +40,7 @@ describe "Proc#to_source from do ... end block (w nested class)" do
         class AA < Object; a = 'ia'; end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected2)
+    ).should.be having_code(expected2)
   end
 
   should 'handle watever(..) do ... end (as singleton)' do
@@ -50,7 +50,7 @@ describe "Proc#to_source from do ... end block (w nested class)" do
         class << x; a = 'ia'; end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected3)
+    ).should.be having_code(expected3)
   end
 
   should 'handle watever do ... end' do
@@ -60,7 +60,7 @@ describe "Proc#to_source from do ... end block (w nested class)" do
         class AA; a = 'ia'; end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected1)
+    ).should.be having_code(expected1)
   end
 
   should 'handle watever do ... end (as subclass)' do
@@ -70,7 +70,7 @@ describe "Proc#to_source from do ... end block (w nested class)" do
         class AA < Object; a = 'ia'; end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected2)
+    ).should.be having_code(expected2)
   end
 
   should 'handle watever do ... end (as singleton)' do
@@ -80,7 +80,7 @@ describe "Proc#to_source from do ... end block (w nested class)" do
         class << x; a = 'ia'; end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected3)
+    ).should.be having_code(expected3)
   end
 
   should 'handle lambda do ... end' do
@@ -90,7 +90,7 @@ describe "Proc#to_source from do ... end block (w nested class)" do
         class AA; a = 'ia'; end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected1)
+    ).should.be having_code(expected1)
   end
 
   should 'handle lambda do ... end (as subclass)' do
@@ -100,7 +100,7 @@ describe "Proc#to_source from do ... end block (w nested class)" do
         class AA < Object; a = 'ia'; end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected2)
+    ).should.be having_code(expected2)
   end
 
   should 'handle lambda do ... end (as singleton)' do
@@ -110,7 +110,7 @@ describe "Proc#to_source from do ... end block (w nested class)" do
         class << x; a = 'ia'; end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected3)
+    ).should.be having_code(expected3)
   end
 
 end

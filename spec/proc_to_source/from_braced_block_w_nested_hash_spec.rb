@@ -16,7 +16,7 @@ describe "Proc#to_source from { ... } block (w nested hash)" do
         a = {:a => 1, :b => {:c => 2}}
         [xx, x, @x, @@x, $x]
       }
-    ).should.be having_same_code_as(expected)
+    ).should.be having_code(expected)
   end
 
   should 'handle watever { ... }' do
@@ -26,7 +26,7 @@ describe "Proc#to_source from { ... } block (w nested hash)" do
         a = {:a => 1, :b => {:c => 2}}
         [xx, x, @x, @@x, $x]
       }
-    ).should.be having_same_code_as(expected)
+    ).should.be having_code(expected)
   end
 
   should 'handle lambda { ... }' do
@@ -36,7 +36,7 @@ describe "Proc#to_source from { ... } block (w nested hash)" do
         a = {:a => 1, :b => {:c => 2}}
         [xx, x, @x, @@x, $x]
       }
-    ).should.be having_same_code_as(expected)
+    ).should.be having_code(expected)
   end
 
   if RUBY_VERSION.include?('1.9.')

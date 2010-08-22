@@ -25,7 +25,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
         until(true) do a = 'ia' end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected1)
+    ).should.be having_code(expected1)
   end
 
   should 'handle watever(..) do ... end (wo do)' do
@@ -37,7 +37,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
         end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected1)
+    ).should.be having_code(expected1)
   end
 
   should 'handle watever do ... end (w do)' do
@@ -47,7 +47,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
         until(true) do a = 'ia' end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected1)
+    ).should.be having_code(expected1)
   end
 
   should 'handle watever do ... end (wo do)' do
@@ -59,7 +59,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
         end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected1)
+    ).should.be having_code(expected1)
   end
 
   should 'handle lambda do ... end (w do)' do
@@ -69,7 +69,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
         until(true) do a = 'ia' end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected1)
+    ).should.be having_code(expected1)
   end
 
   should 'handle lambda do ... end (wo do)' do
@@ -81,7 +81,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
         end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected1)
+    ).should.be having_code(expected1)
   end
 
   should 'handle watever(..) do ... end (as modifier)' do
@@ -91,7 +91,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
         a = 'ia' until true
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected2)
+    ).should.be having_code(expected2)
   end
 
   should 'handle watever do ... end (as modifier)' do
@@ -101,7 +101,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
         a = 'ia' until true
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected2)
+    ).should.be having_code(expected2)
   end
 
   should 'handle lambda do ... end (as modifier)' do
@@ -111,7 +111,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
         a = 'ia' until true
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected2)
+    ).should.be having_code(expected2)
   end
 
 end

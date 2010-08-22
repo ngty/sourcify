@@ -16,7 +16,7 @@ describe "Proc#to_source from do ... end block (w nested method)" do
         def aa; a = 'ia'; end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected)
+    ).should.be having_code(expected)
   end
 
   should 'handle watever do ... end' do
@@ -26,7 +26,7 @@ describe "Proc#to_source from do ... end block (w nested method)" do
         def aa; a = 'ia'; end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected)
+    ).should.be having_code(expected)
   end
 
   should 'handle lambda do ... end' do
@@ -36,7 +36,7 @@ describe "Proc#to_source from do ... end block (w nested method)" do
         def aa; a = 'ia'; end
         [xx, x, @x, @@x, $x]
       end
-    ).should.be having_same_code_as(expected)
+    ).should.be having_code(expected)
   end
 
 end
