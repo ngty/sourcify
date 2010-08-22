@@ -77,4 +77,40 @@ describe "Proc#to_source from { ... } block" do
     ).should.be having_same_code_as(proc_code2)
   end
 
+  should 'handle lambda { ... } (wo nested { ... })' do
+    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+    (
+      lambda { [xx, x, @x, @@x, $x] }
+    ).should.be having_same_code_as(proc_code1)
+  end
+
+  should 'handle lambda { ... } (w nested { ... })' do
+    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+    (
+      lambda {
+        lambda do a = 'ia' end
+        [xx, x, @x, @@x, $x]
+      }
+    ).should.be having_same_code_as(proc_code2)
+  end
+
+  should 'handle lambda \ { ... } (wo nested { ... })' do
+    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+    (
+      lambda \
+        { [xx, x, @x, @@x, $x] }
+    ).should.be having_same_code_as(proc_code1)
+  end
+
+  should 'handle lambda \ { ... } (w nested { ... })' do
+    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+    (
+      lambda \
+        {
+          lambda do a = 'ia' end
+          [xx, x, @x, @@x, $x]
+        }
+    ).should.be having_same_code_as(proc_code2)
+  end
+
 end
