@@ -6,7 +6,6 @@ module ToSource
       base.class_eval do
 
         if base_methods.include?('to_ruby')
-          puts 'called '
           alias_method :to_source, :to_ruby
         elsif !base_methods.include?('to_source')
           include SourceMethods
