@@ -12,11 +12,11 @@ describe "Proc#to_source from { ... } block" do
     ).should.be having_same_code_as(proc_code1)
   end
 
-  should 'handle watever(..) { ... } (w nested { ... })' do
+  should 'handle watever(..) { ... } (w nested lambda { ... })' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
       watever(:a, :b, {:c => 1}) {
-        lambda do a = 'ia' end
+        lambda { a = 'ia' }
         [xx, x, @x, @@x, $x]
       }
     ).should.be having_same_code_as(proc_code2)
@@ -30,12 +30,12 @@ describe "Proc#to_source from { ... } block" do
     ).should.be having_same_code_as(proc_code1)
   end
 
-  should 'handle watever(..) \ { ... } (w nested { ... })' do
+  should 'handle watever(..) \ { ... } (w nested lambda { ... })' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
       watever(:a, :b, {:c => 1}) \
         {
-          lambda do a = 'ia' end
+          lambda { a = 'ia' }
           [xx, x, @x, @@x, $x]
         }
     ).should.be having_same_code_as(proc_code2)
@@ -48,11 +48,11 @@ describe "Proc#to_source from { ... } block" do
     ).should.be having_same_code_as(proc_code1)
   end
 
-  should 'handle watever { ... } (w nested { ... })' do
+  should 'handle watever { ... } (w nested lambda { ... })' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
       watever {
-        lambda do a = 'ia' end
+        lambda { a = 'ia' }
         [xx, x, @x, @@x, $x]
       }
     ).should.be having_same_code_as(proc_code2)
@@ -66,16 +66,18 @@ describe "Proc#to_source from { ... } block" do
     ).should.be having_same_code_as(proc_code1)
   end
 
-  should 'handle watever \ { ... } (w nested { ... })' do
+  should 'handle watever \ { ... } (w nested lambda { ... })' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
       watever \
         {
-          lambda do a = 'ia' end
+          lambda { a = 'ia' }
           [xx, x, @x, @@x, $x]
         }
     ).should.be having_same_code_as(proc_code2)
   end
+
+
 
   should 'handle lambda { ... } (wo nested { ... })' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
@@ -84,11 +86,11 @@ describe "Proc#to_source from { ... } block" do
     ).should.be having_same_code_as(proc_code1)
   end
 
-  should 'handle lambda { ... } (w nested { ... })' do
+  should 'handle lambda { ... } (w nested lambda { ... })' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
       lambda {
-        lambda do a = 'ia' end
+        lambda { a = 'ia' }
         [xx, x, @x, @@x, $x]
       }
     ).should.be having_same_code_as(proc_code2)
@@ -102,12 +104,12 @@ describe "Proc#to_source from { ... } block" do
     ).should.be having_same_code_as(proc_code1)
   end
 
-  should 'handle lambda \ { ... } (w nested { ... })' do
+  should 'handle lambda \ { ... } (w nested lambda { ... })' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
       lambda \
         {
-          lambda do a = 'ia' end
+          lambda { a = 'ia' }
           [xx, x, @x, @@x, $x]
         }
     ).should.be having_same_code_as(proc_code2)
