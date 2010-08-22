@@ -1,5 +1,24 @@
 shared 'Proc#to_sexp from { ... } block (w nested hash (w label-key))' do
 
+  expected =
+    s(:iter,
+      s(:call, nil, :lambda, s(:arglist)),
+      nil,
+      s(:block,
+        s(:lasgn,
+          :a,
+          s(:hash,
+            s(:lit, :a),
+            s(:lit, 1),
+            s(:lit, :b),
+            s(:hash, s(:lit, :c), s(:lit, 2)))),
+            s(:array,
+              s(:call, nil, :xx, s(:arglist)),
+              s(:call, nil, :x, s(:arglist)),
+              s(:ivar, :@x),
+              s(:cvar, :@@x),
+              s(:gvar, :$x))))
+
   should 'handle watever(..) { ... } (label-key)' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
