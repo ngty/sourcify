@@ -30,3 +30,7 @@ def having_code(expected)
   lambda {|_proc| normalize_code(_proc.to_source) == normalize_code(expected) }
 end
 
+def having_sexp(expected)
+  lambda {|_proc| _proc.to_sexp.inspect == expected.inspect }
+end
+
