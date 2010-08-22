@@ -18,10 +18,21 @@ module ToSource
         def on_kw(token)
           super.tap do |rs|
             case token
+
             when 'class', 'def', 'module', 'begin', 'if', 'unless', 'case'
               # Pretty straightforward for these, each of them will consume an 'end' to
               # mark it closed
               @do_end_counter.increment_start unless @do_end_counter.fresh?
+
+            when 'for'
+              # This has an optional trailing 'do'
+
+            when 'if', 'unless'
+              # These can work as modifier as well
+
+            when 'while', 'until'
+              # These have optional trailing 'do', can can work as a modifier as well
+
             when 'do'
               @do_end_counter.marker = rs[-1] if @do_end_counter.fresh?
               @do_end_counter.increment_start
