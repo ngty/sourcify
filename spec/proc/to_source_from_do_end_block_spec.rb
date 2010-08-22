@@ -12,7 +12,7 @@ describe "Proc#to_source from do ... end block" do
     ).should.be having_same_code_as(proc_code1)
   end
 
-  should 'handle watever(..) do ... end (w nested do ... end)' do
+  should 'handle watever(..) do ... end (w nested lambda do ... end)' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
       watever(:a, :b, {:c => 1}) do
@@ -30,7 +30,7 @@ describe "Proc#to_source from do ... end block" do
     ).should.be having_same_code_as(proc_code1)
   end
 
-  should 'handle watever(..) \ do ... end (w nested do ... end)' do
+  should 'handle watever(..) \ do ... end (w nested lambda do ... end)' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
       watever(:a, :b, {:c => 1}) \
@@ -48,7 +48,7 @@ describe "Proc#to_source from do ... end block" do
     ).should.be having_same_code_as(proc_code1)
   end
 
-  should 'handle watever do ... end (w nested do ... end)' do
+  should 'handle watever do ... end (w nested lambda do ... end)' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
       watever do
@@ -66,7 +66,7 @@ describe "Proc#to_source from do ... end block" do
     ).should.be having_same_code_as(proc_code1)
   end
 
-  should 'handle watever \ do ... end (w nested do ... end)' do
+  should 'handle watever \ do ... end (w nested lambda do ... end)' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
       watever \
@@ -84,7 +84,7 @@ describe "Proc#to_source from do ... end block" do
     ).should.be having_same_code_as(proc_code1)
   end
 
-  should 'handle lambda do ... end (w nested do ... end)' do
+  should 'handle lambda do ... end (w nested lambda do ... end)' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
       lambda do
@@ -102,7 +102,7 @@ describe "Proc#to_source from do ... end block" do
     ).should.be having_same_code_as(proc_code1)
   end
 
-  should 'handle lambda \ do ... end (w nested do ... end)' do
+  should 'handle lambda \ do ... end (w nested lambda do ... end)' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
       lambda \
