@@ -1,5 +1,12 @@
 shared 'Proc#to_source from { ... } block (w nested hash (w label-key))' do
 
+  expected = %Q\
+    proc do
+      a = {a: 1, b: {c: 2}}
+      [xx, x, @x, @@x, $x]
+    end
+  \
+
   should 'handle watever(..) { ... } (label-key)' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
@@ -7,7 +14,7 @@ shared 'Proc#to_source from { ... } block (w nested hash (w label-key))' do
         a = {a: 1, b: {c: 2}}
         [xx, x, @x, @@x, $x]
       }
-    ).should.be having_same_code_as(expected2)
+    ).should.be having_same_code_as(expected)
   end
 
   should 'handle watever { ... } (label-key)' do
@@ -17,7 +24,7 @@ shared 'Proc#to_source from { ... } block (w nested hash (w label-key))' do
         a = {a: 1, b: {c: 2}}
         [xx, x, @x, @@x, $x]
       }
-    ).should.be having_same_code_as(expected2)
+    ).should.be having_same_code_as(expected)
   end
 
   should 'handle lambda { ... } (label-key)' do
@@ -27,7 +34,7 @@ shared 'Proc#to_source from { ... } block (w nested hash (w label-key))' do
         a = {a: 1, b: {c: 2}}
         [xx, x, @x, @@x, $x]
       }
-    ).should.be having_same_code_as(expected2)
+    ).should.be having_same_code_as(expected)
   end
 
 end

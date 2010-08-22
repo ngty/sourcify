@@ -2,16 +2,9 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
 describe "Proc#to_source from { ... } block (w nested hash)" do
 
-  expected1 = %Q\
+  expected = %Q\
     proc do
       a = {:a => 1, :b => {:c => 2}}
-      [xx, x, @x, @@x, $x]
-    end
-  \
-
-  expected2 = %Q\
-    proc do
-      a = {a: 1, b: {c: 2}}
       [xx, x, @x, @@x, $x]
     end
   \
@@ -23,7 +16,7 @@ describe "Proc#to_source from { ... } block (w nested hash)" do
         a = {:a => 1, :b => {:c => 2}}
         [xx, x, @x, @@x, $x]
       }
-    ).should.be having_same_code_as(expected1)
+    ).should.be having_same_code_as(expected)
   end
 
   should 'handle watever { ... }' do
@@ -33,7 +26,7 @@ describe "Proc#to_source from { ... } block (w nested hash)" do
         a = {:a => 1, :b => {:c => 2}}
         [xx, x, @x, @@x, $x]
       }
-    ).should.be having_same_code_as(expected1)
+    ).should.be having_same_code_as(expected)
   end
 
   should 'handle lambda { ... }' do
@@ -43,7 +36,7 @@ describe "Proc#to_source from { ... } block (w nested hash)" do
         a = {:a => 1, :b => {:c => 2}}
         [xx, x, @x, @@x, $x]
       }
-    ).should.be having_same_code_as(expected1)
+    ).should.be having_same_code_as(expected)
   end
 
   if RUBY_VERSION.include?('1.9.')
