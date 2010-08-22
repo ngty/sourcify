@@ -4,14 +4,22 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
+    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
     gem.name = "to_source"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{Workarounds before ruby-core officially supports Proc#to_source (& friends)}
+    gem.description = %Q{}
     gem.email = "ngty77@gmail.com"
     gem.homepage = "http://github.com/ngty/to_source"
     gem.authors = ["NgTzeYang"]
+    gem.add_dependency 'ruby2ruby', '>= 1.2.4'
     gem.add_development_dependency "bacon", ">= 0"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+    # Plus one of the following groups:
+    #
+    # 1). ParseTree (better performance + dynamic goodness, but not supported on java & 1.9.*)
+    # >> gem.add_dependency "ParseTree", ">= 3.0.5"
+    #
+    # 2). RubyParser (supported for all)
+    # >> gem.add_dependency "ruby_parser", ">= 2.0.4"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
