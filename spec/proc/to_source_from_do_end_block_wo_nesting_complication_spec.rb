@@ -2,7 +2,11 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
 describe "Proc#to_source from do ... end block (wo nesting complication)" do
 
-  expected = %|proc { [xx, x, @x, @@x, $x] }|
+  expected = %Q\
+    proc do
+      [xx, x, @x, @@x, $x]
+    end
+  \
 
   should 'handle watever(..) do ... end' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
