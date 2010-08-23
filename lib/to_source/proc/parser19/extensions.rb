@@ -19,7 +19,14 @@ module ToSource
           def same_line(line)
             (
               reverse.take_while do |e|
-                (e[0][0] == line) or (e[0][-1] == "\\\n" && line -= 1; true)
+                if e[1] == :on_semicolon && e[-1] == ';'
+                  false
+                elsif e[0][0] == line
+                  true
+                elsif e[1] == :on_sp && e[-1] == "\\\n"
+                  line -= 1
+                  true
+                end
               end
             ).extend(Extensions::Result)
           end
