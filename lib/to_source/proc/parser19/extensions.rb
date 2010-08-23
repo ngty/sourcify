@@ -18,7 +18,8 @@ module ToSource
 
           def same_line(line)
             (
-              reverse.take_while do |e|
+              # ignore the current node
+              self[0..-2].reverse.take_while do |e|
                 if e[1] == :on_semicolon && e[-1] == ';'
                   false
                 elsif e[0][0] == line
@@ -34,14 +35,14 @@ module ToSource
           def keywords(*types)
             (
               types = [types].flatten
-              select{|e| e[1] == :on_kw && types.include?(e[-1]) }
+              select{|e| e[1] == :on_kw && (types.empty? or types.include?(e[-1])) }
             ).extend(Extensions::Result)
           end
 
           def non_spaces(*types)
             (
               types = [types].flatten
-              reject{|e| e[1] == :on_sp }
+              reject{|e| e[1] == :on_sp && (types.empty? or types.include?(e[-1])) }
             ).extend(Extensions::Result)
           end
 
