@@ -28,6 +28,17 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
     ).should.be having_code(expected1)
   end
 
+  should 'handle watever(..) do ... end (w \ do)' do
+    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+    (
+      watever(:a, :b, {:c => 1}) do
+        until(true) \
+          do a = 'ia' end
+        [xx, x, @x, @@x, $x]
+      end
+    ).should.be having_code(expected1)
+  end
+
   should 'handle watever(..) do ... end (wo do)' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
@@ -50,6 +61,17 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
     ).should.be having_code(expected1)
   end
 
+  should 'handle watever do ... end (w \ do)' do
+    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+    (
+      watever do
+        until(true) \
+          do a = 'ia' end
+        [xx, x, @x, @@x, $x]
+      end
+    ).should.be having_code(expected1)
+  end
+
   should 'handle watever do ... end (wo do)' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
@@ -67,6 +89,17 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
     (
       lambda do
         until(true) do a = 'ia' end
+        [xx, x, @x, @@x, $x]
+      end
+    ).should.be having_code(expected1)
+  end
+
+  should 'handle lambda do ... end (w \ do)' do
+    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+    (
+      lambda do
+        until(true) \
+          do a = 'ia' end
         [xx, x, @x, @@x, $x]
       end
     ).should.be having_code(expected1)

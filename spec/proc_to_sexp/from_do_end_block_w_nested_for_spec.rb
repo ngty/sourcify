@@ -28,6 +28,17 @@ describe "Proc#to_sexp from do ... end block (w nested for block)" do
     ).should.be having_sexp(expected)
   end
 
+  should 'handle watever(..) do ... end (w \ do)' do
+    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+    (
+      watever(:a, :b, {:c => 1}) do
+        for i in [1,2] \
+          do a = "ia" end
+        [xx, x, @x, @@x, $x]
+      end
+    ).should.be having_sexp(expected)
+  end
+
   should 'handle watever(..) do ... end (wo do)' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
@@ -50,6 +61,17 @@ describe "Proc#to_sexp from do ... end block (w nested for block)" do
     ).should.be having_sexp(expected)
   end
 
+  should 'handle watever do ... end (w \ do)' do
+    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+    (
+      watever do
+        for i in [1,2] \
+          do a = "ia" end
+        [xx, x, @x, @@x, $x]
+      end
+    ).should.be having_sexp(expected)
+  end
+
   should 'handle watever do ... end (wo do)' do
     x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
     (
@@ -67,6 +89,17 @@ describe "Proc#to_sexp from do ... end block (w nested for block)" do
     (
       lambda do
         for i in [1,2] do a = "ia" end
+        [xx, x, @x, @@x, $x]
+      end
+    ).should.be having_sexp(expected)
+  end
+
+  should 'handle lambda do ... end (w \ do)' do
+    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+    (
+      lambda do
+        for i in [1,2] \
+          do a = "ia" end
         [xx, x, @x, @@x, $x]
       end
     ).should.be having_sexp(expected)
