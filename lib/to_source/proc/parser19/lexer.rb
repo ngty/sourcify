@@ -43,18 +43,26 @@ module ToSource
 
             when 'do'
               if @do_end_counter.fresh?
+                # The 1st 'do' on the line will mark the start of the proc (which may not
+                # be true, but anyway, just do it for now, KISS !!
                 @do_end_counter.marker = rs.curr
                 @do_end_counter.increment_start
+
               elsif rs.same_as_curr_line.keywords(%w{for while until}).empty?
+                # It is possible for a 'for', 'while' or 'until' to have an attached 'do',
+                # for such a case, we want to skip it
                 @do_end_counter.increment_start
               end
+
             when 'end'
+              # Very straigtforward, every 'end' will be considered !!
               unless @do_end_counter.fresh?
                 if @do_end_counter.increment_end.telly?
                   @result = rs[rs.index(@do_end_counter.marker) .. -1]
                   raise EndOfBlock
                 end
               end
+
             end
           end
         end
