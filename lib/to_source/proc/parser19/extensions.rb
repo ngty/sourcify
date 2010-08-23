@@ -31,13 +31,13 @@ module ToSource
                   line -= 1
                   true
                 end
-              end
+              end.reverse
             ).extend(Extensions::Result)
           end
 
           def keywords(*types)
             (
-              types = [types].flatten
+              types = [types].flatten.map(&:to_s)
               select{|e| e[TYP] == :on_kw && (types.empty? or types.include?(e[VAL])) }
             ).extend(Extensions::Result)
           end
@@ -47,6 +47,14 @@ module ToSource
               types = [types].flatten
               reject{|e| e[TYP] == :on_sp && (types.empty? or types.include?(e[VAL])) }
             ).extend(Extensions::Result)
+          end
+
+          def start_of_line?
+            same_as_curr_line.non_spaces.empty?
+          end
+
+          def within_block?
+            same_as_curr_line.non_spaces[-1][TYP] == :on_lparen
           end
 
         end

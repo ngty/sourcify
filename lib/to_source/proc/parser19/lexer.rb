@@ -38,7 +38,9 @@ module ToSource
               # * while true \n ... end
               # * ... while true # => 'while' is pre-pended with non-spaces
               unless @do_end_counter.fresh?
-                @do_end_counter.increment_start if rs.same_as_curr_line.non_spaces.empty?
+                if rs.start_of_line? or rs.within_block?
+                  @do_end_counter.increment_start
+                end
               end
 
             when 'do'
