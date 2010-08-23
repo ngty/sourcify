@@ -17,7 +17,7 @@ module ToSource
 
         def on_kw(token)
           super.tap do |rs|
-            curr, curr_line = rs[-1], rs[-1][0][0]
+            rs.extend(Extensions) unless rs.respond_to?(:curr)
 
             case token
 
@@ -32,22 +32,23 @@ module ToSource
               @do_end_counter.increment_start unless @do_end_counter.fresh?
 
             when 'if', 'unless'
-              # These can work as modifier as well
+              # These can work as modifier as well, eg:
+              # * if true then ... end
+              # * ... if true
 
             when 'while', 'until'
-              # These have optional trailing 'do', can can work as a modifier as well
-              # * while true do ... end
+              # These have optional trailing 'do', can can work as a modifier as well, eg:
+              # * while true do ... end # => 'do' must be on the same line as 'while'
               # * while true \n ... end
               # * ... while true
+              @do_end_counter.increment_start unless @do_end_counter.fresh?
 
             when 'do'
               if @do_end_counter.fresh?
-                @do_end_counter.marker = curr
+                @do_end_counter.marker = rs.curr
                 @do_end_counter.increment_start
-              elsif rs.reverse.
-                take_while{|e| (e[0][0] == curr_line) or (e[0][-1] == "\\\n" && curr_line -= 1; true) }.
-                select{|e| e[1] == :on_kw && %w{for while until}.include?(e[-1]) }.empty?
-                  @do_end_counter.increment_start
+              elsif rs.same_as_curr_line.by_keywords(%w{for while until}).empty?
+                @do_end_counter.increment_start
               end
             when 'end'
               unless @do_end_counter.fresh?
@@ -59,6 +60,8 @@ module ToSource
             end
           end
         end
+
+
 
 #        def on_op(token)
 #          super.tap do |rs|
@@ -110,6 +113,38 @@ module ToSource
 
         class DoEndBlockCounter < Counter  ; end
         class BracedBlockCounter < Counter ; end
+
+
+        module Extensions
+
+          def same_as_curr_line
+            same_line(curr_line)
+          end
+
+          def curr_line
+            curr[0][0]
+          end
+
+          def curr
+            self[-1]
+          end
+
+          def same_line(line)
+            (
+              reverse.take_while do |e|
+                (e[0][0] == line) or (e[0][-1] == "\\\n" && line -= 1; true)
+              end
+            ).extend(Extensions)
+          end
+
+          def by_keywords(*words)
+            (
+              words = [words].flatten
+              select{|e| e[1] == :on_kw && words.include?(e[-1]) }
+            ).extend(Extensions)
+          end
+
+        end
 
       end
 
