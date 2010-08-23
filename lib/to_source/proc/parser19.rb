@@ -1,5 +1,7 @@
 require 'ripper'
 require 'file/tail'
+require 'to_source/proc/parser19/counters'
+require 'to_source/proc/parser19/extensions'
 require 'to_source/proc/parser19/lexer'
 
 module ToSource

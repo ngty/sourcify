@@ -7,8 +7,8 @@ module ToSource
 
         def lex
           begin
-            @do_end_counter = DoEndBlockCounter.new
-            @braced_counter = BracedBlockCounter.new
+            @do_end_counter = Counters::DoEndBlock.new
+            @braced_counter = Counters::BracedBlock.new
             super
           rescue EndOfBlock
             return @result
@@ -17,7 +17,7 @@ module ToSource
 
         def on_kw(token)
           super.tap do |rs|
-            rs.extend(Extensions) unless rs.respond_to?(:curr)
+            rs.extend(Extensions::Result) unless rs.respond_to?(:curr)
 
             case token
 
@@ -41,13 +41,15 @@ module ToSource
               # * while true do ... end # => 'do' must be on the same line as 'while'
               # * while true \n ... end
               # * ... while true
-              @do_end_counter.increment_start unless @do_end_counter.fresh?
+              unless @do_end_counter.fresh?
+                @do_end_counter.increment_start
+              end
 
             when 'do'
               if @do_end_counter.fresh?
                 @do_end_counter.marker = rs.curr
                 @do_end_counter.increment_start
-              elsif rs.same_as_curr_line.by_keywords(%w{for while until}).empty?
+              elsif rs.same_as_curr_line.keywords(%w{for while until}).empty?
                 @do_end_counter.increment_start
               end
             when 'end'
@@ -82,69 +84,6 @@ module ToSource
 #          super.tap do |rs|
 #          end
 #        end
-
-        class Counter
-
-          attr_accessor :marker
-
-          def initialize
-            @marker, @counter = nil, {:start => 0, :end => 0}
-          end
-
-          def fresh?
-            @counter.values == [0,0]
-          end
-
-          def telly?
-            @counter[:start] == @counter[:end]
-          end
-
-          def increment_start
-            @counter[:start] += 1
-            self
-          end
-
-          def increment_end
-            @counter[:end] += 1
-            self
-          end
-
-        end
-
-        class DoEndBlockCounter < Counter  ; end
-        class BracedBlockCounter < Counter ; end
-
-
-        module Extensions
-
-          def same_as_curr_line
-            same_line(curr_line)
-          end
-
-          def curr_line
-            curr[0][0]
-          end
-
-          def curr
-            self[-1]
-          end
-
-          def same_line(line)
-            (
-              reverse.take_while do |e|
-                (e[0][0] == line) or (e[0][-1] == "\\\n" && line -= 1; true)
-              end
-            ).extend(Extensions)
-          end
-
-          def by_keywords(*words)
-            (
-              words = [words].flatten
-              select{|e| e[1] == :on_kw && words.include?(e[-1]) }
-            ).extend(Extensions)
-          end
-
-        end
 
       end
 
