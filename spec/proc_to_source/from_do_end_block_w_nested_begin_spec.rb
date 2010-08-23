@@ -2,41 +2,34 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
 describe "Proc#to_source from do ... end block (w nested begin)" do
 
-  expected = %Q\
-    proc do
-      begin a = "ia" end
-      [xx, x, @x, @@x, $x]
-    end
-  \
-
-  should 'handle watever(..) do ... end' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever(:a, :b, {:c => 1}) do
-        begin a = "ia" end
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_code(expected)
-  end
-
-  should 'handle watever do ... end' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever do
-      begin a = 'ia' end
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_code(expected)
-  end
-
-  should 'handle lambda do ... end' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+  should 'handle simple' do
     (
       lambda do
-        begin a = 'ia' end
-        [xx, x, @x, @@x, $x]
+        begin @x1 = 1 end
       end
-    ).should.be having_code(expected)
+    ).should.be having_code(%Q\
+      proc do
+        begin @x1 = 1 end
+      end
+    \)
+  end
+
+  should 'handle nested' do
+    (
+      lambda do
+        begin
+          @x1 = 1
+          begin @x2 = 2 end
+        end
+      end
+    ).should.be having_code(%Q\
+      proc do
+        begin
+          @x1 = 1
+          begin @x2 = 2 end
+        end
+      end
+    \)
   end
 
 end

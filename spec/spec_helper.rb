@@ -27,10 +27,15 @@ def normalize_code(code)
 end
 
 def having_code(expected)
-  lambda {|_proc| normalize_code(_proc.to_source) == normalize_code(expected) }
+  lambda do |_proc|
+    normalize_code(_proc.to_source) == normalize_code(expected)
+  end
 end
 
 def having_sexp(expected)
-  lambda {|_proc| _proc.to_sexp.inspect == expected.inspect }
+  lambda do |_proc|
+    expected = eval(expected) if expected.is_a?(String)
+    _proc.to_sexp.inspect == expected.inspect
+  end
 end
 

@@ -2,78 +2,32 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
 describe "Proc#to_source from { ... } block (w nested { ... } block)" do
 
-  expected1 = %Q\
-    proc do
-      watever { a = "ia" }
-      [xx, x, @x, @@x, $x]
-    end
-  \
-
-  expected2 = %Q\
-    proc do
-      watever(:a, :b, {:c => 1}) { a = "ia" }
-      [xx, x, @x, @@x, $x]
-    end
-  \
-
-  should 'handle watever(..) { ... } (simple)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever(:a, :b, {:c => 1}) {
-        watever { a = 'ia' }
-        [xx, x, @x, @@x, $x]
-      }
-    ).should.be having_code(expected1)
-  end
-
-  should 'handle watever(..) { ... } (complex)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever(:a, :b, {:c => 1}) {
-        watever(:a, :b, {:c => 1}) { a = 'ia' }
-        [xx, x, @x, @@x, $x]
-      }
-    ).should.be having_code(expected2)
-  end
-
-  should 'handle watever { ... } (simple)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever {
-        watever { a = 'ia' }
-        [xx, x, @x, @@x, $x]
-      }
-    ).should.be having_code(expected1)
-  end
-
-  should 'handle watever { ... } (complex)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever {
-        watever(:a, :b, {:c => 1}) { a = 'ia' }
-        [xx, x, @x, @@x, $x]
-      }
-    ).should.be having_code(expected2)
-  end
-
-  should 'handle lambda { ... } (simple)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+  should 'handle simple' do
     (
       lambda {
-        watever { a = 'ia' }
-        [xx, x, @x, @@x, $x]
+        lambda { @x1 = 1 }
       }
-    ).should.be having_code(expected1)
+    ).should.be having_code(%Q\
+      proc do
+        lambda { @x1 = 1 }
+      end
+    \)
   end
 
-  should 'handle lambda { ... } (complex)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+  should 'handle nested' do
     (
       lambda {
-        watever(:a, :b, {:c => 1}) { a = 'ia' }
-        [xx, x, @x, @@x, $x]
+        lambda {
+          lambda { @x1 = 1 }
+        }
       }
-    ).should.be having_code(expected2)
+    ).should.be having_code(%Q\
+      proc do
+        lambda do
+          lambda { @x1 = 1 }
+        end
+      end
+    \)
   end
 
 end

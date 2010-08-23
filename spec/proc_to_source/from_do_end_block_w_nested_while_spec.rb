@@ -2,149 +2,175 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
 describe "Proc#to_source from do ... end block (w nested while block)" do
 
-  expected1 = %Q\
-    proc do
-      while(true)
-        a = "ia"
-      end
-      [xx, x, @x, @@x, $x]
-    end
-  \
-
-  expected2 = %Q\
-    proc do
-      a = 'ia' while true
-      [xx, x, @x, @@x, $x]
-    end
-  \
-
-  should 'handle watever(..) do ... end (w do)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever(:a, :b, {:c => 1}) do
-        while(true) do a = 'ia' end
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_code(expected1)
-  end
-
-  should 'handle watever(..) do ... end (w \ do)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever(:a, :b, {:c => 1}) do
-        while(true) \
-          do a = 'ia' end
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_code(expected1)
-  end
-
-  should 'handle watever(..) do ... end (wo do)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever(:a, :b, {:c => 1}) do
-        while true
-          a = 'ia'
-        end
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_code(expected1)
-  end
-
-  should 'handle watever do ... end (w do)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever do
-        while(true) do a = 'ia' end
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_code(expected1)
-  end
-
-  should 'handle watever do ... end (w \ do)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever do
-        while(true) \
-          do a = 'ia' end
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_code(expected1)
-  end
-
-  should 'handle watever do ... end (wo do)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever do
-        while true
-          a = 'ia'
-        end
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_code(expected1)
-  end
-
-  should 'handle lambda do ... end (w do)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+  should 'handle w do' do
     (
       lambda do
-        while(true) do a = 'ia' end
-        [xx, x, @x, @@x, $x]
+        while true do @x1 = 1 end
       end
-    ).should.be having_code(expected1)
+    ).should.be having_code(%Q\
+      proc do
+        while true do @x1 = 1 end
+      end
+    \)
   end
 
-  should 'handle lambda do ... end (w \ do)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+  should 'handle w \ do' do
     (
       lambda do
-        while(true) \
-          do a = 'ia' end
-        [xx, x, @x, @@x, $x]
+        while true \
+          do @x1 = 2 end
       end
-    ).should.be having_code(expected1)
+    ).should.be having_code(%Q\
+      proc do
+        while true do @x1 = 2 end
+      end
+    \)
   end
 
-  should 'handle lambda do ... end (wo do)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+  should 'handle wo do (w newline)' do
     (
       lambda do
         while true
-          a = 'ia'
+          @x1 = 3
         end
-        [xx, x, @x, @@x, $x]
       end
-    ).should.be having_code(expected1)
+    ).should.be having_code(%Q\
+      proc do
+        while true
+          @x1 = 3
+        end
+      end
+    \)
   end
 
-  should 'handle watever(..) do ... end (as modifier)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever(:a, :b, {:c => 1}) do
-        a = 'ia' while true
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_code(expected2)
-  end
-
-  should 'handle watever do ... end (as modifier)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever do
-        a = 'ia' while true
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_code(expected2)
-  end
-
-  should 'handle lambda do ... end (as modifier)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+  should 'handle wo do (w semicolon)' do
     (
       lambda do
-        a = 'ia' while true
-        [xx, x, @x, @@x, $x]
+        while true; @x1 = 4; end
       end
-    ).should.be having_code(expected2)
+    ).should.be having_code(%Q\
+      proc do
+        while true
+          @x1 = 4
+        end
+      end
+    \)
+  end
+
+  should 'handle nested wo do within w do' do
+    (
+      lambda do
+        while true do
+          while true; @x1 = 5; end
+        end
+      end
+    ).should.be having_code(%Q\
+      proc do
+        while true do
+          while true
+            @x1 = 5
+          end
+        end
+      end
+    \)
+  end
+
+  should 'handle nested wo do within wo do' do
+    (
+      lambda do
+        while true
+          while true; @x1 = 6; end
+        end
+      end
+    ).should.be having_code(%Q\
+      proc do
+        while true
+          while true
+            @x1 = 6
+          end
+        end
+      end
+    \)
+  end
+
+  should 'handle nested w do within wo do' do
+    (
+      lambda do
+        while true
+          while true do @x1 = 7 end
+        end
+      end
+    ).should.be having_code(%Q\
+      proc do
+        while true
+          while true
+            @x1 = 7
+          end
+        end
+      end
+    \)
+  end
+
+  should 'handle nested w do within w do' do
+    (
+      lambda do
+        while true do
+          while true do @x1 = 8 end
+        end
+      end
+    ).should.be having_code(%Q\
+      proc do
+        while true
+          while true
+            @x1 = 8
+          end
+        end
+      end
+    \)
+  end
+
+  should 'handle simple modifier' do
+    (
+      lambda do
+        @x1 = 9 while true
+      end
+    ).should.be having_code(%Q\
+      proc do
+        @x1 = 9 while true
+      end
+    \)
+  end
+
+  should 'handle block within modifier' do
+    (
+      lambda do
+        @x1 = 10 while (
+          while true do @x1 = 10 end
+        )
+      end
+    ).should.be having_code(%Q\
+      proc do
+        @x1 = 10 while (
+          while true do @x1 = 10 end
+        )
+      end
+    \)
+  end
+
+  should 'handle modifier within block' do
+    (
+      lambda do
+        while true
+          @x1 = 11 while true
+        end
+      end
+    ).should.be having_code(%Q\
+      proc do
+        while true
+          @x1 = 11 while true
+        end
+      end
+    \)
   end
 
 end

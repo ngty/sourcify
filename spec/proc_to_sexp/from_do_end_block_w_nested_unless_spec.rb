@@ -2,90 +2,82 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
 describe "Proc#to_sexp from do ... end block (w nested unless)" do
 
-  expected1 =
-    s(:iter,
-      s(:call, nil, :proc, s(:arglist)),
-      nil,
-      s(:block,
-        s(:if, s(:call, nil, :aa, s(:arglist)), nil, s(:true)),
-             s(:array,
-               s(:call, nil, :xx, s(:arglist)),
-               s(:lvar, :x),
-               s(:ivar, :@x),
-               s(:cvar, :@@x),
-               s(:gvar, :$x))))
-
-  expected2 =
-    s(:iter,
-      s(:call, nil, :proc, s(:arglist)),
-      nil,
-      s(:block,
-        s(:if, s(:true), nil, s(:lasgn, :a, s(:str, "ia"))),
-             s(:array,
-               s(:call, nil, :xx, s(:arglist)),
-               s(:lvar, :x),
-               s(:ivar, :@x),
-               s(:cvar, :@@x),
-               s(:gvar, :$x))))
-
-  should 'handle watever(..) do ... end' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever(:a, :b, {:c => 1}) do
-        unless aa then true ; end
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_sexp(expected1)
-  end
-
-  should 'handle watever do ... end' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever do
-        unless aa then true ; end
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_sexp(expected1)
-  end
-
-  should 'handle lambda do ... end' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+  should 'handle simple block' do
     (
       lambda do
-        unless aa then true ; end
-        [xx, x, @x, @@x, $x]
+        unless @x1 then @x1 = 1 end
       end
-    ).should.be having_sexp(expected1)
+    ).should.be having_sexp(
+      s(:iter,
+        s(:call, nil, :proc, s(:arglist)),
+        nil,
+        s(:if, s(:ivar, :@x1), nil, s(:iasgn, :@x1, s(:lit, 1))))
+    )
   end
 
-  should 'handle watever(..) do ... end (as modifier)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever(:a, :b, {:c => 1}) do
-        a = 'ia' unless true
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_sexp(expected2)
-  end
-
-  should 'handle watever do ... end (as modifier)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever do
-        a = 'ia' unless true
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_sexp(expected2)
-  end
-
-  should 'handle lambda do ... end (as modifier)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+  should 'handle nested block' do
     (
       lambda do
-        a = 'ia' unless true
-        [xx, x, @x, @@x, $x]
+        unless @x1
+          unless @x2 then @x2 = 1 end
+        end
       end
-    ).should.be having_sexp(expected2)
+    ).should.be having_sexp(
+      s(:iter,
+        s(:call, nil, :proc, s(:arglist)),
+        nil,
+        s(:if,
+          s(:ivar, :@x1),
+          nil,
+          s(:if, s(:ivar, :@x2), nil, s(:iasgn, :@x2, s(:lit, 1)))))
+    )
+  end
+
+  should 'handle simple modifier' do
+    (
+      lambda do
+        @x1 = 1 unless true
+      end
+    ).should.be having_sexp(
+      s(:iter,
+        s(:call, nil, :proc, s(:arglist)),
+        nil,
+        s(:if, s(:true), nil, s(:iasgn, :@x1, s(:lit, 1))))
+    )
+  end
+
+  should 'handle block within modifier' do
+    (
+      lambda do
+        @x1 = 1 unless (unless @x1 then true end)
+      end
+    ).should.be having_sexp(
+      s(:iter,
+        s(:call, nil, :proc, s(:arglist)),
+        nil,
+        s(:if,
+          s(:if, s(:ivar, :@x1), nil, s(:true)),
+               nil,
+               s(:iasgn, :@x1, s(:lit, 1))))
+    )
+  end
+
+  should 'handle modifier within block' do
+    (
+      lambda do
+        unless @x1
+          @x1 = 1 unless @x2
+        end
+      end
+    ).should.be having_sexp(
+      s(:iter,
+        s(:call, nil, :proc, s(:arglist)),
+        nil,
+        s(:if,
+          s(:ivar, :@x1),
+          nil,
+          s(:if, s(:ivar, :@x2), nil, s(:iasgn, :@x1, s(:lit, 1)))))
+    )
   end
 
 end

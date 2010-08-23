@@ -2,115 +2,88 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
 describe "Proc#to_source from do ... end block (w nested class)" do
 
-  expected1 = %Q\
-    proc do
-      class AA; a = "ia"; end
-      [xx, x, @x, @@x, $x]
-    end
-  \
-
-  expected2 = %Q\
-    proc do
-      class AA < Object; a = "ia"; end
-      [xx, x, @x, @@x, $x]
-    end
-  \
-
-  expected3 = %Q\
-    proc do
-      class << x; a = "ia"; end
-      [xx, x, @x, @@x, $x]
-    end
-  \
-
-  should 'handle watever(..) do ... end' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever(:a, :b, {:c => 1}) do
-        class AA; a = 'ia'; end
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_code(expected1)
-  end
-
-  should 'handle watever(..) do ... end (as subclass)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever(:a, :b, {:c => 1}) do
-        class AA < Object; a = 'ia'; end
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_code(expected2)
-  end
-
-  should 'handle watever(..) do ... end (as singleton)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever(:a, :b, {:c => 1}) do
-        class << x; a = 'ia'; end
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_code(expected3)
-  end
-
-  should 'handle watever do ... end' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever do
-        class AA; a = 'ia'; end
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_code(expected1)
-  end
-
-  should 'handle watever do ... end (as subclass)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever do
-        class AA < Object; a = 'ia'; end
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_code(expected2)
-  end
-
-  should 'handle watever do ... end (as singleton)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
-    (
-      watever do
-        class << x; a = 'ia'; end
-        [xx, x, @x, @@x, $x]
-      end
-    ).should.be having_code(expected3)
-  end
-
-  should 'handle lambda do ... end' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+  should 'handle simple' do
     (
       lambda do
-        class AA; a = 'ia'; end
-        [xx, x, @x, @@x, $x]
+        class AA
+          def aa
+            @x1 = 1
+          end
+        end
       end
-    ).should.be having_code(expected1)
+    ).should.be having_code(%Q\
+      proc do
+        class AA
+          def aa
+            @x1 = 1
+          end
+        end
+      end
+    \)
   end
 
-  should 'handle lambda do ... end (as subclass)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+  should 'handle inheritance' do
     (
       lambda do
-        class AA < Object; a = 'ia'; end
-        [xx, x, @x, @@x, $x]
+        class AA < Object
+          def aa
+            @x1 = 1
+          end
+        end
       end
-    ).should.be having_code(expected2)
+    ).should.be having_code(%Q\
+      proc do
+        class AA < Object
+          def aa
+            @x1 = 1
+          end
+        end
+      end
+    \)
   end
 
-  should 'handle lambda do ... end (as singleton)' do
-    x, @x, @@x, $x = 'lx', 'ix', 'cx', 'gx'
+  should 'handle singleton' do
     (
       lambda do
-        class << x; a = 'ia'; end
-        [xx, x, @x, @@x, $x]
+        class << 'AA'
+          def aa
+            @x1 = 1
+          end
+        end
       end
-    ).should.be having_code(expected3)
+    ).should.be having_code(%Q\
+      proc do
+        class << 'AA'
+          def aa
+            @x1 = 1
+          end
+        end
+      end
+    \)
+  end
+
+  should 'handle nested' do
+    (
+      lambda do
+        class AA
+          class BB
+            def bb
+              @x1 = 1
+            end
+          end
+        end
+      end
+    ).should.be having_code(%Q\
+      proc do
+        class AA
+          class BB
+            def bb
+              @x1 = 1
+            end
+          end
+        end
+      end
+    \)
   end
 
 end
