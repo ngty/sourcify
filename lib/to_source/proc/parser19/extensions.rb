@@ -4,12 +4,15 @@ module ToSource
       module Extensions
         module Result
 
+          POS, TYP, VAL = 0, 1, 2
+          ROW, COL= 0, 1
+
           def same_as_curr_line
             same_line(curr_line)
           end
 
           def curr_line
-            curr[0][0]
+            curr[POS][ROW]
           end
 
           def curr
@@ -20,11 +23,11 @@ module ToSource
             (
               # ignore the current node
               self[0..-2].reverse.take_while do |e|
-                if e[1] == :on_semicolon && e[-1] == ';'
+                if e[TYP] == :on_semicolon && e[VAL] == ';'
                   false
-                elsif e[0][0] == line
+                elsif e[POS][ROW] == line
                   true
-                elsif e[1] == :on_sp && e[-1] == "\\\n"
+                elsif e[TYP] == :on_sp && e[VAL] == "\\\n"
                   line -= 1
                   true
                 end
@@ -35,14 +38,14 @@ module ToSource
           def keywords(*types)
             (
               types = [types].flatten
-              select{|e| e[1] == :on_kw && (types.empty? or types.include?(e[-1])) }
+              select{|e| e[TYP] == :on_kw && (types.empty? or types.include?(e[VAL])) }
             ).extend(Extensions::Result)
           end
 
           def non_spaces(*types)
             (
               types = [types].flatten
-              reject{|e| e[1] == :on_sp && (types.empty? or types.include?(e[-1])) }
+              reject{|e| e[TYP] == :on_sp && (types.empty? or types.include?(e[VAL])) }
             ).extend(Extensions::Result)
           end
 
