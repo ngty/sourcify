@@ -21,7 +21,7 @@ module ToSource
 
             case token
 
-            when 'class', 'def', 'module', 'begin', 'if', 'unless', 'case'
+            when 'class', 'def', 'module', 'begin', 'case'
               # Pretty straightforward for these, each of them will consume an 'end' close it
               @do_end_counter.increment_start unless @do_end_counter.fresh?
 
@@ -31,18 +31,14 @@ module ToSource
               # * for a in [1,2] \n ... end
               @do_end_counter.increment_start unless @do_end_counter.fresh?
 
-            when 'if', 'unless'
-              # These can work as modifier as well, eg:
-              # * if true then ... end
-              # * ... if true
-
-            when 'while', 'until'
-              # These have optional trailing 'do', can can work as a modifier as well, eg:
+            when 'while', 'until', 'if', 'unless'
+              # These have optional trailing 'do' (only for 'while' & 'until'), and can work
+              # as a modifier as well, eg:
               # * while true do ... end # => 'do' must be on the same line as 'while'
               # * while true \n ... end
-              # * ... while true
+              # * ... while true # => 'while' is pre-pended with non-spaces
               unless @do_end_counter.fresh?
-                @do_end_counter.increment_start
+                @do_end_counter.increment_start if rs.same_as_curr_line.non_spaces.empty?
               end
 
             when 'do'
