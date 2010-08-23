@@ -17,25 +17,38 @@ module ToSource
 
         def on_kw(token)
           super.tap do |rs|
+            curr, curr_line = rs[-1], rs[-1][0][0]
+
             case token
 
             when 'class', 'def', 'module', 'begin', 'if', 'unless', 'case'
-              # Pretty straightforward for these, each of them will consume an 'end' to
-              # mark it closed
+              # Pretty straightforward for these, each of them will consume an 'end' close it
               @do_end_counter.increment_start unless @do_end_counter.fresh?
 
             when 'for'
-              # This has an optional trailing 'do'
+              # This has an optional trailing 'do', eg:
+              # * for a in [1,2] do ... end
+              # * for a in [1,2] \n ... end
+              @do_end_counter.increment_start unless @do_end_counter.fresh?
 
             when 'if', 'unless'
               # These can work as modifier as well
 
             when 'while', 'until'
               # These have optional trailing 'do', can can work as a modifier as well
+              # * while true do ... end
+              # * while true \n ... end
+              # * ... while true
 
             when 'do'
-              @do_end_counter.marker = rs[-1] if @do_end_counter.fresh?
-              @do_end_counter.increment_start
+              if @do_end_counter.fresh?
+                @do_end_counter.marker = curr
+                @do_end_counter.increment_start
+              elsif rs.reverse.
+                take_while{|e| (e[0][0] == curr_line) or (e[0][-1] == "\\\n" && curr_line -= 1; true) }.
+                select{|e| e[1] == :on_kw && %w{for while until}.include?(e[-1]) }.empty?
+                  @do_end_counter.increment_start
+              end
             when 'end'
               unless @do_end_counter.fresh?
                 if @do_end_counter.increment_end.telly?
