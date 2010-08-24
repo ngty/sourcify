@@ -28,13 +28,13 @@ module ToSource
 
             when 'class', 'def', 'module', 'begin', 'case'
               # Pretty straightforward for these, each of them will consume an 'end' close it
-              @do_end_counter.increment_start unless @do_end_counter.fresh?
+              @do_end_counter.increment_start if @do_end_counter.started?
 
             when 'for'
               # This has an optional trailing 'do', eg:
               # * for a in [1,2] do ... end
               # * for a in [1,2] \n ... end
-              @do_end_counter.increment_start unless @do_end_counter.fresh?
+              @do_end_counter.increment_start if @do_end_counter.started?
 
             when 'while', 'until', 'if', 'unless'
               # These have optional trailing 'do' (only for 'while' & 'until'), and can work
@@ -42,14 +42,14 @@ module ToSource
               # * while true do ... end # => 'do' must be on the same line as 'while'
               # * while true \n ... end
               # * ... while true # => 'while' is pre-pended with non-spaces
-              unless @do_end_counter.fresh?
+              if @do_end_counter.started?
                 if rs.start_of_line? or rs.within_block?
                   @do_end_counter.increment_start
                 end
               end
 
             when 'do'
-              if @do_end_counter.fresh?
+              if !@do_end_counter.started?
                 # The 1st 'do' on the line will mark the start of the proc (which may not
                 # be true, but anyway, just do it for now, KISS !!
                 @do_end_counter.marker = rs.curr
@@ -63,7 +63,7 @@ module ToSource
 
             when 'end'
               # Very straigtforward, every 'end' will be considered !!
-              unless @do_end_counter.fresh?
+              if @do_end_counter.started?
                 if @do_end_counter.increment_end.telly?
                   @result = rs.to_code(@do_end_counter.marker)
                   raise EndOfBlock
@@ -76,7 +76,7 @@ module ToSource
 
         def on_rbrace(token)
           super.tap do |rs|
-            break if !@do_end_counter.fresh? or @braced_counter.fresh?
+            break if @do_end_counter.started? or !@braced_counter.started?
             if @braced_counter.increment_end.telly?
               rs.extend(Extensions::Result) unless rs.respond_to?(:curr)
               @result = rs.to_code(@braced_counter.marker)
@@ -87,16 +87,16 @@ module ToSource
 
         def on_lbrace(token)
           super.tap do |rs|
-            break unless @do_end_counter.fresh?
+            break if @do_end_counter.started?
             rs.extend(Extensions::Result) unless rs.respond_to?(:curr)
-            @braced_counter.marker = rs.curr if @braced_counter.fresh?
+            @braced_counter.marker = rs.curr unless @braced_counter.started?
             @braced_counter.increment_start
           end
         end
 
         def on_op(token)
           super.tap do |rs|
-            break if !@do_end_counter.fresh? or @braced_counter.fresh?
+            break if @do_end_counter.started? or !@braced_counter.started?
             @braced_counter.decrement_start if token == '=>' && @braced_counter[:start] == 1
           end
         end
@@ -104,7 +104,7 @@ module ToSource
         def on_label(token)
           super.tap do |rs|
             rs.extend(Extensions::Result) unless rs.respond_to?(:curr)
-            break if !@do_end_counter.fresh? or @braced_counter.fresh?
+            break if @do_end_counter.started? or !@braced_counter.started?
             @braced_counter.decrement_start if @braced_counter[:start] == 1
           end
         end

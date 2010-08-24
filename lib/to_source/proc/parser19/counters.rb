@@ -15,8 +15,8 @@ module ToSource
             @counter[key]
           end
 
-          def fresh?
-            @counter.values == [0,0]
+          def started?
+            @counter.values != [0,0]
           end
 
           def telly?
