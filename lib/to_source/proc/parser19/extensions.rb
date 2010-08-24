@@ -57,6 +57,12 @@ module ToSource
             same_as_curr_line.non_spaces[-1][TYP] == :on_lparen
           end
 
+          def stringify(marker)
+            self[index(marker) .. -1].map do |e|
+              e[TYP] == :on_label ? (':%s => ' % e[VAL][0..-2]) : e[VAL]
+            end.join
+          end
+
         end
       end
     end

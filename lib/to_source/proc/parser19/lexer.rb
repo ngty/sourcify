@@ -60,7 +60,7 @@ module ToSource
               # Very straigtforward, every 'end' will be considered !!
               unless @do_end_counter.fresh?
                 if @do_end_counter.increment_end.telly?
-                  @result = rs[rs.index(@do_end_counter.marker) .. -1]
+                  @result = rs.stringify(@do_end_counter.marker)
                   raise EndOfBlock
                 end
               end
@@ -69,27 +69,40 @@ module ToSource
           end
         end
 
+        def on_rbrace(token)
+          super.tap do |rs|
+            break if !@do_end_counter.fresh? or @braced_counter.fresh?
+            if @braced_counter.increment_end.telly?
+              rs.extend(Extensions::Result) unless rs.respond_to?(:curr)
+              @result = rs.stringify(@braced_counter.marker)
+              raise EndOfBlock
+            end
+          end
+        end
 
+        def on_lbrace(token)
+          super.tap do |rs|
+            break unless @do_end_counter.fresh?
+            rs.extend(Extensions::Result) unless rs.respond_to?(:curr)
+            @braced_counter.marker = rs.curr if @braced_counter.fresh?
+            @braced_counter.increment_start
+          end
+        end
 
-#        def on_op(token)
-#          super.tap do |rs|
-#          end
-#        end
-#
-#        def on_label(token)
-#          super.tap do |rs
-#          end
-#        end
-#
-#        def on_rbrace(token)
-#          super.tap do |rs|
-#          end
-#        end
-#
-#        def on_lbrace(token)
-#          super.tap do |rs|
-#          end
-#        end
+        def on_op(token)
+          super.tap do |rs|
+            break if !@do_end_counter.fresh? or @braced_counter.fresh?
+            @braced_counter.decrement_start if token == '=>' && @braced_counter[:start] == 1
+          end
+        end
+
+        def on_label(token)
+          super.tap do |rs|
+            rs.extend(Extensions::Result) unless rs.respond_to?(:curr)
+            break if !@do_end_counter.fresh? or @braced_counter.fresh?
+            @braced_counter.decrement_start if @braced_counter[:start] == 1
+          end
+        end
 
       end
 

@@ -18,7 +18,7 @@ module ToSource
           File.open(@file) do |fh|
             fh.extend(File::Tail)
             fh.forward(@line.pred)
-            @source = 'proc ' + Parser19::Lexer.new(fh, @file, @line).lex.map(&:last).join
+            @source = 'proc ' + Parser19::Lexer.new(fh, @file, @line).lex
           end
         end
         @source
