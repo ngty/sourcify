@@ -5,6 +5,11 @@ module ToSource
 
         class EndOfBlock < Exception ; end
 
+        def initialize(fh, file, line)
+          @file, @line = file, line
+          super
+        end
+
         def lex
           begin
             @do_end_counter = Counters::DoEndBlock.new
@@ -60,7 +65,7 @@ module ToSource
               # Very straigtforward, every 'end' will be considered !!
               unless @do_end_counter.fresh?
                 if @do_end_counter.increment_end.telly?
-                  @result = rs.stringify(@do_end_counter.marker)
+                  @result = rs.to_code(@do_end_counter.marker)
                   raise EndOfBlock
                 end
               end
@@ -74,7 +79,7 @@ module ToSource
             break if !@do_end_counter.fresh? or @braced_counter.fresh?
             if @braced_counter.increment_end.telly?
               rs.extend(Extensions::Result) unless rs.respond_to?(:curr)
-              @result = rs.stringify(@braced_counter.marker)
+              @result = rs.to_code(@braced_counter.marker)
               raise EndOfBlock
             end
           end
