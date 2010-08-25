@@ -11,6 +11,10 @@ module ToSource
             same_line(curr_line)
           end
 
+          def multiline?
+            self[0][POS][ROW] != self[-1][POS][ROW]
+          end
+
           def curr_line
             curr[POS][ROW]
           end

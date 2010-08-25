@@ -39,7 +39,8 @@ module ToSource
             File.open(@file) do |fh|
               fh.extend(File::Tail)
               fh.forward(@line.pred)
-              'proc ' + Parser19::Lexer.new(fh, @file, @line).lex
+              frags = Parser19::Lexer.new(fh, @file, @line).lex
+              'proc %s' % frags.find{|frag| eval('proc ' + frag).arity == @arity }
             end
         end
 

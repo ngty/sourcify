@@ -4,11 +4,7 @@ module ToSource
       class Lexer < ::Ripper::Lexer
 
         class EndOfBlock < Exception ; end
-
-        def initialize(fh, file, line)
-          @file, @line = file, line
-          super
-        end
+        class EndOfLine  < Exception ; end
 
         def lex
           begin
@@ -16,7 +12,16 @@ module ToSource
             @braced_counter = Counters::BracedBlock.new
             super
           rescue EndOfBlock
-            return @result
+            (@results ||= []) << @result.dup
+            @is_multiline_block ? @results : retry
+          rescue EndOfLine
+            @results
+          end
+        end
+
+        def on_nl(token)
+          super.tap do |rs|
+            raise EndOfLine unless @results.empty?
           end
         end
 
@@ -65,6 +70,7 @@ module ToSource
         def on_kw_end(rs)
           if @do_end_counter.started? && @do_end_counter.increment_end.telly?
             @result = rs.to_code(@do_end_counter.marker)
+            @is_multiline_block = rs.multiline?
             raise EndOfBlock
           end
         end
@@ -83,6 +89,7 @@ module ToSource
           super.tap do |rs|
             if @braced_counter.started? && @braced_counter.increment_end.telly?
               @result = rs.to_code(@braced_counter.marker)
+              @is_multiline_block = rs.multiline?
               raise EndOfBlock
             end
           end
