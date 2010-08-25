@@ -1,4 +1,4 @@
-shared 'Proc#to_source from { ... } block (1.9.*)' do
+shared 'Proc#to_sexp from { ... } block (1.9.*)' do
 
   should 'handle simple (w label keys)' do
     (
