@@ -11,7 +11,7 @@ describe "Proc#to_source from do ... end block (w nested class)" do
           end
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         class AA
           def aa
@@ -31,7 +31,7 @@ describe "Proc#to_source from do ... end block (w nested class)" do
           end
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         class AA < Object
           def aa
@@ -51,7 +51,7 @@ describe "Proc#to_source from do ... end block (w nested class)" do
           end
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         class << 'AA'
           def aa
@@ -73,7 +73,7 @@ describe "Proc#to_source from do ... end block (w nested class)" do
           end
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         class AA
           class BB

@@ -7,7 +7,7 @@ describe "Proc#to_source from do ... end block (w nested for block)" do
       lambda do
         for x1 in [1,2] do x1 end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         for x1 in [1,2] do x1 end
       end
@@ -20,7 +20,7 @@ describe "Proc#to_source from do ... end block (w nested for block)" do
         for x2 in [1,2] \
           do x2 end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         for x2 in [1,2] do x2 end
       end
@@ -34,7 +34,7 @@ describe "Proc#to_source from do ... end block (w nested for block)" do
           x3
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         for x3 in [1,2]
           x3
@@ -48,7 +48,7 @@ describe "Proc#to_source from do ... end block (w nested for block)" do
       lambda do
         for x4 in [1,2]; x4; end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         for x4 in [1,2]
           x4
@@ -66,7 +66,7 @@ describe "Proc#to_source from do ... end block (w nested for block)" do
           end
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         for x1 in [1,2] do
           for x2 in [1,2]
@@ -86,7 +86,7 @@ describe "Proc#to_source from do ... end block (w nested for block)" do
           end
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         for x1 in [2,3] do
           for x2 in [2,3]
@@ -104,7 +104,7 @@ describe "Proc#to_source from do ... end block (w nested for block)" do
           for x2 in [3,4] do x2 end
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         for x1 in [3,4]
           for x2 in [3,4] do x2 end
@@ -120,7 +120,7 @@ describe "Proc#to_source from do ... end block (w nested for block)" do
           do for x2 in [4,5] do x2 end
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         for x1 in [4,5]
           for x2 in [4,5] do x2 end

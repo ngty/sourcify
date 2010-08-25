@@ -7,7 +7,7 @@ describe "Proc#to_source from { ... } block (w nested { ... } block)" do
       lambda {
         lambda { @x1 = 1 }
       }
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         lambda { @x1 = 1 }
       end
@@ -21,7 +21,7 @@ describe "Proc#to_source from { ... } block (w nested { ... } block)" do
           lambda { @x1 = 1 }
         }
       }
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         lambda do
           lambda { @x1 = 1 }

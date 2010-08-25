@@ -7,7 +7,7 @@ describe "Proc#to_source from do ... end block (w nested method)" do
       lambda do
         def aa; x = 1; end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         def aa; x = 1; end
       end
@@ -21,7 +21,7 @@ describe "Proc#to_source from do ... end block (w nested method)" do
           def bb; x = 2; end
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         def aa
           def bb; x = 2; end

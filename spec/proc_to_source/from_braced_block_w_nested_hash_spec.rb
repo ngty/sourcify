@@ -7,7 +7,7 @@ describe "Proc#to_source from { ... } block (w nested hash)" do
       lambda {
         {:a => 1, :b => 2}
       }
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         {:a => 1, :b => 2}
       end
@@ -19,7 +19,7 @@ describe "Proc#to_source from { ... } block (w nested hash)" do
       lambda {
         {:a => 1, :b => {:c => 3}}
       }
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         {:a => 1, :b => {:c => 3}}
       end

@@ -11,7 +11,7 @@ describe "Proc#to_source from do ... end block (w nested module)" do
           end
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         module AA
           def aa
@@ -33,7 +33,7 @@ describe "Proc#to_source from do ... end block (w nested module)" do
           end
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         module AA
           module BB

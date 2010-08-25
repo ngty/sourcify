@@ -7,7 +7,7 @@ describe "Proc#to_source from do ... end block (w nested unless)" do
       lambda do
         unless @x1 then @x1 = 1 end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         unless @x1 then @x1 = 1 end
       end
@@ -21,7 +21,7 @@ describe "Proc#to_source from do ... end block (w nested unless)" do
           unless @x2 then @x2 = 1 end
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         unless @x1
           unless @x2 then @x2 = 1 end
@@ -35,7 +35,7 @@ describe "Proc#to_source from do ... end block (w nested unless)" do
       lambda do
         @x1 = 1 unless true
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         @x1 = 1 unless true
       end
@@ -47,7 +47,7 @@ describe "Proc#to_source from do ... end block (w nested unless)" do
       lambda do
         @x1 = 1 unless (unless @x1 then true end)
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         @x1 = 1 unless (unless @x1 then true end)
       end
@@ -61,7 +61,7 @@ describe "Proc#to_source from do ... end block (w nested unless)" do
           @x1 = 1 unless @x2
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         unless @x1
           @x1 = 1 unless @x2

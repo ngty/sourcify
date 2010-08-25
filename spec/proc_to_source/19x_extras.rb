@@ -5,7 +5,7 @@ shared 'Proc#to_source from { ... } block (1.9.*)' do
       lambda {
         {a: 1, b: 2}
       }
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         {:a => 1, :b => 2}
       end
@@ -17,7 +17,7 @@ shared 'Proc#to_source from { ... } block (1.9.*)' do
       lambda {
         {a: 1, b: {c: 3}}
       }
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         {:a => 1, :b => {:c => 3}}
       end

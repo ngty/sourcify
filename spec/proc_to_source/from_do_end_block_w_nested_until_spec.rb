@@ -7,7 +7,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
       lambda do
         until true do @x1 = 1 end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         until true do @x1 = 1 end
       end
@@ -20,7 +20,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
         until true \
           do @x1 = 2 end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         until true do @x1 = 2 end
       end
@@ -34,7 +34,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
           @x1 = 3
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         until true
           @x1 = 3
@@ -48,7 +48,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
       lambda do
         until true; @x1 = 4; end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         until true
           @x1 = 4
@@ -64,7 +64,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
           until true; @x1 = 5; end
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         until true do
           until true
@@ -82,7 +82,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
           until true; @x1 = 6; end
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         until true
           until true
@@ -100,7 +100,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
           until true do @x1 = 7 end
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         until true
           until true
@@ -118,7 +118,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
           until true do @x1 = 8 end
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         until true
           until true
@@ -134,7 +134,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
       lambda do
         @x1 = 9 until true
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         @x1 = 9 until true
       end
@@ -148,7 +148,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
           until true do @x1 = 10 end
         )
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         @x1 = 10 until (
           until true do @x1 = 10 end
@@ -164,7 +164,7 @@ describe "Proc#to_source from do ... end block (w nested until block)" do
           @x1 = 11 until true
         end
       end
-    ).should.be having_code(%Q\
+    ).should.be having_source(%Q\
       proc do
         until true
           @x1 = 11 until true
