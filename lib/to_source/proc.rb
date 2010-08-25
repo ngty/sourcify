@@ -12,17 +12,18 @@ module ToSource
 
           unless meths.include?('to_source')
             def to_source
-              require 'to_source/proc/parser19'
-              (@parser ||= Parser19.new(self)).source
+              require 'to_source/proc/parser'
+              (@parser ||= Parser.new(self)).source
             end
           end
 
           unless meths.include?('to_sexp')
             def to_sexp
-              require 'to_source/proc/parser19'
-              (@parser ||= Parser19.new(self)).sexp
+              require 'to_source/proc/parser'
+              (@parser ||= Parser.new(self)).sexp
             end
           end
+
         end
       end
     end
