@@ -1,6 +1,6 @@
-shared 'Proc#to_source from { ... } block (w nested hash (w label-key))' do
+shared 'Proc#to_source from { ... } block (1.9.*)' do
 
-  should 'handle simple' do
+  should 'handle simple (w label keys)' do
     (
       lambda {
         {a: 1, b: 2}
@@ -12,7 +12,7 @@ shared 'Proc#to_source from { ... } block (w nested hash (w label-key))' do
     \)
   end
 
-  should 'handle nested' do
+  should 'handle nested (w label keys)' do
     (
       lambda {
         {a: 1, b: {c: 3}}

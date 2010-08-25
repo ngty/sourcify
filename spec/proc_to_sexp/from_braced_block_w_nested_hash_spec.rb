@@ -34,7 +34,7 @@ describe "Proc#to_sexp from { ... } block (w nested hash)" do
 
   if RUBY_VERSION.include?('1.9.')
     require File.join(File.dirname(__FILE__), '19x_extras')
-    behaves_like 'Proc#to_sexp from { ... } block (w nested hash (w label-key))'
+    behaves_like 'Proc#to_source from { ... } block (1.9.*)'
   end
 
 end
