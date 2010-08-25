@@ -8,12 +8,15 @@ module ToSource
       RUBY_PARSER = RubyParser.new
       RUBY_2_RUBY = Ruby2Ruby.new
 
+      class AmbiguousMatchError < Exception ; end
+
       extend Forwardable
-      def_delegator :@delegate, :raw_source
       def_delegator :@delegate, :file
+      def_delegator :@delegate, :line
+      def_delegator :@delegate, :lexer
 
       def initialize(_proc)
-        @binding = _proc.binding
+        @binding, @arity = _proc.binding, _proc.arity
         @delegate =
           if RUBY_VERSION.include?('1.9.')
             require 'to_source/proc/parser19'
@@ -36,6 +39,17 @@ module ToSource
       end
 
       private
+
+        def raw_source
+          @raw_source ||=
+            File.open(file) do |fh|
+              fh.extend(File::Tail).forward(line.pred)
+              frags = lexer.new(fh, file, line).lex.
+                select{|frag| eval('proc ' + frag).arity == @arity }
+              raise AmbiguousMatchError if frags.size > 1
+              'proc %s' % frags[0]
+            end
+        end
 
         def replace_with_lvars(array)
           return array if [:class, :sclass, :defn, :module].include?(array[0])
