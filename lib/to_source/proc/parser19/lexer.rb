@@ -8,11 +8,12 @@ module ToSource
 
         def lex
           begin
+            @results ||= []
             @do_end_counter = Counters::DoEndBlock.new
             @braced_counter = Counters::BracedBlock.new
             super
           rescue EndOfBlock
-            (@results ||= []) << @result.dup
+            @results << @result.dup
             @is_multiline_block ? @results : retry
           rescue EndOfLine
             @results

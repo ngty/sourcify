@@ -8,6 +8,8 @@ module ToSource
   module Proc
     class Parser19
 
+      class AmbiguousMatchError < Exception ; end
+
       RUBY_PARSER = RubyParser.new
       RUBY_2_RUBY = Ruby2Ruby.new
 
@@ -39,8 +41,10 @@ module ToSource
             File.open(@file) do |fh|
               fh.extend(File::Tail)
               fh.forward(@line.pred)
-              frags = Parser19::Lexer.new(fh, @file, @line).lex
-              'proc %s' % frags.find{|frag| eval('proc ' + frag).arity == @arity }
+              frags = Parser19::Lexer.new(fh, @file, @line).lex.
+                select{|frag| eval('proc ' + frag).arity == @arity }
+              raise AmbiguousMatchError if frags.size > 1
+              'proc %s' % frags[0]
             end
         end
 
