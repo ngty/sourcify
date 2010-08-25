@@ -1,0 +1,5 @@
+Since Proc#to_source depends on Proc#to_sexp, getting Proc#to_source correct
+implies the correctness of Proc#to_sexp, thus, there is no need to maintain
+2 sets of almost similar specs ... the only spec worth maintaining separately
+is the one for variables, since we are concerned with whether the correct
+representation of sexp is there.
