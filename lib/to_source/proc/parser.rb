@@ -44,7 +44,7 @@ module ToSource
           @raw_source ||=
             File.open(file) do |fh|
               fh.extend(File::Tail).forward(line.pred)
-              frags = lexer.new(fh, file, line).lex.
+              frags = lexer.new(fh, file, line).work.
                 select{|frag| eval('proc ' + frag).arity == @arity }
               raise AmbiguousMatchError if frags.size > 1
               'proc %s' % frags[0]

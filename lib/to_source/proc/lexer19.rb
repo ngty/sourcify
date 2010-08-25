@@ -4,22 +4,7 @@ module ToSource
   module Proc
     class Lexer19 < Ripper::Lexer
 
-      class EndOfBlock < Exception ; end
-      class EndOfLine  < Exception ; end
-
-      def lex
-        begin
-          @results ||= []
-          @do_end_counter = Counter.new
-          @braced_counter = Counter.new
-          super
-        rescue EndOfBlock
-          @results << @result.dup
-          @is_multiline_block ? @results : retry
-        rescue EndOfLine
-          @results
-        end
-      end
+      include Lexable
 
       def on_nl(token)
         super.tap do |rs|

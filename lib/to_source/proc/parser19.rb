@@ -1,4 +1,5 @@
 require 'to_source/proc/counter'
+require 'to_source/proc/lexable'
 require 'to_source/proc/lexer19'
 
 module ToSource
