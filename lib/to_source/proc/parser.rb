@@ -8,7 +8,7 @@ module ToSource
       RUBY_PARSER = RubyParser.new
       RUBY_2_RUBY = Ruby2Ruby.new
 
-      class AmbiguousMatchError < Exception ; end
+      class MultipleMatchingProcsPerLineError < Exception ; end
 
       extend Forwardable
       def_delegator :@delegate, :file
@@ -46,7 +46,7 @@ module ToSource
               fh.extend(File::Tail).forward(line.pred)
               frags = lexer.new(fh, file, line).work.
                 select{|frag| eval('proc ' + frag).arity == @arity }
-              raise AmbiguousMatchError if frags.size > 1
+              raise MultipleMatchingProcsPerLineError if frags.size > 1
               'proc %s' % frags[0]
             end
         end
