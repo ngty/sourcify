@@ -26,12 +26,4 @@ describe "Proc#to_source (variables)" do
     lambda { $x }.should.be having_source(%|proc { $x }|)
   end
 
-  should 'handle magic var __FILE__' do
-    lambda { __FILE__ }.should.be having_source(%|proc { "#{__FILE__}" }|)
-  end
-
-  should 'handle magic var __LINE__' do
-    lambda { __LINE__ }.should.be having_source(%|proc { #{__LINE__} }|)
-  end
-
 end
