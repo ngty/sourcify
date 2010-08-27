@@ -27,16 +27,6 @@ describe "Proc#to_sexp (variables)" do
     lambda { $x }.should.be having_sexp(expected)
   end
 
-  should 'handle magic var __FILE__' do
-    expected = s(:iter, s(:call, nil, :proc, s(:arglist)), nil, s(:str, __FILE__))
-    lambda { __FILE__ }.should.be having_sexp(expected)
-  end
-
-  should 'handle magic var __LINE__' do
-    expected = s(:iter, s(:call, nil, :proc, s(:arglist)), nil, s(:lit, __LINE__ + 1))
-    lambda { __LINE__ }.should.be having_sexp(expected)
-  end
-
   should 'handle class_eval scoped local var' do
     (
       x = 1
