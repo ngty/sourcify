@@ -53,15 +53,18 @@ module Sourcify
 
         def no_arg_method_call_or_lvar(e)
           if represents_no_arg_call?(e)
-            @binding.eval("local_variables.include?(:#{e[2]})") ? [:lvar, e[2]] : e
-          else
-            nil
+            has_as_local_var?(var = e[2]) ? [:lvar, var] : e
           end
         end
 
         def represents_no_arg_call?(e)
           e.size == 4 && e[0..1] == [:call, nil] &&
             e[3] == [:arglist] && (var = e[2]).is_a?(Symbol)
+        end
+
+        def has_as_local_var?(var)
+          qvar = (@q ||= (RUBY_VERSION.include?('1.9.') ? ":%s" : "'%s'")) % var
+          @binding.eval("local_variables.include?(#{qvar})")
         end
 
     end
