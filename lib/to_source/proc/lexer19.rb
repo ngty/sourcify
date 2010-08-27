@@ -4,7 +4,7 @@ module ToSource
   module Proc
     class Lexer19 < Ripper::Lexer
 
-      include Lexable
+      include Lexer::Commons
 
       def on_nl(token)
         super.tap do |rs|

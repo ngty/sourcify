@@ -1,5 +1,6 @@
-require 'forwardable'
 require 'file/tail'
+require 'to_source/proc/lexer'
+require 'to_source/proc/counter'
 
 module ToSource
   module Proc
@@ -10,21 +11,9 @@ module ToSource
 
       class MultipleMatchingProcsPerLineError < Exception ; end
 
-      extend Forwardable
-      def_delegator :@delegate, :file
-      def_delegator :@delegate, :line
-      def_delegator :@delegate, :lexer
-
       def initialize(_proc)
         @binding, @arity = _proc.binding, _proc.arity
-        @delegate =
-          if RUBY_VERSION.include?('1.9.')
-            require 'to_source/proc/parser19'
-            Parser19.new(_proc)
-          else
-            require 'to_source/proc/parser18'
-            Parser18.new(_proc)
-          end
+        @file, @line = _proc.source_location
       end
 
       def source
@@ -33,7 +22,7 @@ module ToSource
 
       def sexp
         @sexp ||= (
-          raw_sexp = RUBY_PARSER.parse(raw_source, file)
+          raw_sexp = RUBY_PARSER.parse(raw_source, @file)
           Sexp.from_array(replace_with_lvars(raw_sexp.to_a))
         )
       end
@@ -42,9 +31,9 @@ module ToSource
 
         def raw_source
           @raw_source ||=
-            File.open(file) do |fh|
-              fh.extend(File::Tail).forward(line.pred)
-              frags = lexer.new(fh, file, line).work.
+            File.open(@file) do |fh|
+              fh.extend(File::Tail).forward(@line.pred)
+              frags = ToSource::Proc::Lexer.new(fh, @file, @line).work.
                 select{|frag| eval('proc ' + frag).arity == @arity }
               raise MultipleMatchingProcsPerLineError if frags.size > 1
               'proc %s' % frags[0]

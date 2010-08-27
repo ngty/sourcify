@@ -9,7 +9,7 @@ module ToSource
       # Implementation of this class has been inspired by the discussion at
       # http://www.justskins.com/forums/breaking-ruby-code-into-117453.html
 
-      include Lexable
+      include Lexer::Commons
 
       def initialize(io, file, line)
         @file, @line, @io, @pos = file, line, io, io.pos

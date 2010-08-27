@@ -24,6 +24,15 @@ module ToSource
             end
           end
 
+          unless meths.include?('source_location')
+            def source_location
+              @source_location ||= (
+                file, line = /^#<Proc:0x[0-9A-Fa-f]+@(.+):(\d+).*?>$/.match(inspect)[1..2]
+                [file, line.to_i]
+              )
+            end
+          end
+
         end
       end
     end
