@@ -4,7 +4,7 @@ require 'ruby2ruby'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-require 'to_source'
+require 'sourcify'
 
 Bacon.summary_on_exit
 

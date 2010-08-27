@@ -8,4 +8,4 @@ rescue LoadError
   require 'ruby_parser'
 end
 
-require 'to_source/proc'
+require 'sourcify/proc'

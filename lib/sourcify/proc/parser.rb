@@ -1,8 +1,8 @@
 require 'file/tail'
-require 'to_source/proc/lexer'
-require 'to_source/proc/counter'
+require 'sourcify/proc/lexer'
+require 'sourcify/proc/counter'
 
-module ToSource
+module Sourcify
   module Proc
     class Parser
 
@@ -33,7 +33,7 @@ module ToSource
           @raw_source ||=
             File.open(@file) do |fh|
               fh.extend(File::Tail).forward(@line.pred)
-              frags = ToSource::Proc::Lexer.new(fh, @file, @line).work.
+              frags = Sourcify::Proc::Lexer.new(fh, @file, @line).work.
                 select{|frag| eval('proc ' + frag).arity == @arity }
               raise MultipleMatchingProcsPerLineError if frags.size > 1
               'proc %s' % frags[0]

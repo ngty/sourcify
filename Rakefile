@@ -5,11 +5,11 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-    gem.name = "to_source"
+    gem.name = "sourcify"
     gem.summary = %Q{Workarounds before ruby-core officially supports Proc#to_source (& friends)}
     gem.description = %Q{}
     gem.email = "ngty77@gmail.com"
-    gem.homepage = "http://github.com/ngty/to_source"
+    gem.homepage = "http://github.com/ngty/sourcify"
     gem.authors = ["NgTzeYang"]
     gem.add_dependency 'ruby2ruby', '>= 1.2.4'
     gem.add_development_dependency "bacon", ">= 0"
@@ -81,7 +81,7 @@ Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "to_source #{version}"
+  rdoc.title = "sourcify #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end

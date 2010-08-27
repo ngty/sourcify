@@ -1,14 +1,14 @@
-module ToSource
+module Sourcify
   module Proc
     module Lexer
 
       class << self
         def new(*args)
           begin
-            require 'to_source/proc/lexer19'
+            require 'sourcify/proc/lexer19'
             Lexer19.new(*args)
           rescue LoadError
-            require 'to_source/proc/lexer18'
+            require 'sourcify/proc/lexer18'
             Lexer18.new(*args)
           end
         end
@@ -22,8 +22,8 @@ module ToSource
         def work
           begin
             @results ||= []
-            @do_end_counter = ToSource::Proc::Counter.new
-            @braced_counter = ToSource::Proc::Counter.new
+            @do_end_counter = Sourcify::Proc::Counter.new
+            @braced_counter = Sourcify::Proc::Counter.new
             lex
           rescue EndOfBlock
             @results << @result.dup

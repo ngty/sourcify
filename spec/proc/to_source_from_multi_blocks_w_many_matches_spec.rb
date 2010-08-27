@@ -34,38 +34,38 @@ describe 'Proc#to_source from multi blocks w many matches' do
 
     # Need this line since the parser file is dynamically required, otherwise we will get
     # undefined constant error
-    require 'to_source/proc/parser'
+    require 'sourcify/proc/parser'
 
-    should 'raise ToSource::Proc::Parser::MultipleMatchingProcsPerLineError (all do...end blocks)' do
+    should 'raise Sourcify::Proc::Parser::MultipleMatchingProcsPerLineError (all do...end blocks)' do
       lambda {
         (
           b1 = lambda do |a| @x1 end; b2 = lambda do @x1 end; b3 = lambda do @x1 end ; b2
         ).to_source
-      }.should.raise(ToSource::Proc::Parser::MultipleMatchingProcsPerLineError)
+      }.should.raise(Sourcify::Proc::Parser::MultipleMatchingProcsPerLineError)
     end
 
-    should 'raise ToSource::Proc::Parser::MultipleMatchingProcsPerLineError (all {...} blocks)' do
+    should 'raise Sourcify::Proc::Parser::MultipleMatchingProcsPerLineError (all {...} blocks)' do
       lambda {
         (
           b1 = lambda {|a| @x2 }; b2 = lambda { @x2 }; b3 = lambda { @x2 } ; b2
         ).to_source
-      }.should.raise(ToSource::Proc::Parser::MultipleMatchingProcsPerLineError)
+      }.should.raise(Sourcify::Proc::Parser::MultipleMatchingProcsPerLineError)
     end
 
-    should 'raise ToSource::Proc::Parser::MultipleMatchingProcsPerLineError (mixed {...} w do...end blocks)' do
+    should 'raise Sourcify::Proc::Parser::MultipleMatchingProcsPerLineError (mixed {...} w do...end blocks)' do
       lambda {
         (
           b1 = lambda {|a| @x3 }; b2 = lambda do @x3 end; b3 = lambda { @x4 } ; b2
         ).to_source
-      }.should.raise(ToSource::Proc::Parser::MultipleMatchingProcsPerLineError)
+      }.should.raise(Sourcify::Proc::Parser::MultipleMatchingProcsPerLineError)
     end
 
-    should 'raise ToSource::Proc::Parser::MultipleMatchingProcsPerLineError (mixed do...end w {...} blocks)' do
+    should 'raise Sourcify::Proc::Parser::MultipleMatchingProcsPerLineError (mixed do...end w {...} blocks)' do
       lambda {
         (
           b1 = lambda do |a| @x4 end; b2 = lambda { @x4 }; b3 = lambda do @x4 end ; b2
         ).to_source
-      }.should.raise(ToSource::Proc::Parser::MultipleMatchingProcsPerLineError)
+      }.should.raise(Sourcify::Proc::Parser::MultipleMatchingProcsPerLineError)
     end
 
   end

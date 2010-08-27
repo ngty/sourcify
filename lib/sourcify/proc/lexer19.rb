@@ -1,6 +1,6 @@
 require 'ripper'
 
-module ToSource
+module Sourcify
   module Proc
     class Lexer19 < Ripper::Lexer
 

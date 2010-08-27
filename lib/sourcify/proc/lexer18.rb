@@ -1,7 +1,7 @@
 require 'irb/ruby-lex'
 require 'irb/ruby-token'
 
-module ToSource
+module Sourcify
   module Proc
 
     class Lexer18

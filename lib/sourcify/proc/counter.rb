@@ -1,4 +1,4 @@
-module ToSource
+module Sourcify
   module Proc
     class Counter
 
