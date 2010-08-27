@@ -30,14 +30,19 @@ module Sourcify
       private
 
         def raw_source
-          @raw_source ||=
-            File.open(@file) do |fh|
-              fh.extend(File::Tail).forward(@line.pred)
-              frags = Sourcify::Proc::Lexer.new(fh, @file, @line).work.
-                select{|frag| eval('proc ' + frag).arity == @arity }
-              raise MultipleMatchingProcsPerLineError if frags.size > 1
-              'proc %s' % frags[0]
-            end
+          @raw_source ||= (
+            frags = Sourcify::Proc::Lexer.new(raw_source_io, @file, @line).work.
+              select{|frag| eval('proc ' + frag).arity == @arity }
+            raise MultipleMatchingProcsPerLineError if frags.size > 1
+            'proc %s' % frags[0]
+          )
+        end
+
+        def raw_source_io
+          File.open(@file, 'r') do |fh|
+            fh.extend(File::Tail).forward(@line.pred)
+            StringIO.new(fh.readlines.join, 'r')
+          end
         end
 
         def replace_with_lvars(array)
