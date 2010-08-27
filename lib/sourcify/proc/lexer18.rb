@@ -78,7 +78,7 @@ module Sourcify
         # * while true do ... end # => 'do' must be on the same line as 'while'
         # * while true \n ... end
         # * ... while true # => 'while' is pre-pended with non-spaces
-        if @do_end_counter.started? && (@tokens.start_of_line? or @tokens.within_block?)
+        if @do_end_counter.started? && @tokens.start_of_line?
           @do_end_counter.increment_start
         end
       end
@@ -135,26 +135,6 @@ module Sourcify
           n_rs
         end
       end
-#        result = 
-#        m = Regexp.new(
-#          pattern = "^%s(.*)$" % @magic_lines.inject('') do |memo, (pos,val)|
-#            if memo.empty?
-#              "^(.{#{pos - marker}})__LINE__"
-#            else
-#              "(.{#{pos - marker memo.size}})__LINE__"
-#            end
-#          end, Regexp::MULTILINE
-#        ).match(result)[1 .. -1] rescue []
-#
-#        p result
-#        p pattern
-#        p m
-#        p @magic_lines
-#        
-#        result = m.empty? ? result : m.zip(@magic_lines.map(&:last).map(&:pred)).flatten.join
-#         puts result
-#        result
-#      end
 
       # Ease working with the hybrid token set collected from RubyLex
       module Extensions
@@ -209,10 +189,6 @@ module Sourcify
 
         def start_of_line?
           same_as_curr_line.non_spaces.empty?
-        end
-
-        def within_block?
-          [:tlparen, :tlparen2].include?(same_as_curr_line.non_spaces[-1][TYP])
         end
 
       end
