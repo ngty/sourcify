@@ -82,6 +82,12 @@ module ToSource
         end
       end
 
+      def on_embexpr_beg(token)
+        super.tap do |rs|
+          @braced_counter.increment_start if @braced_counter.started?
+        end
+      end
+
       def on_op(token)
         super.tap do |rs|
           if @braced_counter.started? && token == '=>' && @braced_counter[:start] == 1
@@ -159,13 +165,23 @@ module ToSource
         end
 
         def to_code(marker)
+          heredoc_beg = false # fixing mysteriously missing newline after :on_heredoc_begin
           self[index(marker) .. -1].map do |e|
-            if e[TYP] == :on_label
-              ':%s => ' % e[VAL][0..-2]
-            elsif e[TYP] == :on_kw && e[VAL] == '__LINE__'
-              e[POS][ROW]
-            else
+            if e[TYP] == :on_heredoc_beg
+              heredoc_beg = true
               e[VAL]
+            elsif heredoc_beg && e[TYP] != :on_nl
+              heredoc_beg = false
+              "\n" + e[VAL]
+            else
+              heredoc_beg = false
+              if e[TYP] == :on_label
+                ':%s => ' % e[VAL][0..-2]
+              elsif e[TYP] == :on_kw && e[VAL] == '__LINE__'
+                e[POS][ROW]
+              else
+                e[VAL]
+              end
             end
           end.join
         end
