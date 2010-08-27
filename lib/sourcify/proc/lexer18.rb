@@ -25,12 +25,8 @@ module Sourcify
         while @tk = @lex.token
           tkc = @tk.class.to_s.sub(/\ARubyToken::/, '').downcase.to_sym
           @tokens << [@tk.line_no, @tk.char_no, tkc]
-          begin
-            send(:"on_#{tkc}")
-          rescue NoMethodError
-            #:w
-            #puts '', 'missing %s' % tkc
-          end
+          post_qstring if @qstring_data
+          send(:"on_#{tkc}") rescue NoMethodError
           @lex.get_readed if tkc == :tknl
         end
       end
@@ -41,6 +37,20 @@ module Sourcify
 
       def on_tk__line__
         @magic_lines << [@tk.seek, @tk.line_no + @line]
+      end
+
+      def on_tkdstring
+        @qstring_data = [@tk.seek, @tk.line_no + @line]
+      end
+
+      alias_method :on_tkstring, :on_tkdstring   # heredoc
+      alias_method :on_tkdregexp, :on_tkdstring  # regexp
+      alias_method :on_tkdxstring, :on_tkdstring # ` command
+
+      def post_qstring
+        seek, line = @qstring_data
+        @magic_lines << [(seek .. @tk.seek), line]
+        @qstring_data = nil
       end
 
       def on_tkdo
@@ -116,24 +126,40 @@ module Sourcify
 
       def grab_result_and_reset_lex(marker, offset)
         @io.seek(@pos+marker)
-        result = @io.read(diff = @tk.seek - marker + offset)
+        diff = @tk.seek - marker + offset
+        result = replace_magic_lines(@io.read(diff), marker)
         @io.seek(@pos + diff)
         @lex.set_input(@io)
         @lex.get_readed
-        replace_magic_lines(result, marker)
+        result
       end
 
       def replace_magic_lines(result, marker, offset = 0)
         @magic_lines.inject(result) do |rs, (pos,val)|
-          puts '', rs, offset
-          puts rs[pos - offset - marker - 1].chr
-          m = rs.match(pattern = /^(.{#{pos - offset - marker}})__LINE__(.*)$/m)
-            p pattern, m
-          n_rs = m[1] + val.pred.to_s + m[2]
-          puts n_rs
+          meth = :"replace_magic_line_by_#{pos.class.to_s.downcase}"
+          n_rs = send(meth, rs, marker + offset, pos, val)
           offset = result.length - n_rs.length
           n_rs
         end
+      end
+
+      def replace_magic_line_by_fixnum(rs, offset, pos, val)
+        m = rs.match(/^(.{#{pos - offset}})__LINE__(.*)$/m)
+        m[1] + val.pred.to_s + m[2]
+      end
+
+      def replace_magic_line_by_range(rs, offset, pos, lineno)
+        @io.seek(@pos + pos.begin)
+        subject = @io.read(pos.end - pos.begin)
+        return rs if %w{' %q %w}.any?{|q| subject.start_with?(q) }
+        prepend, append = rs.match(/^(.*?)#{Regexp.quote(subject)}(.*)$/m)[1..2]
+        middle = subject.split("\n").each_with_index do |line, i|
+          line.gsub!(pattern = /(.*?\#\{)__LINE__(\})/) do |s|
+            (m = s.match(pattern)[1..2])[0].end_with?('\\#{') ?
+              s : m.insert(1, (lineno + i).pred.to_s).join
+          end
+        end.join("\n")
+        prepend + middle + append
       end
 
       # Ease working with the hybrid token set collected from RubyLex

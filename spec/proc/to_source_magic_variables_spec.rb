@@ -37,20 +37,47 @@ EOL
   describe '>> __LINE__' do
 
     should 'handle single standalone' do
-      lambda { __LINE__ }.should.be having_source(%|proc { #{__LINE__} }|)
+      lambda { __LINE__ }.should.be having_source(%Q|
+        proc do
+          #{__LINE__ - 2}
+        end
+      |)
     end
 
     should 'handle multiple standalones' do
       lambda {
         [
-          __LINE__,
+          __LINE__, __LINE__,
           __LINE__
         ]
-      }.should.be having_source(%|proc { [#{__LINE__ - 3}, #{__LINE__ - 2}] }|)
+      }.should.be having_source(%Q|
+        proc do
+          [
+            #{__LINE__ - 6}, #{__LINE__ - 6},
+            #{__LINE__ - 6}
+          ]
+        end
+      |)
     end
 
     should 'handle single embedded' do
       lambda { "#{__LINE__}" }.should.be having_source(%|proc { "\#{#{__LINE__}}" }|)
+    end
+
+    should 'handle multiple embedded' do
+      lambda {
+        [
+          "#{__LINE__}", "#{__LINE__}",
+          "#{__LINE__}"
+        ]
+      }.should.be having_source(%Q|
+        proc do
+          [
+            "\#{#{__LINE__ - 6}}", "\#{#{__LINE__ - 6}}",
+            "\#{#{__LINE__ - 6}}"
+          ]
+        end
+      |)
     end
 
     should 'handle single embedded (heredoc)' do
@@ -58,25 +85,27 @@ EOL
         <<EOL
   #{__LINE__}
 EOL
-      }.should.be having_source(%|proc { "  \#{#{__LINE__ - 2}}\n" }|)
-    end
-
-    should 'handle multiple embedded' do
-      lambda {
-        [
-          "#{__LINE__}",
-          "#{__LINE__}"
-        ]
-      }.should.be having_source(%|proc { ["\#{#{__LINE__ - 3}}", "\#{#{__LINE__ - 2}}"] }|)
+      }.should.be having_source(%Q|
+        proc do
+          "  \#{#{__LINE__ - 4}}\n"
+        end
+      |)
     end
 
     should 'handle multiple embedded (heredoc)' do
       lambda {
         <<EOL
-  #{__LINE__}
+  #{__LINE__}, #{__LINE__},
   #{__LINE__}
 EOL
-      }.should.be having_source(%|proc { "  \#{#{__LINE__ - 3}}\n  \#{#{__LINE__ - 2}}\n" }|)
+      }.should.be having_source(%Q|
+        proc do
+          <<EOL
+  \#{#{__LINE__ - 6}}, \#{#{__LINE__ - 6}},
+  \#{#{__LINE__ - 6}}
+EOL
+        end
+      |)
     end
 
     should 'not handle non-embedded in string' do
