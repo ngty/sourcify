@@ -20,15 +20,16 @@ module ToSource
 
       def lex
         (@tokens = []).extend(Extensions)
+        @magic_lines = []
 
         while @tk = @lex.token
           tkc = @tk.class.to_s.sub(/\ARubyToken::/, '').downcase.to_sym
+          @tokens << [@tk.line_no, @tk.char_no, tkc]
           begin
-            @tokens << [@tk.line_no, @tk.char_no, tkc]
             send(:"on_#{tkc}")
-            puts '', 'ok %s (%s,%s)' % ["on_#{tkc}", @tk.line_no, @tk.char_no]
           rescue NoMethodError
-            puts '', 'missing %s (%s,%s)' % ["on_#{tkc}", @tk.line_no, @tk.char_no]
+            #:w
+            #puts '', 'missing %s' % tkc
           end
           @lex.get_readed if tkc == :tknl
         end
@@ -36,6 +37,10 @@ module ToSource
 
       def on_tknl
         raise EndOfLine unless @results.empty?
+      end
+
+      def on_tk__line__
+        @magic_lines << [@tk.seek, @tk.line_no + @line]
       end
 
       def on_tkdo
@@ -115,8 +120,41 @@ module ToSource
         @io.seek(@pos + diff)
         @lex.set_input(@io)
         @lex.get_readed
-        result
+        replace_magic_lines(result, marker)
       end
+
+      def replace_magic_lines(result, marker, offset = 0)
+        @magic_lines.inject(result) do |rs, (pos,val)|
+          puts '', rs, offset
+          puts rs[pos - offset - marker - 1].chr
+          m = rs.match(pattern = /^(.{#{pos - offset - marker}})__LINE__(.*)$/m)
+            p pattern, m
+          n_rs = m[1] + val.pred.to_s + m[2]
+          puts n_rs
+          offset = result.length - n_rs.length
+          n_rs
+        end
+      end
+#        result = 
+#        m = Regexp.new(
+#          pattern = "^%s(.*)$" % @magic_lines.inject('') do |memo, (pos,val)|
+#            if memo.empty?
+#              "^(.{#{pos - marker}})__LINE__"
+#            else
+#              "(.{#{pos - marker memo.size}})__LINE__"
+#            end
+#          end, Regexp::MULTILINE
+#        ).match(result)[1 .. -1] rescue []
+#
+#        p result
+#        p pattern
+#        p m
+#        p @magic_lines
+#        
+#        result = m.empty? ? result : m.zip(@magic_lines.map(&:last).map(&:pred)).flatten.join
+#         puts result
+#        result
+#      end
 
       # Ease working with the hybrid token set collected from RubyLex
       module Extensions
@@ -149,7 +187,6 @@ module ToSource
                 true
               elsif e[ROW] == line.pred && e[TYP] != :tknl
                 line -= 1
-                puts '', 'yup (%s)' % line
                 true
               end
             end.reverse
@@ -175,7 +212,7 @@ module ToSource
         end
 
         def within_block?
-          [:tLPAREN, :tLPAREN2].include?(same_as_curr_line.non_spaces[-1][TYP])
+          [:tlparen, :tlparen2].include?(same_as_curr_line.non_spaces[-1][TYP])
         end
 
       end
