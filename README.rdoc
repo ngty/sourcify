@@ -1,6 +1,143 @@
-= sourcify
+= Sourcify
 
-Description goes here.
+*ParseTree* is great, it accesses the runtime AST (abstract syntax tree) and makes it
+possible to convert any object to ruby code & S-expression, BUT ParseTree doesn't work
+for 1.9.* & JRuby.
+
+*RubyParser* is great, and it works for any rubies (of course, not 100% compatible for
+1.9.* syntax yet), BUT it works only with static code.
+
+I truely enjoy using the above tools, but with my other projects, the absence of ParseTree
+on the different rubies is forcing me to hand-baked my own solution each time to extract
+the proc code i need at runtime. This is frustrating, the solution for each of them is
+never perfect, and i'm reinventing the wheel each time just to address a particular
+pattern of usage (using regexp kungfu).
+
+Enough is enough, and now we have Sourcify, a unified solution to extract proc code.
+When ParseTree is available, it simply works as a wrapper round it, otherwise, it uses:
+
+* Ripper (part of the stdlib for 1.9.*), OR
+* RubyLex (under irb, which is part of the stdlib for any ruby)
+
+to extract the code, and does further processing with RubyParser & Ruby2Ruby to ensure
+100% compatbility with ParseTree (yup, there is no denying that i really like ParseTree).
+
+== Installing It
+
+The religiously standard way:
+
+  $ gem install ParseTree sourcify
+
+Or on 1.9.* or JRuby:
+
+  $ gem install ruby_parser file-tail sourcify
+
+== Using It
+
+Sourcify adds 3 methods to Proc:
+
+=== 1. Proc#to_source
+
+Returns the code representation of the proc:
+
+  require 'sourcify'
+
+  proc1 = lambda { x + y }
+  puts proc1.to_source # proc { (x + y) }
+
+  proc2 = proc { x + y }
+  puts proc2.to_source # proc { (x + y) }
+
+Like it or not, a lambda is represented as a proc when converted to source (exactly the
+same way as ParseTree).
+
+=== 2. Proc#to_sexp
+
+Returns the S-expression of the proc:
+
+  require 'sourcify'
+  require 'pp'
+
+  x = 1
+  pp lambda { x + y }.to_sexp
+  # >> s(:iter,
+  # >>  s(:call, nil, :proc, s(:arglist)),
+  # >>   nil,
+  # >>    s(:call, s(:lvar, :x), :+, s(:arglist, s(:call, nil, :y, s(:arglist)))))
+
+=== 3. Proc#source_location
+
+By default, this is only available on 1.9.*, it is added (as a bonus) to provide
+consistency under 1.8.*:
+
+  # /tmp/test.rb
+  require 'sourcify'
+  require 'pp'
+
+  pp lambda { x + y }.source_location
+  # >> ["/tmp/test.rb", 5]
+
+== Performance
+
+Performance is reasonable (but can always be improved on):
+
+  ruby                 user      system    total     real
+  1.8.7 (w ParseTree)  0.010000  0.000000  1.270000  1.273631
+  1.8.7 (w RubyLex)    0.000000  0.000000  1.640000  1.641778
+  1.9.1 (w Ripper)     0.000000  0.000000  1.070000  1.067248
+  JRuby (w RubyLex)    5.054000  0.000000  5.054000  5.055000
+
+It would be great if Ripper can be ported over to 1.8.* & JRuby (hint hint).
+
+== Gotchas
+
+Nothing beats ParseTree's ability to access the runtime AST, it is a very powerful feature.
+The lexer-based (static) implementations suffer the following gotchas:
+
+=== 1. The source code is everything
+
+Since static code analysis is involved, the subject code needs to physically exist within a
+file, meaning Proc#source_location must return the expected [file, lineno], the following
+will not work:
+
+  def test
+    eval('lambda { x + y }')
+  end
+
+  pp test.source_location
+  # >> ["(eval)", 1]
+
+  puts test.to_source
+  # >> `initialize': No such file or directory - (eval) (Errno::ENOENT)
+
+=== 2. Multiple matching procs per line error
+
+Sometimes, we may have multiple procs on a line, Sourcify can handle this as long as the
+subject proc has arity that is unique from others:
+
+  # Yup, this works as expected :)
+  b1 = lambda {|a| a+1 }; b2 = lambda { 1+2 }
+  puts b2.to_source
+  # >> proc { (1 + 2) }
+
+  # Nope, this won't work :(
+  b1 = lambda { 1+2 }; b2 = lambda { 2+3 }
+  b2.to_source
+  # >> raises Sourcify::MultipleMatchingProcsPerLineError
+
+Using Proc#arity is a pretty good way to uniquely identify the subject proc, since having
+too many procs per line is not a good practice as it reduces readability. However, the
+following bug under 1.8.* may trip u over:
+
+  lambda { }.arity         # 1.8.* (-1) / 1.9.* (0)  (?!)
+  lambda {|x| }.arity      # 1.8.* (1)  / 1.9.* (1)
+  lambda {|x,y| }.arity    # 1.8.* (2)  / 1.9.* (2)
+  lambda {|*x| }.arity     # 1.8.* (-1) / 1.9.* (-1)
+  lambda {|x, *y| }.arity  # 1.8.* (-2) / 1.9.* (-2)
+  lambda {|(x,y)| }.arity  # 1.8.* (1)  / 1.9.* (1)
+
+This is another reason to install ParseTree when u are on 1.8.*. On JRuby, where u don't
+have the choice, just avoid multiple procs here line.
 
 == Note on Patches/Pull Requests
  
