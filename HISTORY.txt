@@ -1,0 +1,4 @@
+=== 0.1.0 (Aug 28, 2010)
+
+* 1st gem release !! [#ngty]
+
