@@ -12,6 +12,8 @@ module Sourcify
         end
       end
 
+      alias_method :on_ignored_nl, :on_nl
+
       def on_kw(token)
         super.tap do |rs|
           send(:"on_kw_#{token}", rs) rescue NoMethodError
