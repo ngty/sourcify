@@ -1,4 +1,3 @@
-require 'file/tail'
 require 'sourcify/proc/lexer'
 require 'sourcify/proc/counter'
 
