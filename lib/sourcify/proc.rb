@@ -1,4 +1,7 @@
 module Sourcify
+
+  class MultipleMatchingProcsPerLineError < Exception ; end
+
   module Proc
 
     def self.included(base)

@@ -9,8 +9,6 @@ module Sourcify
       RUBY_PARSER = RubyParser.new
       RUBY_2_RUBY = Ruby2Ruby.new
 
-      class MultipleMatchingProcsPerLineError < Exception ; end
-
       def initialize(_proc)
         @binding, @arity = _proc.binding, _proc.arity
         @file, @line = _proc.source_location
