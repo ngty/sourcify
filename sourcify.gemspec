@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{sourcify}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["NgTzeYang"]
-  s.date = %q{2010-08-28}
+  s.date = %q{2010-08-30}
   s.description = %q{}
   s.email = %q{ngty77@gmail.com}
   s.extra_rdoc_files = [
@@ -33,6 +33,7 @@ Gem::Specification.new do |s|
      "lib/sourcify/proc/parser.rb",
      "sourcify.gemspec",
      "spec/proc/19x_extras.rb",
+     "spec/proc/misc_spec.rb",
      "spec/proc/readme",
      "spec/proc/to_sexp_variables_spec.rb",
      "spec/proc/to_source_from_braced_block_w_nested_braced_block_spec.rb",
@@ -85,6 +86,7 @@ Gem::Specification.new do |s|
      "spec/proc/to_source_variables_spec.rb",
      "spec/proc/to_sexp_variables_spec.rb",
      "spec/proc/to_source_magic_file_var_spec.rb",
+     "spec/proc/misc_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_if_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_for_spec.rb",
      "spec/spec_helper.rb"

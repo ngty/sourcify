@@ -1,3 +1,7 @@
+=== 0.1.1 (Aug 30, 2010)
+
+* fixed empty return for Proc#to_sexp after calling of Proc#to_source [#ngty]
+
 === 0.1.0 (Aug 28, 2010)
 
 * 1st gem release !! [#ngty]
