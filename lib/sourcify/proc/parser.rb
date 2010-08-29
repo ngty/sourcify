@@ -14,7 +14,7 @@ module Sourcify
       end
 
       def source
-        RUBY_2_RUBY.process(sexp)
+        RUBY_2_RUBY.process(Sexp.from_array(sexp.to_a))
       end
 
       def sexp
