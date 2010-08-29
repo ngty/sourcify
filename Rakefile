@@ -20,6 +20,7 @@ begin
     #
     # 2). RubyParser (supported for all)
     # >> gem.add_dependency "ruby_parser", ">= 2.0.4"
+    # >> gem.add_dependency "sexp_processor", ">= 3.0.4"
     # >> gem.add_dependency "file-tail", ">= 1.0.5"
   end
   Jeweler::GemcutterTasks.new

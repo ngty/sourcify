@@ -6,6 +6,7 @@ begin
   require 'parse_tree_extensions'
 rescue LoadError
   require 'ruby_parser'
+  require 'sexp_processor'
   require 'file/tail'
 end
 
