@@ -19,13 +19,12 @@ module Sourcify
           end
         end
 
-        # When ParseTree is available, we just make use of all the convenience it offers :)
         if Object.const_defined?(:ParseTree)
-
+          # When ParseTree is available, we just make use of all the convenience it offers :)
           alias_method :to_source, :to_ruby
 
-        # Otherwise, we are going to do abit of static text parsing :(
         else
+          # Otherwise, we are going to do abit of static text parsing :(
 
           unless meths.include?('to_source')
             def to_source
