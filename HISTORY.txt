@@ -1,3 +1,7 @@
+=== Current
+
+* fixed lexer bug in missing trailing chars after '=>' operator [#ngty]
+
 === 0.1.2 (Aug 30, 2010)
 
 * introduced throwing of Sourcify::LexerInternalError when parser cannot handle
