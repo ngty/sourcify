@@ -2,6 +2,8 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
 describe "Proc#to_source from do ... end block (w nested literal keyword)" do
 
+  # See http://redmine.ruby-lang.org/issues/show/3764
+
   should 'handle :class' do
     (
       lambda do
