@@ -38,11 +38,15 @@ module Sourcify
       end
 
       def on_tk__line__
-        @magic_lines << [@tk.seek, @tk.line_no + @line]
+        if @do_end_counter.started? or @braced_counter.started?
+          @magic_lines << [@tk.seek, @tk.line_no + @line]
+        end
       end
 
       def on_tkdstring
-        @qstring_data = [@tk.seek, @tk.line_no + @line]
+        if @do_end_counter.started? or @braced_counter.started?
+          @qstring_data = [@tk.seek, @tk.line_no + @line]
+        end
       end
 
       alias_method :on_tkstring, :on_tkdstring   # heredoc
@@ -50,9 +54,11 @@ module Sourcify
       alias_method :on_tkdxstring, :on_tkdstring # ` command
 
       def post_qstring
-        seek, line = @qstring_data
-        @magic_lines << [(seek .. @tk.seek), line]
-        @qstring_data = nil
+        if @do_end_counter.started? or @braced_counter.started?
+          seek, line = @qstring_data
+          @magic_lines << [(seek .. @tk.seek), line]
+          @qstring_data = nil
+        end
       end
 
       def on_tkdo
@@ -182,7 +188,11 @@ module Sourcify
         end
 
         def curr
-          (self[-1]).respond_to?(:symbolized_keyword?) ? self[-1] : (
+          # NOTE: This is more complicated than it can be due to bug
+          # http://redmine.ruby-lang.org/issues/show/3764
+          if size == 1 or self[-1].respond_to?(:symbolized_keyword?)
+            self[-1]
+          else
             preceding, current = self[-2 .. -1]
             (class << current ; self ; end).class_eval do
               define_method(:symbolized_keyword?) do
@@ -192,8 +202,7 @@ module Sourcify
               end
             end
             current
-          )
-          self[-1]
+          end
         end
 
         def same_line(line)
