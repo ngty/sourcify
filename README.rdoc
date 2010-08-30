@@ -145,6 +145,16 @@ Nothing is perfect, bugs are always lurking somewhere. When the parser encounter
 unexpected lexing error (which may be due to Ripper, RubyLex, or Sourcify's wrapper lexer),
 Sourcify::LexerInternalError is thrown.
 
+== Additional Resources
+
+Sourcify is heavily inspired by many ideas gathered from the ruby community:
+* http://www.justskins.com/forums/breaking-ruby-code-into-117453.html
+* http://rubyquiz.com/quiz38.html (Florian Groß's solution)
+* http://svenfuchs.com/2009/07/05/using-ruby-1-9-ripper.html
+
+The sad fact that Proc#to_source wouldn't be available in the near future:
+* http://redmine.ruby-lang.org/issues/show/2080
+
 == Note on Patches/Pull Requests
  
 * Fork the project.
