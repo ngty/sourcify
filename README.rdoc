@@ -139,6 +139,12 @@ following bug under 1.8.* may trip u over:
 This is another reason to install ParseTree when u are on 1.8.*. On JRuby, where u don't
 have the choice, just avoid multiple procs here line.
 
+=== 3. Imperfect lexer
+
+Nothing is perfect, bugs are always lurking somewhere. When the parser encounters
+unexpected lexing error (which may be due to Ripper, RubyLex, or Sourcify's wrapper lexer),
+Sourcify::LexerInternalError is thrown.
+
 == Note on Patches/Pull Requests
  
 * Fork the project.
