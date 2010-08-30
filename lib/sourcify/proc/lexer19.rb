@@ -2,7 +2,7 @@ require 'ripper'
 
 module Sourcify
   module Proc
-    class Lexer19 < Ripper::Lexer
+    class Lexer19 < Ripper::Lexer #:nodoc:all
 
       include Lexer::Commons
 

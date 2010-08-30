@@ -3,10 +3,9 @@ require 'irb/ruby-token'
 
 module Sourcify
   module Proc
+    class Lexer18 #:nodoc:all
 
-    class Lexer18
-
-      # Implementation of this class has been heavily inspired by:
+      # NOTE: Implementation of this class has been heavily inspired by:
       # * the discussion @ http://www.justskins.com/forums/breaking-ruby-code-into-117453.html
       # * Florian Groß's solution for ruby quiz 'SerializableProc (#38)'
       #   @ http://rubyquiz.com/quiz38.html

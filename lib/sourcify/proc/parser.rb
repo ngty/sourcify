@@ -3,7 +3,7 @@ require 'sourcify/proc/counter'
 
 module Sourcify
   module Proc
-    class Parser
+    class Parser #:nodoc:all
 
       RUBY_PARSER = RubyParser.new
       RUBY_2_RUBY = Ruby2Ruby.new

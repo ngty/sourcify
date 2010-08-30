@@ -1,6 +1,6 @@
 module Sourcify
   module Proc
-    module Lexer
+    module Lexer #:nodoc:all
 
       class << self
         def new(*args)

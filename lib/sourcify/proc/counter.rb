@@ -1,6 +1,6 @@
 module Sourcify
   module Proc
-    class Counter
+    class Counter #:nodoc:all
 
       attr_accessor :marker
 
