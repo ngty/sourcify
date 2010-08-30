@@ -6,8 +6,10 @@ module Sourcify
 
     class Lexer18
 
-      # Implementation of this class has been inspired by the discussion at
-      # http://www.justskins.com/forums/breaking-ruby-code-into-117453.html
+      # Implementation of this class has been heavily inspired by:
+      # * the discussion @ http://www.justskins.com/forums/breaking-ruby-code-into-117453.html
+      # * Florian Groß's solution for ruby quiz 'SerializableProc (#38)'
+      #   @ http://rubyquiz.com/quiz38.html
 
       include Lexer::Commons
 
