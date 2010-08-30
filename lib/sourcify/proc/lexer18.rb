@@ -26,8 +26,9 @@ module Sourcify
           tkc = @tk.class.to_s.sub(/\ARubyToken::/, '').downcase.to_sym
           @tokens << [@tk.line_no, @tk.char_no, tkc]
           post_qstring if @qstring_data
-          send(:"on_#{tkc}") rescue NoMethodError
           @lex.get_readed if tkc == :tknl
+          next if @do_end_counter.started? && @tokens.curr.symbolized_keyword?
+          send(:"on_#{tkc}") rescue NoMethodError
         end
       end
 
@@ -180,6 +181,17 @@ module Sourcify
         end
 
         def curr
+          (self[-1]).respond_to?(:symbolized_keyword?) ? self[-1] : (
+            preceding, current = self[-2 .. -1]
+            (class << current ; self ; end).class_eval do
+              define_method(:symbolized_keyword?) do
+                preceding[TYP] == :tksymbeg && %w{
+                  class module def while until if unless for do begin case end
+                }.include?(current[TYP].to_s.sub('tk',''))
+              end
+            end
+            current
+          )
           self[-1]
         end
 
