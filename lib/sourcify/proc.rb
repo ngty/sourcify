@@ -1,6 +1,7 @@
 module Sourcify
 
   class MultipleMatchingProcsPerLineError < Exception ; end
+  class LexerInternalError < Exception ; end
 
   module Proc
 

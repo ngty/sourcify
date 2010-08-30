@@ -27,12 +27,22 @@ module Sourcify
       private
 
         def raw_source
-          @raw_source ||= (
-            frags = Sourcify::Proc::Lexer.new(raw_source_io, @file, @line).work.
-              select{|frag| eval('proc ' + frag).arity == @arity }
-            raise MultipleMatchingProcsPerLineError if frags.size > 1
-            'proc %s' % frags[0]
-          )
+          @raw_source ||=
+            if (frags = raw_source_frags).size > 1
+              raise MultipleMatchingProcsPerLineError
+            else
+              'proc %s' % frags[0]
+            end
+        end
+
+        def raw_source_frags
+          Sourcify::Proc::Lexer.new(raw_source_io, @file, @line).work.select do |frag|
+            begin
+              eval('proc ' + frag).arity == @arity
+            rescue SyntaxError, TypeError
+              raise LexerInternalError
+            end
+          end
         end
 
         def raw_source_io

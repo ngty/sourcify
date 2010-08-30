@@ -16,6 +16,7 @@ module Sourcify
 
       def on_kw(token)
         super.tap do |rs|
+          next if @do_end_counter.started? && rs.curr.symbolized_keyword?
           send(:"on_kw_#{token}", rs) rescue NoMethodError
         end
       end
@@ -125,7 +126,15 @@ module Sourcify
         end
 
         def curr
-          self[-1]
+          (self[-1]).respond_to?(:symbolized_keyword?) ? self[-1] : (
+            preceding, current = self[-2 .. -1]
+            (class << current ; self ; end).class_eval do
+              define_method(:symbolized_keyword?) do
+                current[TYP] == :on_kw && preceding[TYP] == :on_symbeg
+              end
+            end
+            current
+          )
         end
 
         def same_line(line)
