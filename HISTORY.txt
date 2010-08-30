@@ -1,3 +1,9 @@
+=== 0.1.2 (Aug 30, 2010)
+
+* introduced throwing of Sourcify::LexerInternalError when parser cannot handle
+  incorrectly lexed code fragments [#ngty]
+* fixed bug in lexing keyword literals (represented as Symbol) [#ngty]
+
 === 0.1.1 (Aug 30, 2010)
 
 * fixed empty return for Proc#to_sexp after calling of Proc#to_source [#ngty]

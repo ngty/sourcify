@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{sourcify}
-  s.version = "0.1.1"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["NgTzeYang"]
@@ -45,6 +45,7 @@ Gem::Specification.new do |s|
      "spec/proc/to_source_from_do_end_block_w_nested_do_end_block_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_for_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_if_spec.rb",
+     "spec/proc/to_source_from_do_end_block_w_nested_literal_keyword_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_method_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_module_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_unless_spec.rb",
@@ -79,6 +80,7 @@ Gem::Specification.new do |s|
      "spec/proc/to_source_from_do_end_block_w_nested_class_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_case_spec.rb",
      "spec/proc/to_source_magic_line_var_spec.rb",
+     "spec/proc/to_source_from_do_end_block_w_nested_literal_keyword_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_unless_spec.rb",
      "spec/proc/19x_extras.rb",
      "spec/proc/to_source_from_braced_block_w_nested_braced_block_spec.rb",
