@@ -1,5 +1,4 @@
-require 'sourcify/proc/lexer'
-require 'sourcify/proc/counter'
+require 'sourcify/proc/scanner'
 
 module Sourcify
   module Proc
@@ -31,30 +30,15 @@ module Sourcify
             if (frags = raw_source_frags).size > 1
               raise MultipleMatchingProcsPerLineError
             else
-              'proc %s' % frags[0]
+              # Cheapo hack to ensure __LINE__ is correctly represented !!
+              ("\n" * @line.pred) + frags[0]
             end
         end
 
         def raw_source_frags
-          # NOTE: Retrying is needed because of the bug at
-          # http://redmine.ruby-lang.org/issues/show/3765, and because i have yet
-          # to find a foolproof one-time solution that doesn't require retrying
-          retried = false
-          begin
-            Sourcify::Proc::Lexer.new(raw_source_io(retried), @file, @line).
-              work.select{|frag| eval('proc ' + frag).arity == @arity }
-          rescue SyntaxError, TypeError, NoMethodError
-            retried ? raise(LexerInternalError) : (retried = true; retry)
-          end
-        end
-
-        def raw_source_io(retrying)
-          File.open(@file, 'r') do |fh|
-            fh.extend(File::Tail).forward(@line.pred)
-            lines = fh.readlines
-            lines[0].sub!(%r{^.*?((?:do|\{).*)$}m,'\1') if retrying
-            StringIO.new(lines.join, 'r')
-          end
+          Scanner.process(
+            Parsable.open(@file, 'r'){|fh| fh.forward(@line.pred).readlines.join }
+          ).select{|code| eval(code).arity == @arity }
         end
 
         def replace_with_lvars(array)
@@ -82,6 +66,10 @@ module Sourcify
         def has_as_local_var?(var)
           qvar = (@q ||= (RUBY_VERSION.include?('1.9.') ? ":%s" : "'%s'")) % var
           @binding.eval("local_variables.include?(#{qvar})")
+        end
+
+        class Parsable < File
+          include File::Tail
         end
 
     end
