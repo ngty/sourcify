@@ -7,24 +7,33 @@ describe 'Single quote strings (\', %q & %w)' do
   ).each do |q1,q2|
     %w{q w}.each do |t|
 
-      should "handle '%#{t}#{q1}...#{q2}' (wo escape (single))" do
+      should "handle %#{t}#{q1}...#{q2} (wo escape (single))" do
         process(" xx %#{t}#{q1}hello#{q2} ").should.include([:sstring, "%#{t}#{q1}hello#{q2}"])
       end
 
-      should "handle '%#{t}#{q1}...#{q2}' (wo escape (multiple))" do
+      should "handle %#{t}#{q1}...#{q2} (wo escape (multiple))" do
         tokens = process(" xx %#{t}#{q1}hello#{q2} %#{t}#{q1}world#{q2} ")
         tokens.should.include([:sstring, "%#{t}#{q1}hello#{q2}"])
         tokens.should.include([:sstring, "%#{t}#{q1}world#{q2}"])
       end
 
-      should "handle '%#{t}#{q1}...#{q2}' (w escape (single))" do
+      should "handle %#{t}#{q1}...#{q2} (w escape (single))" do
         process(" xx %#{t}#{q1}hel\\#{q2}lo#{q2} ").should.
           include([:sstring, "%#{t}#{q1}hel\\#{q2}lo#{q2}"])
       end
 
-      should "handle '%#{t}#{q1}...#{q2}' (w escape (multiple))" do
+      should "handle %#{t}#{q1}...#{q2} (w escape (multiple))" do
         process(" xx %#{t}#{q1}h\\#{q2}el\\#{q2}lo#{q2} ").should.
           include([:sstring, "%#{t}#{q1}h\\#{q2}el\\#{q2}lo#{q2}"])
+      end
+
+      # NOTE: We are skipping '\\' cos %q\\\\ is always raise SyntaxError no matter
+      # how many backslashes we add
+      unless q1 == '\\'
+        should "handle %#{t}#{q1}\\\\#{q2}" do
+          process(" xx %#{t}#{q1}\\\\#{q2} %#{t}#{q2}lo#{q2} ").should.
+            include([:sstring, "%#{t}#{q1}\\\\#{q2}"])
+        end
       end
 
     end
@@ -46,6 +55,14 @@ describe 'Single quote strings (\', %q & %w)' do
 
   should "handle '...' (w escape (multiple))" do
     process(" xx 'h\\'el\\'lo' ").should.include([:sstring, "'h\\'el\\'lo'"])
+  end
+
+  should "handle '\\\\'" do
+    process(%q(
+      aa '\\\\' 
+      cc
+      'dd'
+    )).should.include([:sstring, "'\\\\'"])
   end
 
 end
