@@ -1,17 +1,4 @@
-curr_dir = File.dirname(File.expand_path(__FILE__))
-require File.join(curr_dir, '..', 'spec_helper')
-
-ragel_dir = File.join(curr_dir, '..', '..', 'lib', 'sourcify', 'proc')
-ragel_file = File.join(ragel_dir, 'scanner.rl')
-ruby_file = File.join(ragel_dir, 'scanner.rb')
-File.delete(ruby_file) rescue nil
-system("ragel -R #{ragel_file}")
-
-begin
-  require File.join(ragel_dir, 'scanner.rb')
-rescue LoadError
-  raise $!
-end
+require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
 module Sourcify::Proc::Scanner
   class << self ; attr_reader :tokens ; end

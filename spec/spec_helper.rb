@@ -6,6 +6,18 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'sourcify'
 
+ragel_dir = File.join(File.dirname(__FILE__), '..', 'lib', 'sourcify', 'proc')
+ragel_file = File.join(ragel_dir, 'scanner.rl')
+ruby_file = File.join(ragel_dir, 'scanner.rb')
+File.delete(ruby_file) rescue nil
+system("ragel -R #{ragel_file}")
+
+begin
+  require File.join(ragel_dir, 'scanner.rb')
+rescue LoadError
+  raise $!
+end
+
 Bacon.summary_on_exit
 
 def watever(*args, &block)

@@ -1,5 +1,5 @@
 
-# line 1 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 1 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 require 'sourcify/proc/scanner/extensions'
 
 module Sourcify
@@ -7,10 +7,10 @@ module Sourcify
     module Scanner #:nodoc:all
 
 
-# line 276 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 276 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 
 
-# line 2 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rb"
+# line 2 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rb"
 class << self
 	attr_accessor :_proc_scanner_actions
 	private :_proc_scanner_actions, :_proc_scanner_actions=
@@ -838,7 +838,7 @@ end
 self.proc_scanner_en_main = 189;
 
 
-# line 278 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 278 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 
       extend Scanner::Extensions
 
@@ -846,7 +846,7 @@ self.proc_scanner_en_main = 189;
         data = @data
         eof = data.length
         
-# line 2 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rb"
+# line 2 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -856,9 +856,9 @@ begin
 	act = 0
 end
 
-# line 285 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 285 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
         
-# line 2 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rb"
+# line 2 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -892,7 +892,7 @@ begin
 		begin
 ts = p
 		end
-# line 2 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rb"
+# line 2 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rb"
 		end # from state action switch
 	end
 	if _trigger_goto
@@ -964,7 +964,7 @@ when 3 then
 te = p+1
 		end
 when 4 then
-# line 42 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 42 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p+1
  begin 
@@ -980,7 +980,7 @@ te = p+1
      end
 		end
 when 5 then
-# line 51 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 51 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p+1
  begin 
@@ -996,7 +996,7 @@ te = p+1
      end
 		end
 when 6 then
-# line 58 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 58 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p+1
  begin  p = p - 1; 	begin
@@ -1008,7 +1008,7 @@ te = p+1
   end
 		end
 when 7 then
-# line 51 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 51 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p
 p = p - 1; begin 
@@ -1024,13 +1024,13 @@ p = p - 1; begin
      end
 		end
 when 8 then
-# line 57 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 57 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p
 p = p - 1; begin  push(:space, ts, te)  end
 		end
 when 9 then
-# line 58 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 58 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p
 p = p - 1; begin  p = p - 1; 	begin
@@ -1042,7 +1042,7 @@ p = p - 1; begin  p = p - 1; 	begin
   end
 		end
 when 10 then
-# line 51 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 51 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
  begin p = ((te))-1; end
  begin 
@@ -1058,7 +1058,7 @@ when 10 then
      end
 		end
 when 11 then
-# line 58 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 58 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
  begin p = ((te))-1; end
  begin  p = p - 1; 	begin
@@ -1070,7 +1070,7 @@ when 11 then
   end
 		end
 when 12 then
-# line 64 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 64 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 act = 5;		end
 when 13 then
@@ -1100,11 +1100,11 @@ end
 end 
 			end
 when 14 then
-# line 72 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 72 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 act = 6;		end
 when 15 then
-# line 72 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 72 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p
 p = p - 1; begin 
@@ -1147,7 +1147,7 @@ end
 end 
 			end
 when 17 then
-# line 81 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 81 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p
 p = p - 1; begin 
@@ -1163,7 +1163,7 @@ p = p - 1; begin
      end
 		end
 when 18 then
-# line 91 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 91 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p+1
  begin 
@@ -1179,35 +1179,35 @@ te = p+1
      end
 		end
 when 19 then
-# line 103 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 103 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 act = 9;		end
 when 20 then
-# line 109 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 109 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 act = 10;		end
 when 21 then
-# line 154 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 154 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 act = 18;		end
 when 22 then
-# line 173 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 173 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 act = 21;		end
 when 23 then
-# line 177 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 177 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 act = 25;		end
 when 24 then
-# line 225 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 225 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 act = 27;		end
 when 25 then
-# line 268 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 268 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 act = 28;		end
 when 26 then
-# line 116 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 116 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p+1
  begin 
@@ -1216,7 +1216,7 @@ te = p+1
      end
 		end
 when 27 then
-# line 121 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 121 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p+1
  begin 
@@ -1225,7 +1225,7 @@ te = p+1
      end
 		end
 when 28 then
-# line 126 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 126 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p+1
  begin 
@@ -1234,7 +1234,7 @@ te = p+1
      end
 		end
 when 29 then
-# line 131 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 131 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p+1
  begin 
@@ -1243,7 +1243,7 @@ te = p+1
      end
 		end
 when 30 then
-# line 144 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 144 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p+1
  begin 
@@ -1258,7 +1258,7 @@ te = p+1
      end
 		end
 when 31 then
-# line 149 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 149 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p+1
  begin 
@@ -1273,7 +1273,7 @@ te = p+1
      end
 		end
 when 32 then
-# line 161 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 161 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p+1
  begin 
@@ -1287,7 +1287,7 @@ te = p+1
      end
 		end
 when 33 then
-# line 165 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 165 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p+1
  begin 
@@ -1303,13 +1303,13 @@ te = p+1
      end
 		end
 when 34 then
-# line 177 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 177 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p+1
  begin  push(:any, ts, te)  end
 		end
 when 35 then
-# line 181 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 181 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p+1
  begin 
@@ -1325,7 +1325,7 @@ te = p+1
      end
 		end
 when 36 then
-# line 225 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 225 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p+1
  begin 
@@ -1333,7 +1333,7 @@ te = p+1
      end
 		end
 when 37 then
-# line 268 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 268 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p+1
  begin 
@@ -1349,7 +1349,7 @@ te = p+1
      end
 		end
 when 38 then
-# line 138 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 138 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p
 p = p - 1; begin 
@@ -1365,37 +1365,37 @@ p = p - 1; begin
      end
 		end
 when 39 then
-# line 173 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 173 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p
 p = p - 1; begin  push(:var, ts, te)  end
 		end
 when 40 then
-# line 174 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 174 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p
 p = p - 1; begin  push(:const, ts, te)  end
 		end
 when 41 then
-# line 175 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 175 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p
 p = p - 1; begin  push(:symbol, ts, te)  end
 		end
 when 42 then
-# line 176 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 176 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p
 p = p - 1; begin  push(:space, ts, te)  end
 		end
 when 43 then
-# line 177 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 177 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p
 p = p - 1; begin  push(:any, ts, te)  end
 		end
 when 44 then
-# line 225 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 225 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p
 p = p - 1; begin 
@@ -1403,7 +1403,7 @@ p = p - 1; begin
      end
 		end
 when 45 then
-# line 268 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 268 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
 te = p
 p = p - 1; begin 
@@ -1419,7 +1419,7 @@ p = p - 1; begin
      end
 		end
 when 46 then
-# line 138 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 138 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
  begin p = ((te))-1; end
  begin 
@@ -1435,13 +1435,13 @@ when 46 then
      end
 		end
 when 47 then
-# line 177 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 177 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
  begin p = ((te))-1; end
  begin  push(:any, ts, te)  end
 		end
 when 48 then
-# line 225 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 225 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
 		begin
  begin p = ((te))-1; end
  begin 
@@ -1509,7 +1509,7 @@ when 49 then
     end
 end 
 			end
-# line 2 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rb"
+# line 2 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rb"
 			end # action switch
 		end
 	end
@@ -1534,7 +1534,7 @@ when 1 then
 		begin
 act = 0
 		end
-# line 2 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rb"
+# line 2 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rb"
 		end # to state action switch
 	end
 	if _trigger_goto
@@ -1565,7 +1565,7 @@ end
 	end
 	end
 
-# line 286 "/home/ty.archlinux/dev/ty/sourcify/spec/proc_scanner/../../lib/sourcify/proc/scanner.rl"
+# line 286 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
       end
 
     end
