@@ -26,9 +26,11 @@ describe "Misc" do
     }.values.last.should.be having_source('proc { :test }')
   end
 
-  should "raise Sourcify::CannotParseEvalCodeError when proc is created from eval" do
-    lambda { eval("proc {:test }").to_source }.should.
-      raise(Sourcify::CannotParseEvalCodeError)
+  unless Object.const_defined?(:ParseTree)
+    should "raise Sourcify::CannotParseEvalCodeError when proc is created from eval" do
+      lambda { eval("proc {:test }").to_source }.should.
+        raise(Sourcify::CannotParseEvalCodeError)
+    end
   end
 
 end
