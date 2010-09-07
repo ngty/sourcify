@@ -25,6 +25,7 @@ module Sourcify
   var     = (lower | '_') . (alnum | '_')*;
   symbol  = ':' . (var | const);
   assoc   = '=>';
+  assgn   = '=';
   label   = (var | const) . ':';
 
   lparen  = '(';
@@ -148,6 +149,11 @@ module Sourcify
 
     lparen => {
       push(:lparen, ts, te)
+      fgoto new_statement;
+    };
+
+    assgn => {
+      push(:assgn, ts, te)
       fgoto new_statement;
     };
 

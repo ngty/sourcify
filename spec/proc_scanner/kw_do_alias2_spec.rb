@@ -25,10 +25,27 @@ EOL
     should "increment counter with ... \\n #{kw} ..." do
       do_end_counter(<<EOL
 aa
-                     #{kw} bb ...
+ #{kw} bb ...
 cc
 EOL
                     ).should.equal([0,1])
+    end
+
+    should "increment counter with ... \\n \t #{kw} ..." do
+      do_end_counter(<<EOL
+aa
+ \t #{kw} bb ...
+cc
+EOL
+                    ).should.equal([0,1])
+    end
+
+    should "increment counter with ... = #{kw} ..." do
+    do_end_counter(<<EOL
+aa = #{kw} bb ...
+cc
+EOL
+                  ).should.equal([0,1])
     end
 
     should "increment counter with ... do #{kw} ..." do
