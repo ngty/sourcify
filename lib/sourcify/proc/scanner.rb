@@ -1,6 +1,6 @@
 
 # line 1 "/home/ty.archlinux/dev/ty/sourcify/spec/../lib/sourcify/proc/scanner.rl"
-require 'sourcify/proc/scanner/extensions'
+Sourcify.require_rb('proc', 'scanner', 'extensions')
 
 module Sourcify
   module Proc

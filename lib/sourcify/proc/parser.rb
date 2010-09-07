@@ -1,4 +1,4 @@
-require 'sourcify/proc/scanner'
+Sourcify.require_rb('proc', 'scanner')
 
 module Sourcify
   module Proc

@@ -1,7 +1,6 @@
-require 'sourcify/proc/scanner/heredoc'
-require 'sourcify/proc/scanner/comment'
-require 'sourcify/proc/scanner/dstring'
-require 'sourcify/proc/scanner/counter'
+%w{heredoc comment dstring counter}.each do |f|
+  Sourcify.require_rb('proc', 'scanner', f)
+end
 
 module Sourcify
   module Proc
