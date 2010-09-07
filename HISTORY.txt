@@ -1,6 +1,9 @@
 === Current
 
 * fixed lexer bug in missing trailing chars after '=>' operator [#ngty]
+* use home-baked ragel-based scanner for scanning for proc code [#ngty]
+* renamed Sourcify::LexerInternalError to Sourcify::ParserInternalError since
+  we are not using any lexer anymore [#ngty]
 
 === 0.1.2 (Aug 30, 2010)
 
