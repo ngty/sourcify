@@ -1,7 +1,7 @@
 require File.join(File.dirname(File.expand_path(__FILE__)), '..', 'lib', 'sourcify')
 require 'pp'
 
-def dump_procs(debug = false)
+def dump_object_space_procs(debug = false)
   puts ''
   errors = []
 
@@ -11,7 +11,7 @@ def dump_procs(debug = false)
     RUBY_VERSION,
     Object.const_defined?(:ParseTree) ? 'parsetree' : nil
   ].compact.join('~')
-  dump_dir = File.join(File.dirname(File.expand_path(__FILE__)), name)
+  dump_dir = File.join(File.dirname(File.expand_path(__FILE__)), '..', 'tmp', name)
   Dir.mkdir(dump_dir) unless File.exists?(dump_dir)
 
   # Core processing
@@ -24,6 +24,7 @@ def dump_procs(debug = false)
 
       File.open(nfile,'w') do |f|
         objs.sort_by{|o| o.source_location[1] }.map do |o|
+          # puts '','processing line = %s' % o.source_location.last
           data =
             begin
               {
@@ -31,10 +32,10 @@ def dump_procs(debug = false)
                 :sexp => o.to_sexp,
                 :source => o.to_source
               }
-            rescue
+            rescue Exception
               errors << {
                 :location => o.source_location,
-                :error => "SourcifyErr: #{$!.to_s}"
+                :error => $!.to_s
               }
               errors.last
             end
@@ -47,9 +48,11 @@ def dump_procs(debug = false)
   puts '',''
   unless errors.empty?
     puts '== OOPS, we have some erorrs :('
-    pp errors
+    errors.each_with_index{|e, i| print "#{i}). "; pp e }
   else
     puts '== YEAH, no errors :)'
   end
   puts '',''
 end
+
+dump_object_space_procs
