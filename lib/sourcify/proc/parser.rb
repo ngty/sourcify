@@ -36,9 +36,13 @@ module Sourcify
         end
 
         def raw_source_frags
-          Scanner.process(
-            Parsable.open(@file, 'r'){|fh| fh.forward(@line.pred).readlines.join }
-          ).select{|code| eval(code).arity == @arity }
+          begin
+            Scanner.process(
+              Parsable.open(@file, 'r'){|fh| fh.forward(@line.pred).readlines.join }
+            ).select{|code| eval(code).arity == @arity }
+          rescue SyntaxError, TypeError, NoMethodError
+            raise ParserInternalError
+          end
         end
 
         def replace_with_lvars(array)
