@@ -22,4 +22,4 @@ module Sourcify
 
 end
 
-require 'sourcify/proc'
+Sourcify.require_rb('proc')
