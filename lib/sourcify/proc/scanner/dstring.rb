@@ -14,7 +14,7 @@ module Sourcify
         def closed?
           begin
             instance_eval(safe_contents) if evaluable?
-          rescue SyntaxError
+          rescue Exception
             false
           end
         end
