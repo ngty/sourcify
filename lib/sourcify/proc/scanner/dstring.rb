@@ -12,10 +12,15 @@ module Sourcify
         end
 
         def closed?
+          # NOTE: The only real error is SyntaxError, other errors are due
+          # to undefined variable or watever, which are perfectly ok when
+          # testing for validity of the string.
           begin
             instance_eval(safe_contents) if evaluable?
-          rescue Exception
+          rescue SyntaxError
             false
+          rescue Exception
+            true
           end
         end
 
