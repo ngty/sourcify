@@ -10,6 +10,7 @@ module Sourcify
       def initialize(_proc)
         @binding, @arity = _proc.binding, _proc.arity
         @file, @line = _proc.source_location
+        raise CannotParseEvalCodeError if @file == '(eval)'
       end
 
       def source
@@ -40,7 +41,7 @@ module Sourcify
             Scanner.process(
               Parsable.open(@file, 'r'){|fh| fh.forward(@line.pred).readlines.join }
             ).select{|code| eval(code).arity == @arity }
-          rescue SyntaxError, TypeError, NoMethodError
+          rescue Exception
             raise ParserInternalError
           end
         end

@@ -101,11 +101,11 @@ module Sourcify
         def construct_result_code
           begin
             code = 'proc ' + @tokens.map(&:last).join
-            eval(code) # TODO: is there a better way to check for SyntaxError ?
+            eval(code) # TODO: any better way to check for completeness of proc code ??
             @results << code
             raise Escape unless @lineno == 1
             reset_attributes
-          rescue SyntaxError
+          rescue Exception
           end
         end
 

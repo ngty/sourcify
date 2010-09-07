@@ -2,6 +2,7 @@ module Sourcify
 
   class MultipleMatchingProcsPerLineError < Exception ; end
   class ParserInternalError < Exception ; end
+  class CannotParseEvalCodeError < Exception ; end
 
   module Proc
 
