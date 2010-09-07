@@ -26,6 +26,7 @@ module Sourcify
   symbol  = ':' . (var | const);
   assoc   = '=>';
   assgn   = '=';
+  comma   = ',';
   label   = (var | const) . ':';
 
   lparen  = '(';
@@ -142,23 +143,8 @@ module Sourcify
       fgoto new_statement;
     };
 
-    smcolon => {
-      push(:smcolon, ts, te)
-      fgoto new_statement;
-    };
-
-    lparen => {
-      push(:lparen, ts, te)
-      fgoto new_statement;
-    };
-
-    assgn => {
-      push(:assgn, ts, te)
-      fgoto new_statement;
-    };
-
-    kw_then => {
-      push(:kw_then, ts, te)
+    smcolon | lparen | assgn | kw_then | comma => {
+      push(:newline_alias, ts, te)
       fgoto new_statement;
     };
 

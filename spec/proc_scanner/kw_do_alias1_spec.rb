@@ -40,6 +40,14 @@ EOL
              ).should.equal([1,1])
     end
 
+    should "increment counter with ... , #{kw} ..." do
+      do_end_counter(<<EOL
+aa , #{kw} bb ...
+cc
+EOL
+             ).should.equal([1,1])
+    end
+
     should "increment counter with ... = #{kw} ..." do
       do_end_counter(<<EOL
 aa = #{kw} bb ...
