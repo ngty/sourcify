@@ -10,7 +10,10 @@ module Sourcify
       def initialize(_proc)
         @binding, @arity = _proc.binding, _proc.arity
         @source_code = SourceCode.new(*_proc.source_location)
-        raise CannotParseEvalCodeError if @source_code.file == '(eval)'
+        case @source_code.file
+        when /\(eval\)/ then raise CannotParseEvalCodeError
+        when /\(irb\)/ then raise CannotParseIrbCodeError
+        end
       end
 
       def source
