@@ -24,7 +24,6 @@ def dump_object_space_procs(debug = false)
 
       File.open(nfile,'w') do |f|
         objs.sort_by{|o| o.source_location[1] }.map do |o|
-          # puts '','processing line = %s' % o.source_location.last
           data =
             begin
               {
