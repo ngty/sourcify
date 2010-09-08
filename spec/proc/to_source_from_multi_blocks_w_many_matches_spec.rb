@@ -32,40 +32,116 @@ describe 'Proc#to_source from multi blocks w many matches' do
 
   else
 
-    # Need this line since the parser file is dynamically required, otherwise we will get
-    # undefined constant error
-    require 'sourcify/proc/parser'
+    describe 'wo nesting on same line' do
 
-    should 'raise Sourcify::MultipleMatchingProcsPerLineError (all do...end blocks)' do
-      lambda {
-        (
-          b1 = lambda do |a| @x1 end; b2 = lambda do @x1 end; b3 = lambda do @x1 end ; b2
-        ).to_source
-      }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
+      should 'raise Sourcify::MultipleMatchingProcsPerLineError (all do...end blocks)' do
+        lambda {
+          (
+            b1 = lambda do |a| @x1 end; b2 = lambda do @x1 end; b3 = lambda do @x1 end ; b2
+          ).to_source
+        }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
+      end
+
+      should 'raise Sourcify::MultipleMatchingProcsPerLineError (all {...} blocks)' do
+        lambda {
+          (
+            b1 = lambda {|a| @x2 }; b2 = lambda { @x2 }; b3 = lambda { @x2 } ; b2
+          ).to_source
+        }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
+      end
+
+      should 'raise Sourcify::MultipleMatchingProcsPerLineError (mixed {...} w do...end blocks)' do
+        lambda {
+          (
+            b1 = lambda {|a| @x3 }; b2 = lambda do @x3 end; b3 = lambda { @x4 } ; b2
+          ).to_source
+        }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
+      end
+
+      should 'raise Sourcify::MultipleMatchingProcsPerLineError (mixed do...end w {...} blocks)' do
+        lambda {
+          (
+            b1 = lambda do |a| @x4 end; b2 = lambda { @x4 }; b3 = lambda do @x4 end ; b2
+          ).to_source
+        }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
+      end
+
     end
 
-    should 'raise Sourcify::MultipleMatchingProcsPerLineError (all {...} blocks)' do
-      lambda {
-        (
-          b1 = lambda {|a| @x2 }; b2 = lambda { @x2 }; b3 = lambda { @x2 } ; b2
-        ).to_source
-      }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
+    describe 'w single level nesting on same line' do
+
+      should 'raise Sourcify::MultipleMatchingProcsPerLineError (all do...end blocks)' do
+        lambda {
+          (
+            b1 = lambda do |a| @x1 end; b2 = lambda do lambda do @x1 end end; b2
+          ).to_source
+        }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
+      end
+
+      should 'raise Sourcify::MultipleMatchingProcsPerLineError (all {...} blocks)' do
+        lambda {
+          (
+            b1 = lambda {|a| @x2 }; b2 = lambda { lambda { @x2 } }; b2
+          ).to_source
+        }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
+      end
+
+      should 'raise Sourcify::MultipleMatchingProcsPerLineError (mixed {...} w do...end blocks)' do
+        lambda {
+          (
+            b1 = lambda {|a| @x3 }; b2 = lambda do lambda { @x4 } end; b2
+          ).to_source
+        }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
+      end
+
+      should 'raise Sourcify::MultipleMatchingProcsPerLineError (mixed do...end w {...} blocks)' do
+        lambda {
+          (
+            b1 = lambda do |a| @x4 end; b2 = lambda { lambda do @x4 end }; b2
+          ).to_source
+        }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
+      end
+
     end
 
-    should 'raise Sourcify::MultipleMatchingProcsPerLineError (mixed {...} w do...end blocks)' do
-      lambda {
-        (
-          b1 = lambda {|a| @x3 }; b2 = lambda do @x3 end; b3 = lambda { @x4 } ; b2
-        ).to_source
-      }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
-    end
+    describe 'w multi level nesting on same line' do
 
-    should 'raise Sourcify::MultipleMatchingProcsPerLineError (mixed do...end w {...} blocks)' do
-      lambda {
-        (
-          b1 = lambda do |a| @x4 end; b2 = lambda { @x4 }; b3 = lambda do @x4 end ; b2
-        ).to_source
-      }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
+      should 'raise Sourcify::MultipleMatchingProcsPerLineError (all do...end blocks)' do
+        lambda {
+          (
+            b1 = lambda do |a| lambda do lambda do @x1 end end end
+            b2 = b1.call(1)
+          ).to_source
+        }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
+      end
+
+      should 'raise Sourcify::MultipleMatchingProcsPerLineError (all {...} blocks)' do
+        lambda {
+          (
+            b1 = lambda {|a| lambda { lambda { @x2 } } }
+            b2 = b1.call(1)
+          ).to_source
+        }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
+      end
+
+      should 'raise Sourcify::MultipleMatchingProcsPerLineError (mixed {...} w do...end blocks)' do
+        lambda {
+          (
+            b1 = lambda {|a| lambda do lambda { @x4 } end }
+            b2 = b1.call(1)
+          ).to_source
+        }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
+      end
+
+      should 'raise Sourcify::MultipleMatchingProcsPerLineError (mixed do...end w {...} blocks)' do
+        lambda {
+          (
+            b1 = lambda do |a| lambda { lambda do @x4 end } end
+            b2 = b1.call(1)
+          ).to_source
+        }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
+      end
+
     end
 
   end

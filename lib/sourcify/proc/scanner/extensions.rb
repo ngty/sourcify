@@ -9,8 +9,9 @@ module Sourcify
 
         class Escape < Exception; end
 
-        def process(data)
+        def process(data, stop_on_newline = false)
           begin
+            @stop_on_newline = stop_on_newline
             @results, @data = [], data.unpack("c*")
             reset_attributes
             execute!
@@ -70,7 +71,7 @@ module Sourcify
 
         def increment_lineno
           @lineno += 1
-          raise Escape unless @results.empty?
+          raise Escape if @stop_on_newline || !@results.empty?
         end
 
         def increment_counter(key, count = 1)
@@ -103,9 +104,10 @@ module Sourcify
             code = 'proc ' + @tokens.map(&:last).join
             eval(code) # TODO: any better way to check for completeness of proc code ??
             @results << code
-            raise Escape unless @lineno == 1
+            raise Escape if @stop_on_newline or @lineno != 1
             reset_attributes
           rescue Exception
+            raise if $!.is_a?(Escape)
           end
         end
 

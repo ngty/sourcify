@@ -30,14 +30,14 @@ describe "Proc#to_sexp (variables)" do
   should 'handle class_eval scoped local var' do
     (
       x = 1
-      lambda { Object.class_eval { y = x } }
+      lambda { Object.class_eval {|x| y = x } }
     ).should.be having_sexp(
       s(:iter,
         s(:call, nil, :proc, s(:arglist)),
         nil,
         s(:iter,
           s(:call, s(:const, :Object), :class_eval, s(:arglist)),
-          nil,
+          s(:lasgn, :x),
           s(:lasgn, :y, s(:lvar, :x))))
     )
   end
@@ -45,14 +45,14 @@ describe "Proc#to_sexp (variables)" do
   should 'handle instance_eval scoped local var' do
     (
       x = 1
-      lambda { 'aa'.instance_eval { y = x } }
+      lambda { 'aa'.instance_eval {|x| y = x } }
     ).should.be having_sexp(
       s(:iter,
         s(:call, nil, :proc, s(:arglist)),
         nil,
         s(:iter,
           s(:call, s(:str, "aa"), :instance_eval, s(:arglist)),
-          nil,
+          s(:lasgn, :x),
           s(:lasgn, :y, s(:lvar, :x))))
     )
   end
@@ -60,7 +60,7 @@ describe "Proc#to_sexp (variables)" do
   should 'handle define_method scoped local var' do
     (
       x = 1
-      lambda { Object.send(:define_method, :aa) { y = x } }
+      lambda { Object.send(:define_method, :aa) {|x| y = x } }
     ).should.be having_sexp(
       s(:iter,
         s(:call, nil, :proc, s(:arglist)),
@@ -70,7 +70,7 @@ describe "Proc#to_sexp (variables)" do
             s(:const, :Object),
             :send,
             s(:arglist, s(:lit, :define_method), s(:lit, :aa))),
-            nil,
+            s(:lasgn, :x),
             s(:lasgn, :y, s(:lvar, :x))))
     )
   end

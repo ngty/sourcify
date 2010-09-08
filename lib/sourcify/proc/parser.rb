@@ -9,17 +9,17 @@ module Sourcify
 
       def initialize(_proc)
         @binding, @arity = _proc.binding, _proc.arity
-        @file, @line = _proc.source_location
-        raise CannotParseEvalCodeError if @file == '(eval)'
+        @source_code = SourceCode.new(*_proc.source_location)
+        raise CannotParseEvalCodeError if @source_code.file == '(eval)'
       end
 
       def source
-        RUBY_2_RUBY.process(Sexp.from_array(sexp.to_a))
+        @source ||= RUBY_2_RUBY.process(Sexp.from_array(sexp.to_a))
       end
 
       def sexp
         @sexp ||= (
-          raw_sexp = RUBY_PARSER.parse(raw_source, @file)
+          raw_sexp = RUBY_PARSER.parse(raw_source, @source_code.file)
           Sexp.from_array(replace_with_lvars(raw_sexp.to_a))
         )
       end
@@ -32,17 +32,23 @@ module Sourcify
               raise MultipleMatchingProcsPerLineError
             else
               # Cheapo hack to ensure __LINE__ is correctly represented !!
-              ("\n" * @line.pred) + frags[0]
+              ("\n" * @source_code.line.pred) + frags[0]
             end
         end
 
         def raw_source_frags
           begin
-            Scanner.process(
-              Parsable.open(@file, 'r'){|fh| fh.forward(@line.pred).readlines.join }
-            ).select{|code| eval(code).arity == @arity }
+            rscan_for_proc_frags(@source_code.to_s, false).flatten.
+              select{|code| eval(code).arity == @arity }
           rescue Exception
             raise ParserInternalError
+          end
+        end
+
+        def rscan_for_proc_frags(str, stop_on_newline)
+          (Scanner.process(str, stop_on_newline) || []).map do |outer|
+            inner = rscan_for_proc_frags(outer.sub(/^proc\s*(do|\{)/,''), true)
+            [outer, inner]
           end
         end
 
@@ -73,8 +79,14 @@ module Sourcify
           @binding.eval("local_variables.include?(#{qvar})")
         end
 
-        class Parsable < File
-          include File::Tail
+        class SourceCode < Struct.new(:file, :line)
+          def to_s
+            File.open(file, 'r') do |fh|
+              fh.extend(File::Tail)
+              fh.forward(line.pred)
+              fh.readlines.join
+            end
+          end
         end
 
     end
