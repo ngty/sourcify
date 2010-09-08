@@ -144,7 +144,16 @@ following bug under 1.8.* may trip u over:
 This is another reason to install ParseTree when u are on 1.8.*. On JRuby, where u don't
 have the choice, just avoid multiple procs here line.
 
-==
+== Is it working ??
+
+Besides its own spec suite, Proc#to_source (static) has been tested to correctly handle:
+
+  ObjectSpace.each_object(Proc) {|o| puts o.to_source }
+
+For:
+* Spree (mri-1.8.7 & mri-1.9.1)
+
+(TODO: add more ...)
 
 == Additional Resources
 
