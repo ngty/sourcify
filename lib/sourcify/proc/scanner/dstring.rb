@@ -3,6 +3,10 @@ module Sourcify
     module Scanner #:nodoc:all
       class DString < Struct.new(:tag)
 
+        # To suppress 'warning: Object#type is deprecated; use Object#class' when
+        # evaluating string
+        attr_reader :type
+
         def <<(content)
           (@contents ||= []) << content
         end
