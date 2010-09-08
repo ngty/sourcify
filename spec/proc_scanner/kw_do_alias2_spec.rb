@@ -6,6 +6,16 @@ describe "Keyword do alias #2 (increment do..end block counter by 0..1)" do
 
   %w{while until for}.each do |kw|
 
+    %w{_ x 1}.each do |c|
+      should "not increment counter with ... (#{kw}#{c} ...)" do
+        do_end_counter(<<EOL
+aa (#{kw}#{c} bb ... )
+cc
+EOL
+               ).should.equal([0,0])
+      end
+    end
+
     should "increment counter with ... (#{kw} ...)" do
       do_end_counter(<<EOL
 aa (#{kw} bb ... )

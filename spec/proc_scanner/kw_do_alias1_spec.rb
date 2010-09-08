@@ -6,6 +6,16 @@ describe "Keyword do alias #1 (incrementing do...end counter by 1)" do
 
   %w{class def module begin case module if unless}.each do |kw|
 
+    %w{_ x 1}.each do |c|
+      should "not increment counter with ... (#{kw}#{c} ...)" do
+        do_end_counter(<<EOL
+aa (#{kw}#{c} bb ... )
+cc
+EOL
+               ).should.equal([0,0])
+      end
+    end
+
     should "increment counter with ... (#{kw} ...)" do
       do_end_counter(<<EOL
 aa (#{kw} bb ... )

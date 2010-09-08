@@ -41,15 +41,15 @@ module Sourcify
   ## MACHINE >> New statement
   new_statement := |*
 
-    kw_for | kw_while | kw_until => {
+    (kw_for | kw_while | kw_until) . (^alnum & ^'_') => {
       push(:kw_do_alias2, ts, te)
       increment_counter(:do_end, 0..1)
       fgoto main;
     };
 
     (
-      kw_class | kw_module | kw_def | kw_begin | kw_case | kw_if | kw_unless |
-      kw_class . ospaces . '<<' . ospaces . ^newline+
+      ((kw_class | kw_module | kw_def | kw_begin | kw_case | kw_if | kw_unless) . (^alnum & ^'_')) |
+      (kw_class . ospaces . '<<' . ospaces . ^newline+)
     ) => {
       push(:kw_do_alias1, ts, te)
       increment_counter(:do_end, 1)
