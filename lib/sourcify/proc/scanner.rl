@@ -21,7 +21,7 @@ module Sourcify
   kw_until  = 'until';
   kw_end    = 'end';
 
-  const   = upper . (alnum | '_')* . ('::' . (upper | lower) . (alnum | '_')*)*;
+  const   = upper . (alnum | '_')* . ('::' . alpha . (alnum | '_')*)*;
   var     = (lower | '_') . (alnum | '_')*;
   symbol  = ':' . (var | const);
   assoc   = '=>';
