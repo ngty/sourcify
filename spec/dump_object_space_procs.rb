@@ -34,7 +34,7 @@ def dump_object_space_procs(debug = false)
             rescue Exception
               errors << {
                 :location => o.source_location,
-                :error => $!.to_s
+                :error => $!.inspect
               }
               errors.last
             end
