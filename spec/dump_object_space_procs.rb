@@ -1,6 +1,11 @@
 require File.join(File.dirname(File.expand_path(__FILE__)), '..', 'lib', 'sourcify')
 require 'pp'
 
+if RUBY_PLATFORM =~ /java/i
+  require 'jruby'
+  JRuby.objectspace = true
+end
+
 def dump_object_space_procs(debug = false)
   puts ''
   errors = []
