@@ -89,6 +89,8 @@ Performance is reasonable (but can always be improved on):
 
 It would be great if Ripper can be ported over to 1.8.* & JRuby (hint hint).
 
+(TODO: update to reflect ditching of Ripper & RubyLex to use home-baked Ragel based scanner)
+
 == Gotchas
 
 Nothing beats ParseTree's ability to access the runtime AST, it is a very powerful feature.
@@ -108,7 +110,10 @@ will not work:
   # >> ["(eval)", 1]
 
   puts test.to_source
-  # >> `initialize': No such file or directory - (eval) (Errno::ENOENT)
+  # >> Sourcify::CannotParseEvalCodeError
+
+Currently, irb code parsing doesn't work, you will get Sourcify::CannotParseIrbCodeError
+when attempting to do so.
 
 === 2. Multiple matching procs per line error
 
@@ -139,11 +144,7 @@ following bug under 1.8.* may trip u over:
 This is another reason to install ParseTree when u are on 1.8.*. On JRuby, where u don't
 have the choice, just avoid multiple procs here line.
 
-=== 3. Imperfect lexer
-
-Nothing is perfect, bugs are always lurking somewhere. When the parser encounters
-unexpected lexing error (which may be due to Ripper, RubyLex, or Sourcify's wrapper lexer),
-Sourcify::LexerInternalError is thrown.
+==
 
 == Additional Resources
 
