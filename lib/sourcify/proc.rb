@@ -1,9 +1,10 @@
 module Sourcify
 
-  class MultipleMatchingProcsPerLineError < Exception ; end
-  class ParserInternalError < Exception ; end
-  class CannotParseEvalCodeError < Exception ; end
-  class CannotParseIrbCodeError < Exception ; end
+  class MultipleMatchingProcsPerLineError < Exception; end
+  class ParserInternalError < Exception; end
+  class CannotParseEvalCodeError < Exception; end
+  class CannotParseIrbCodeError < Exception; end
+  class CannotHandleCreatedOnTheFlyProcError < Exception; end
 
   module Proc
 

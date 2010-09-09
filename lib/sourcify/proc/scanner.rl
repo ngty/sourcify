@@ -21,8 +21,10 @@ module Sourcify
   kw_until  = 'until';
   kw_end    = 'end';
 
-  const   = upper . (alnum | '_')* . ('::' . alpha . (alnum | '_')*)*;
-  var     = (lower | '_') . (alnum | '_')*;
+  vchar   = alnum | '_';
+  const   = upper . vchar* . ('::' . alpha . vchar*)*;
+  var     = (lower | '_') . vchar*;
+  meth    = (alpha | '_') . vchar*;
   symbol  = ':' . (var | const);
   assoc   = '=>';
   assgn   = '=';
@@ -41,14 +43,14 @@ module Sourcify
   ## MACHINE >> New statement
   new_statement := |*
 
-    (kw_for | kw_while | kw_until) . (^alnum & ^'_') => {
+    (kw_for | kw_while | kw_until) . ^vchar => {
       push(:kw_do_alias2, ts, te)
       increment_counter(:do_end, 0..1)
       fgoto main;
     };
 
     (
-      ((kw_class | kw_module | kw_def | kw_begin | kw_case | kw_if | kw_unless) . (^alnum & ^'_')) |
+      ((kw_class | kw_module | kw_def | kw_begin | kw_case | kw_if | kw_unless) . ^vchar) |
       (kw_class . ospaces . '<<' . ospaces . ^newline+)
     ) => {
       push(:kw_do_alias1, ts, te)
@@ -162,11 +164,12 @@ module Sourcify
 
     ## == Misc
 
-    var     => { push(:var, ts, te) };
-    const   => { push(:const, ts, te) };
-    symbol  => { push(:symbol, ts, te) };
-    mspaces => { push(:space, ts, te) };
-    any     => { push(:any, ts, te) };
+    var         => { push(:var, ts, te) };
+    const       => { push(:const, ts, te) };
+    symbol      => { push(:symbol, ts, te) };
+    mspaces     => { push(:space, ts, te) };
+    any         => { push(:any, ts, te) };
+    '&:' . meth => { push(:to_proc, ts, te) };
 
     ## == Heredoc
 
