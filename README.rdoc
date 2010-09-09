@@ -14,13 +14,10 @@ never perfect, and i'm reinventing the wheel each time just to address a particu
 pattern of usage (using regexp kungfu).
 
 Enough is enough, and now we have Sourcify, a unified solution to extract proc code.
-When ParseTree is available, it simply works as a wrapper round it, otherwise, it uses:
-
-* Ripper (part of the stdlib for 1.9.*), OR
-* RubyLex (under irb, which is part of the stdlib for any ruby)
-
-to extract the code, and does further processing with RubyParser & Ruby2Ruby to ensure
-100% compatbility with ParseTree (yup, there is no denying that i really like ParseTree).
+When ParseTree is available, it simply works as a wrapper round it, otherwise, it uses
+a home-baked ragel-generated scanner to extract the proc code. Further processing
+with RubyParser & Ruby2Ruby to ensure 100% with ParseTree (yup, there is no denying that
+i really like ParseTree).
 
 == Installing It
 
@@ -81,25 +78,24 @@ consistency under 1.8.*:
 
 Performance is reasonable (but can always be improved on):
 
-  ruby                 user      system    total     real
-  1.8.7 (w ParseTree)  0.010000  0.000000  1.270000  1.273631
-  1.8.7 (w RubyLex)    0.000000  0.000000  1.640000  1.641778
-  1.9.1 (w Ripper)     0.000000  0.000000  1.070000  1.067248
-  JRuby (w RubyLex)    5.054000  0.000000  5.054000  5.055000
+  ruby                              user      system    total     real
+  mri-1.8.7-p299  (w ParseTree)     0.000000  0.000000  1.330000  (  1.350332)
+  ree-1.8.7       (w ParseTree)     0.000000  0.000000  1.060000  (  1.079582)
+  mri-1.8.7-p299  (static scanner)  0.000000  0.000000  1.440000  (  1.466162)
+  mri-1.9.1-p429  (static scanner)  0.010000  0.000000  1.910000  (  1.922684)
+  jruby-1.5.2     (static scanner)  9.823000  0.000000  9.823000  (  9.823000)
 
-It would be great if Ripper can be ported over to 1.8.* & JRuby (hint hint).
-
-(TODO: update to reflect ditching of Ripper & RubyLex to use home-baked Ragel based scanner)
+Seems that I really need to optimize the static code scanner.
 
 == Gotchas
 
 Nothing beats ParseTree's ability to access the runtime AST, it is a very powerful feature.
-The lexer-based (static) implementations suffer the following gotchas:
+The scanner-based (static) implementation suffer the following gotchas:
 
 === 1. The source code is everything
 
 Since static code analysis is involved, the subject code needs to physically exist within a
-file, meaning Proc#source_location must return the expected [file, lineno], the following
+file, meaning Proc#source_location must return the expected *[file, lineno]*, the following
 will not work:
 
   def test
@@ -112,7 +108,20 @@ will not work:
   puts test.to_source
   # >> Sourcify::CannotParseEvalCodeError
 
-Currently, irb code parsing doesn't work, you will get Sourcify::CannotParseIrbCodeError
+The same applies to *Blah#to_proc* & *&:blah*:
+
+  klass = Class.new do
+    def aa(&block); block ; end
+    def bb; 1+2; end
+  end
+
+  klass.new.method(:bb).to_proc.to_source
+  # >> Sourcify::CannotHandleCreatedOnTheFlyProcError
+
+  klass.new.aa(&:bb).to_source
+  # >> Sourcify::CannotHandleCreatedOnTheFlyProcError
+
+Also, irb code parsing doesn't work (yet), you will get Sourcify::CannotParseIrbCodeError
 when attempting to do so.
 
 === 2. Multiple matching procs per line error
@@ -132,9 +141,10 @@ subject proc has arity that is unique from others:
 
 Using Proc#arity is a pretty good way to uniquely identify the subject proc, since having
 too many procs per line is not a good practice as it reduces readability. However, the
-following bug under 1.8.* may trip u over:
+following bug[http://redmine.ruby-lang.org/issues/show/574] under 1.8.* may trip u over:
 
   lambda { }.arity         # 1.8.* (-1) / 1.9.* (0)  (?!)
+  lambda {|| }.arity       # 1.8.* (0)  / 1.9.* (0)
   lambda {|x| }.arity      # 1.8.* (1)  / 1.9.* (1)
   lambda {|x,y| }.arity    # 1.8.* (2)  / 1.9.* (2)
   lambda {|*x| }.arity     # 1.8.* (-1) / 1.9.* (-1)
@@ -142,18 +152,16 @@ following bug under 1.8.* may trip u over:
   lambda {|(x,y)| }.arity  # 1.8.* (1)  / 1.9.* (1)
 
 This is another reason to install ParseTree when u are on 1.8.*. On JRuby, where u don't
-have the choice, just avoid multiple procs here line.
+have the choice, just avoid multiple procs per line.
 
 == Is it working ??
 
-Besides its own spec suite, Proc#to_source (static) has been tested to correctly handle:
+Besides its own spec suite, sourcify has been tested to handle:
 
   ObjectSpace.each_object(Proc) {|o| puts o.to_source }
 
-For:
-* Spree (mri-1.8.7 & mri-1.9.1)
-
-(TODO: add more ...)
+For projects:
+* Spree (mri-1.8.7, mri-1.9.1 & jruby-1.5.2)
 
 == Additional Resources
 
