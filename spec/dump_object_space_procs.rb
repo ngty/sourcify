@@ -8,7 +8,7 @@ if RUBY_PLATFORM =~ /java/i
   reload! rescue nil
 end
 
-DUMPED_OBJECT_SPACE_PROCS = {:max => 800, :done => 0}
+DUMPED_OBJECT_SPACE_PROCS = {:max => nil, :done => 0}
 DUMP_OBJECT_SPACE_PROCS_ERRORS = []
 class STOP_DUMPING_OBJECT_SPACE_PROCS < Exception; end
 
