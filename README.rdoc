@@ -1,11 +1,11 @@
 = Sourcify
 
-*ParseTree* is great, it accesses the runtime AST (abstract syntax tree) and makes it
-possible to convert any object to ruby code & S-expression, BUT ParseTree doesn't work
-for 1.9.* & JRuby.
+ParseTree[http://github.com/seattlerb/parsetree] is great, it accesses the runtime AST
+(abstract syntax tree) and makes it possible to convert any object to ruby code &
+S-expression, BUT ParseTree doesn't work for 1.9.* & JRuby.
 
-*RubyParser* is great, and it works for any rubies (of course, not 100% compatible for
-1.9.* syntax yet), BUT it works only with static code.
+RubyParser[http://github.com/seattlerb/ruby_parser] is great, and it works for any rubies
+(of course, not 100% compatible for 1.9.* syntax yet), BUT it works only with static code.
 
 I truely enjoy using the above tools, but with my other projects, the absence of ParseTree
 on the different rubies is forcing me to hand-baked my own solution each time to extract
@@ -164,9 +164,10 @@ Besides its own spec suite, sourcify has been tested to handle:
   ObjectSpace.each_object(Proc) {|o| puts o.to_source }
 
 For projects:
-* Spree (ruby-1.8.7-p299, ruby-1.9.1-p376 & jruby-1.5.2)
+* Spree[http://github.com/railsdog/spree] (ruby-1.8.7-p299, ruby-1.9.1-p376 & jruby-1.5.2)
+* Redmine[http://github.com/edavis10/redmine] (ruby-1.8.7-p299, ruby-1.9.1-p376 & jruby-1.5.2)
 
-(TODO: add more)
+(TODO: the more the merrier)
 
 == Additional Resources
 
