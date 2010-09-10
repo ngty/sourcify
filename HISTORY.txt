@@ -1,9 +1,13 @@
-=== Current
+=== 0.2.0 (Sep 10, 2010)
 
-* fixed lexer bug in missing trailing chars after '=>' operator [#ngty]
 * use home-baked ragel-based scanner for scanning for proc code [#ngty]
 * renamed Sourcify::LexerInternalError to Sourcify::ParserInternalError since
   we are not using any lexer anymore [#ngty]
+* introduces CannotParseEvalCodeError, CannotParseIrbCodeError &
+  CannotHandleCreatedOnTheFlyProcError to handle procs that there is no way
+  to extract code from [#ngty]
+* tested against well known projects (eg. spree & redmine) to show that it is
+  indeed working [#ngty]
 
 === 0.1.2 (Aug 30, 2010)
 

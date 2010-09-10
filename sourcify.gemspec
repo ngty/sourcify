@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{sourcify}
-  s.version = "0.1.2"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["NgTzeYang"]
-  s.date = %q{2010-08-30}
+  s.date = %q{2010-09-11}
   s.description = %q{}
   s.email = %q{ngty77@gmail.com}
   s.extra_rdoc_files = [
@@ -26,14 +26,19 @@ Gem::Specification.new do |s|
      "VERSION",
      "lib/sourcify.rb",
      "lib/sourcify/proc.rb",
-     "lib/sourcify/proc/counter.rb",
-     "lib/sourcify/proc/lexer.rb",
-     "lib/sourcify/proc/lexer18.rb",
-     "lib/sourcify/proc/lexer19.rb",
      "lib/sourcify/proc/parser.rb",
+     "lib/sourcify/proc/scanner.rb",
+     "lib/sourcify/proc/scanner.rl",
+     "lib/sourcify/proc/scanner/comment.rb",
+     "lib/sourcify/proc/scanner/counter.rb",
+     "lib/sourcify/proc/scanner/dstring.rb",
+     "lib/sourcify/proc/scanner/extensions.rb",
+     "lib/sourcify/proc/scanner/heredoc.rb",
      "sourcify.gemspec",
+     "spec/dump_object_space_procs.rb",
      "spec/proc/19x_extras.rb",
-     "spec/proc/misc_spec.rb",
+     "spec/proc/created_on_the_fly_proc_spec.rb",
+     "spec/proc/others_spec.rb",
      "spec/proc/readme",
      "spec/proc/to_sexp_variables_spec.rb",
      "spec/proc/to_source_from_braced_block_w_nested_braced_block_spec.rb",
@@ -58,6 +63,17 @@ Gem::Specification.new do |s|
      "spec/proc/to_source_magic_file_var_spec.rb",
      "spec/proc/to_source_magic_line_var_spec.rb",
      "spec/proc/to_source_variables_spec.rb",
+     "spec/proc_scanner/block_comment_spec.rb",
+     "spec/proc_scanner/double_colons_spec.rb",
+     "spec/proc_scanner/double_quote_str_w_interpolation_spec.rb",
+     "spec/proc_scanner/double_quote_str_wo_interpolation_spec.rb",
+     "spec/proc_scanner/heredoc_spec.rb",
+     "spec/proc_scanner/kw_do_alias1_spec.rb",
+     "spec/proc_scanner/kw_do_alias2_spec.rb",
+     "spec/proc_scanner/per_line_comment_spec.rb",
+     "spec/proc_scanner/single_quote_str_spec.rb",
+     "spec/proc_scanner/spec_helper.rb",
+     "spec/proc_scanner/to_proc_spec.rb",
      "spec/spec_helper.rb"
   ]
   s.homepage = %q{http://github.com/ngty/sourcify}
@@ -66,9 +82,21 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{Workarounds before ruby-core officially supports Proc#to_source (& friends)}
   s.test_files = [
-    "spec/proc/to_source_from_do_end_block_w_nested_until_spec.rb",
+    "spec/proc_scanner/kw_do_alias1_spec.rb",
+     "spec/proc_scanner/single_quote_str_spec.rb",
+     "spec/proc_scanner/to_proc_spec.rb",
+     "spec/proc_scanner/kw_do_alias2_spec.rb",
+     "spec/proc_scanner/double_colons_spec.rb",
+     "spec/proc_scanner/block_comment_spec.rb",
+     "spec/proc_scanner/per_line_comment_spec.rb",
+     "spec/proc_scanner/heredoc_spec.rb",
+     "spec/proc_scanner/double_quote_str_w_interpolation_spec.rb",
+     "spec/proc_scanner/spec_helper.rb",
+     "spec/proc_scanner/double_quote_str_wo_interpolation_spec.rb",
+     "spec/proc/to_source_from_do_end_block_w_nested_until_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_begin_spec.rb",
      "spec/proc/to_source_from_braced_block_w_nested_hash_spec.rb",
+     "spec/proc/created_on_the_fly_proc_spec.rb",
      "spec/proc/to_source_from_braced_block_wo_nesting_complication_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_while_spec.rb",
      "spec/proc/to_source_from_multi_do_end_blocks_w_single_match_spec.rb",
@@ -82,15 +110,16 @@ Gem::Specification.new do |s|
      "spec/proc/to_source_magic_line_var_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_literal_keyword_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_unless_spec.rb",
+     "spec/proc/others_spec.rb",
      "spec/proc/19x_extras.rb",
      "spec/proc/to_source_from_braced_block_w_nested_braced_block_spec.rb",
      "spec/proc/to_source_from_do_end_block_wo_nesting_complication_spec.rb",
      "spec/proc/to_source_variables_spec.rb",
      "spec/proc/to_sexp_variables_spec.rb",
      "spec/proc/to_source_magic_file_var_spec.rb",
-     "spec/proc/misc_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_if_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_for_spec.rb",
+     "spec/dump_object_space_procs.rb",
      "spec/spec_helper.rb"
   ]
 
