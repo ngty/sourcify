@@ -5,6 +5,7 @@ require 'pp'
 if RUBY_PLATFORM =~ /java/i
   require 'jruby'
   JRuby.objectspace = true
+  reload! rescue nil
 end
 
 def dump_object_space_procs(debug = false)
