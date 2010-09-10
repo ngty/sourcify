@@ -60,6 +60,14 @@ describe "Created on the fly proc" do
           x.to_source.should.not.be.nil
         end
 
+        should "not raise with nested &:blah on diff line" do
+          (
+            lambda do
+              klass.new.test(&:blah)
+            end
+          ).to_source.should.not.be.nil
+        end
+
       end
 
     else
@@ -92,6 +100,14 @@ describe "Created on the fly proc" do
             y = lambda {|a| klass.new.test(&:blah) }
             x = y.call(1).to_source
           }.should.raise(Sourcify::CannotHandleCreatedOnTheFlyProcError)
+        end
+
+        should "not raise with nested &:blah on diff line" do
+          (
+            lambda do
+              klass.new.test(&:blah)
+            end
+          ).to_source.should.not.be.nil
         end
 
       end
@@ -138,6 +154,14 @@ describe "Created on the fly proc" do
             x = lambda {|*a| klass.new.test(&:blah) }
             x.call.to_source
           }.should.raise(Sourcify::MultipleMatchingProcsPerLineError)
+        end
+
+        should "not raise with nested &:blah on diff line" do
+          (
+            lambda do
+              x = klass.new.test(&:blah)
+            end
+          ).to_source.should.not.be.nil
         end
 
       end
