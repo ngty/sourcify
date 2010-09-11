@@ -169,7 +169,6 @@ module Sourcify
     symbol      => { push(:symbol, ts, te) };
     mspaces     => { push(:space, ts, te) };
     any         => { push(:any, ts, te) };
-    '&:' . meth => { push(:to_proc, ts, te) };
 
     ## == Heredoc
 

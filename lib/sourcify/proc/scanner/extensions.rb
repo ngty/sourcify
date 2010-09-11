@@ -25,7 +25,6 @@ module Sourcify
         end
 
         def push(key, ts, te)
-          @results << :symbol_to_proc if key == :to_proc && @lineno == 1
           @tokens << [key, data_frag(ts .. te.pred)]
         end
 

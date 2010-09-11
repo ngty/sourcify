@@ -13,15 +13,38 @@ module Sourcify
 
         meths = instance_methods.map(&:to_s)
 
-        # Added as a bonus, by default, only 1.9.* implements this.
         unless meths.include?('source_location')
+
+          # Added as a bonus, by default, only 1.9.* implements this.
           def source_location
-            @source_location ||= (
-              file, line = /^#<Proc:0x[0-9A-Fa-f]+@(.+):(\d+).*?>$/.match(inspect)[1..2]
-              [file, line.to_i]
-            )
+            unless created_on_the_fly?
+              @source_location ||= (
+                file, line = /^#<Proc:0x[0-9A-Fa-f]+@(.+):(\d+).*?>$/.match(inspect)[1..2]
+                [file, line.to_i]
+              )
+            end
           end
+
+          # HACK to make it easy to determine if a proc is created on the fly
+          ::Proc.class_eval do
+            attr_writer :created_on_the_fly
+            def created_on_the_fly?
+              !!@created_on_the_fly
+            end
+          end
+
+          [::Method, ::Symbol].each do |klass|
+            klass.class_eval do
+              alias_method :__pre_sourcified_to_proc, :to_proc
+              def to_proc
+                (_proc = __pre_sourcified_to_proc).created_on_the_fly = true
+                _proc
+              end
+            end
+          end
+
         end
+
 
         if Object.const_defined?(:ParseTree)
           # When ParseTree is available, we just make use of all the convenience it offers :)
