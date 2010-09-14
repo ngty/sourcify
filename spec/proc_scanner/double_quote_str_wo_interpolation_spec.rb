@@ -36,6 +36,11 @@ describe 'Double quote strings (wo interpolation)' do
             include([:dstring, "%#{t}#{q1}\\\\#{q2}"])
         end
 
+        should "handle %#{t}#{q1}#{q2}" do
+          process(" xx %#{t}#{q1}#{q2} %#{t}#{q2}lo#{q2} ").should.
+            include([:dstring, "%#{t}#{q1}#{q2}"])
+        end
+
       end
 
     end
@@ -68,6 +73,14 @@ describe 'Double quote strings (wo interpolation)' do
         cc
         #{q}dd#{q}
       )).should.include([:dstring, "#{q}\\\\#{q}"])
+    end
+
+    should "handle #{q}#{q}" do
+      process(%Q(
+        aa #{q}#{q} 
+        cc
+        #{q}dd#{q}
+      )).should.include([:dstring, "#{q}#{q}"])
     end
 
   end

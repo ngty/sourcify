@@ -36,6 +36,11 @@ describe 'Single quote strings (\', %q & %w)' do
         end
       end
 
+      should "handle %#{t}#{q1}#{q2}" do
+        process(" xx %#{t}#{q1}#{q2} %#{t}#{q2}lo#{q2} ").should.
+          include([:sstring, "%#{t}#{q1}#{q2}"])
+      end
+
     end
   end
 
@@ -63,6 +68,14 @@ describe 'Single quote strings (\', %q & %w)' do
       cc
       'dd'
     )).should.include([:sstring, "'\\\\'"])
+  end
+
+  should "handle ''" do
+    process(%q(
+      aa '' 
+      cc
+      'dd'
+    )).should.include([:sstring, "''"])
   end
 
 end
