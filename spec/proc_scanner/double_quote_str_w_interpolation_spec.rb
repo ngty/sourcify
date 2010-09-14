@@ -1,5 +1,6 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
+unless has_parsetree?
 describe 'Double quote strings (w interpolation)' do
 
   # NOTE: we skip %Q#...# cos %Q#..#{..}..# is invalid syntax.
@@ -59,4 +60,5 @@ describe 'Double quote strings (w interpolation)' do
 
   end
 
+end
 end

@@ -1,5 +1,6 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
+unless has_parsetree?
 describe 'Double quote strings (wo interpolation)' do
 
   %w{~ ` ! @ # $ % ^ & * _ - + = | \\ ; : ' " , . ? /}.map{|w| [w,w] }.concat(
@@ -85,4 +86,5 @@ describe 'Double quote strings (wo interpolation)' do
 
   end
 
+end
 end

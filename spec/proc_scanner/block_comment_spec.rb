@@ -1,5 +1,6 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
+unless has_parsetree?
 describe "Block comment (=begin ... =end)" do
 
   should 'handle =begin\n ... =end\n' do
@@ -56,4 +57,5 @@ EOL
            ).should.not.include([:comment, "\n=begin\n bb \n=end cc"])
   end
 
+end
 end

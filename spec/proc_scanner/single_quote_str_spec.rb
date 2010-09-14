@@ -1,5 +1,6 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
+unless has_parsetree?
 describe 'Single quote strings (\', %q & %w)' do
 
   %w{~ ` ! @ # $ % ^ & * _ - + = \\ | ; : ' " , . ? /}.map{|w| [w,w] }.concat(
@@ -78,4 +79,5 @@ describe 'Single quote strings (\', %q & %w)' do
     )).should.include([:sstring, "''"])
   end
 
+end
 end

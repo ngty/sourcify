@@ -1,5 +1,6 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
+unless has_parsetree?
 describe "Heredoc (wo indent)" do
   %w{X "X" 'X'}.each do |tag|
 
@@ -139,4 +140,5 @@ X
     end
 
   end
+end
 end

@@ -1,5 +1,6 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
+unless has_parsetree?
 describe "Keyword do alias #2 (increment do..end block counter by 0..1)" do
 
   behaves_like 'has started do...end counter'
@@ -83,4 +84,5 @@ EOL
     end
 
   end
+end
 end

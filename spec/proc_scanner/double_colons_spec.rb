@@ -1,5 +1,6 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
+unless has_parsetree?
 describe "Double colons" do
 
   should "handle A::B as :const" do
@@ -11,4 +12,4 @@ describe "Double colons" do
   end
 
 end
-
+end
