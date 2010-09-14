@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
 describe "Created on the fly proc" do
-  unless Object.const_defined?(:ParseTree)
+  unless has_parsetree?
 
     klass = Class.new do
       def test(&block); block ; end

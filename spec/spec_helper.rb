@@ -20,12 +20,16 @@ end
 
 Bacon.summary_on_exit
 
+def has_parsetree?
+  Object.const_defined?(:ParseTree)
+end
+
 def watever(*args, &block)
   Proc.new(&block)
 end
 
 def code_to_sexp(code)
-  if Object.const_defined?(:ParseTree)
+  if has_parsetree?
     require 'parse_tree'
     Unifier.new.process(ParseTree.translate(code))
   else

@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
 describe 'Proc#to_source from multi blocks w many matches' do
 
-  if Object.const_defined?(:ParseTree)
+  if has_parsetree?
 
     expected = 'proc { @x%s }'
 
