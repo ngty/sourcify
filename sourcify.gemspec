@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{sourcify}
-  s.version = "0.2.0"
+  s.version = "0.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["NgTzeYang"]
-  s.date = %q{2010-09-11}
+  s.date = %q{2010-09-14}
   s.description = %q{}
   s.email = %q{ngty77@gmail.com}
   s.extra_rdoc_files = [
@@ -73,7 +73,6 @@ Gem::Specification.new do |s|
      "spec/proc_scanner/per_line_comment_spec.rb",
      "spec/proc_scanner/single_quote_str_spec.rb",
      "spec/proc_scanner/spec_helper.rb",
-     "spec/proc_scanner/to_proc_spec.rb",
      "spec/spec_helper.rb"
   ]
   s.homepage = %q{http://github.com/ngty/sourcify}
@@ -84,7 +83,6 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/proc_scanner/kw_do_alias1_spec.rb",
      "spec/proc_scanner/single_quote_str_spec.rb",
-     "spec/proc_scanner/to_proc_spec.rb",
      "spec/proc_scanner/kw_do_alias2_spec.rb",
      "spec/proc_scanner/double_colons_spec.rb",
      "spec/proc_scanner/block_comment_spec.rb",
