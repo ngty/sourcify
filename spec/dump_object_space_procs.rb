@@ -26,7 +26,7 @@ def dump_object_space_procs(debug = false)
     '== NOTE: dump files can be found at %s' % dump_dir
 
   # Core processing
-  ObjectSpace.each_object(Proc).to_a.
+  ObjectSpace.each_object(Proc).to_a.select{|o| o.source_location }.
     group_by{|o| o.source_location[0] }.each do |ofile, objs|
       nfile = File.join(dump_dir, ofile.gsub('/','~'))
       File.open(nfile,'w') do |f|
