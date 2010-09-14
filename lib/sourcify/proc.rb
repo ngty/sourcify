@@ -11,7 +11,8 @@ module Sourcify
     def self.included(base)
       base.class_eval do
 
-        meths = instance_methods.map(&:to_s)
+        # Rubies of 1.8.6 & earlier doesn't support something.map(&:blah)
+        meths = instance_methods.map{|m| m.to_s }
 
         unless meths.include?('source_location')
 
