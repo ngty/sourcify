@@ -35,12 +35,15 @@ module Sourcify
           end
 
           [::Method, ::Symbol].each do |klass|
-            klass.class_eval do
-              alias_method :__pre_sourcified_to_proc, :to_proc
-              def to_proc
-                (_proc = __pre_sourcified_to_proc).created_on_the_fly = true
-                _proc
+            begin
+              klass.class_eval do
+                alias_method :__pre_sourcified_to_proc, :to_proc
+                def to_proc
+                  (_proc = __pre_sourcified_to_proc).created_on_the_fly = true
+                  _proc
+                end
               end
+            rescue NameError
             end
           end
 
