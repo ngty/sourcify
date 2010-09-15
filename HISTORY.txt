@@ -1,3 +1,8 @@
+=== 0.2.3 (Sep 15, 2010)
+
+* since (static) code scanner doesn't run in 1.8.6, we enforce ParseTree mode
+  for 1.8.6 [#ngty]
+
 === 0.2.2 (Sep 15, 2010)
 
 * fixed failure to run on MRI-1.8.6 [#ngty]
