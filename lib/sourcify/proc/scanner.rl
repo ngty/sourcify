@@ -91,6 +91,10 @@ module Sourcify
 
   ## MACHINE >> String
   string := |*
+
+    sqm = '%q' | '%w';
+    dqm = '%Q' | '%W' | '%x' | '%r' | '%';
+
     ## == Single quote strings
     sqs1  = "'" . ([^\']* | ([^\'\\]*[\\][\'][^\']*)*) . '\\\\'* . "'";
     sqs2  = '~' . ([^\~]* | ([^\~\\]*[\\][\~][^\~]*)*) . '\\\\'* . '~';
@@ -121,8 +125,7 @@ module Sourcify
     sqs27 = '(' . ([^\)]* | ([^\)\\]*[\\][\)][^\)]*)*) . '\\\\'* . ')';
     sqs28 = '\\' . ([^\\]* | ([^\)]*[\\][\\][^\\]*)*) . '\\';
 
-    sqm = ('%q' | '%w'); (
-      sqs1        | sqm . sqs1  | sqm . sqs2  | sqm . sqs3  | sqm . sqs4  |
+    ( sqs1        | sqm . sqs1  | sqm . sqs2  | sqm . sqs3  | sqm . sqs4  |
       sqm . sqs5  | sqm . sqs6  | sqm . sqs7  | sqm . sqs8  | sqm . sqs9  |
       sqm . sqs10 | sqm . sqs11 | sqm . sqs12 | sqm . sqs13 | sqm . sqs14 |
       sqm . sqs15 | sqm . sqs16 | sqm . sqs17 | sqm . sqs18 | sqm . sqs19 |
@@ -133,61 +136,234 @@ module Sourcify
     };
 
     ## == Double quote strings
-    dqs1  = '"' . (([^\"]* | ([^\"\\]*[\\][\"][^\"]*)*) -- '#{') . '\\\\'* . ('"' | '#{');
-    dqs2  = '`' . (([^\`]* | ([^\`\\]*[\\][\`][^\`]*)*) -- '#{') . '\\\\'* . ('`' | '#{');
-    dqs3  = '/' . (([^\/]* | ([^\/\\]*[\\][\/][^\/]*)*) -- '#{') . '\\\\'* . ('/' | '#{');
-    dqs4  = "'" . (([^\']* | ([^\'\\]*[\\][\'][^\']*)*) -- '#{') . '\\\\'* . ("'" | '#{');
-    dqs5  = '~' . (([^\~]* | ([^\~\\]*[\\][\~][^\~]*)*) -- '#{') . '\\\\'* . ('~' | '#{');
-    dqs6  = '!' . (([^\!]* | ([^\!\\]*[\\][\!][^\!]*)*) -- '#{') . '\\\\'* . ('!' | '#{');
-    dqs7  = '@' . (([^\@]* | ([^\@\\]*[\\][\@][^\@]*)*) -- '#{') . '\\\\'* . ('@' | '#{');
-    dqs8  = '#' . (([^\#]* | ([^\#\\]*[\\][\#][^\#]*)*) -- '#{') . '\\\\'* . ('#' | '#{');
-    dqs9  = '$' . (([^\$]* | ([^\$\\]*[\\][\$][^\$]*)*) -- '#{') . '\\\\'* . ('$' | '#{');
-    dqs10 = '%' . (([^\%]* | ([^\%\\]*[\\][\%][^\%]*)*) -- '#{') . '\\\\'* . ('%' | '#{');
-    dqs11 = '^' . (([^\^]* | ([^\^\\]*[\\][\^][^\^]*)*) -- '#{') . '\\\\'* . ('^' | '#{');
-    dqs12 = '&' . (([^\&]* | ([^\&\\]*[\\][\&][^\&]*)*) -- '#{') . '\\\\'* . ('&' | '#{');
-    dqs13 = '*' . (([^\*]* | ([^\*\\]*[\\][\*][^\*]*)*) -- '#{') . '\\\\'* . ('*' | '#{');
-    dqs14 = '-' . (([^\-]* | ([^\-\\]*[\\][\-][^\-]*)*) -- '#{') . '\\\\'* . ('-' | '#{');
-    dqs15 = '_' . (([^\_]* | ([^\_\\]*[\\][\_][^\_]*)*) -- '#{') . '\\\\'* . ('_' | '#{');
-    dqs16 = '+' . (([^\+]* | ([^\+\\]*[\\][\+][^\+]*)*) -- '#{') . '\\\\'* . ('+' | '#{');
-    dqs17 = '=' . (([^\=]* | ([^\=\\]*[\\][\=][^\=]*)*) -- '#{') . '\\\\'* . ('=' | '#{');
-    dqs18 = '<' . (([^\>]* | ([^\>\\]*[\\][\>][^\>]*)*) -- '#{') . '\\\\'* . ('>' | '#{');
-    dqs19 = '|' . (([^\|]* | ([^\|\\]*[\\][\|][^\|]*)*) -- '#{') . '\\\\'* . ('|' | '#{');
-    dqs20 = ':' . (([^\:]* | ([^\:\\]*[\\][\:][^\:]*)*) -- '#{') . '\\\\'* . (':' | '#{');
-    dqs21 = ';' . (([^\;]* | ([^\;\\]*[\\][\;][^\;]*)*) -- '#{') . '\\\\'* . (';' | '#{');
-    dqs22 = ',' . (([^\,]* | ([^\,\\]*[\\][\,][^\,]*)*) -- '#{') . '\\\\'* . (',' | '#{');
-    dqs23 = '.' . (([^\.]* | ([^\.\\]*[\\][\.][^\.]*)*) -- '#{') . '\\\\'* . ('.' | '#{');
-    dqs24 = '?' . (([^\?]* | ([^\?\\]*[\\][\?][^\?]*)*) -- '#{') . '\\\\'* . ('?' | '#{');
-    dqs25 = '{' . (([^\}]* | ([^\}\\]*[\\][\}][^\}]*)*) -- '#{') . '\\\\'* . ('}' | '#{');
-    dqs26 = '[' . (([^\]]* | ([^\]\\]*[\\][\]][^\]]*)*) -- '#{') . '\\\\'* . (']' | '#{');
-    dqs27 = '(' . (([^\)]* | ([^\)\\]*[\\][\)][^\)]*)*) -- '#{') . '\\\\'* . (')' | '#{');
-    dqs28 = '\\' . (([^\\]* | ([^\\]*[\\][\\][^\\]*)*) -- '#{') . ('\\' | '#{');
-
-    dqm = ('%Q' | '%W' | '%x' | '%r' | '%'); (
-      dqs1        | dqs2        | dqs3        | dqm . dqs1  | dqm . dqs2  |
-      dqm . dqs3  | dqm . dqs4  | dqm . dqs5  | dqm . dqs6  | dqm . dqs7  |
-      dqm . dqs8  | dqm . dqs9  | dqm . dqs10 | dqm . dqs11 | dqm . dqs12 |
-      dqm . dqs13 | dqm . dqs14 | dqm . dqs15 | dqm . dqs16 | dqm . dqs17 |
-      dqm . dqs18 | dqm . dqs19 | dqm . dqs20 | dqm . dqs21 | dqm . dqs22 |
-      dqm . dqs23 | dqm . dqs24 | dqm . dqs25 | dqm . dqs26 | dqm . dqs27 |
-      dqm . dqs28
-    ) => {
-      if push_dstring(ts, te)
-        fgoto double_quote_str;
-      end
-    };
+    (dqm . '"') | '"' => { push_dstring(ts, te); fgoto dstring1; };
+    (dqm . "'") | "'" => { push_dstring(ts, te); fgoto dstring2; };
+    (dqm . '/') | '/' => { push_dstring(ts, te); fgoto dstring3; };
+    (dqm . '`') | '`' => { push_dstring(ts, te); fgoto dstring4; };
+    dqm . '~'  => { push_dstring(ts, te); fgoto dstring5; };
+    dqm . '!'  => { push_dstring(ts, te); fgoto dstring6; };
+    dqm . '@'  => { push_dstring(ts, te); fgoto dstring7; };
+    dqm . '#'  => { push_dstring(ts, te); fgoto dstring8; };
+    dqm . '$'  => { push_dstring(ts, te); fgoto dstring9; };
+    dqm . '%'  => { push_dstring(ts, te); fgoto dstring10; };
+    dqm . '^'  => { push_dstring(ts, te); fgoto dstring11; };
+    dqm . '&'  => { push_dstring(ts, te); fgoto dstring12; };
+    dqm . '*'  => { push_dstring(ts, te); fgoto dstring13; };
+    dqm . '-'  => { push_dstring(ts, te); fgoto dstring14; };
+    dqm . '_'  => { push_dstring(ts, te); fgoto dstring15; };
+    dqm . '+'  => { push_dstring(ts, te); fgoto dstring16; };
+    dqm . '='  => { push_dstring(ts, te); fgoto dstring17; };
+    dqm . '<'  => { push_dstring(ts, te); fgoto dstring18; };
+    dqm . '|'  => { push_dstring(ts, te); fgoto dstring19; };
+    dqm . ':'  => { push_dstring(ts, te); fgoto dstring20; };
+    dqm . ';'  => { push_dstring(ts, te); fgoto dstring21; };
+    dqm . ','  => { push_dstring(ts, te); fgoto dstring22; };
+    dqm . '.'  => { push_dstring(ts, te); fgoto dstring23; };
+    dqm . '?'  => { push_dstring(ts, te); fgoto dstring24; };
+    dqm . '{'  => { push_dstring(ts, te); fgoto dstring25; };
+    dqm . '['  => { push_dstring(ts, te); fgoto dstring26; };
+    dqm . '('  => { push_dstring(ts, te); fgoto dstring27; };
+    dqm . '\\' => { push_dstring(ts, te); fgoto dstring28; };
 
     ## == Anything accidentally caught
     any => {
       push(:any, ts, te)
       fgoto main;
     };
-
   *|;
 
-  ## MACHINE >> Double quote string
-  double_quote_str := |*
-    delimiter = [\~\`\!\@\#\$\%\^\&\*\)\-\_\+\=\}\]\:\;\'\"\>\,\.\?\/\|\\];
-    (^delimiter* . delimiter) -- ('\\' . delimiter) => {
+  ## MACHINES >> Double quote strings
+  dstring1 := |*
+    [^\"]*[\"] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring2 := |*
+    [^\']*[\'] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring3 := |*
+    [^\/]*[\/] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring4 := |*
+    [^\`]*[\`] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring5 := |*
+    [^\~]*[\~] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring6 := |*
+    [^\!]*[\!] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring7 := |*
+    [^\@]*[\@] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring8 := |*
+    [^\#]*[\#] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring9 := |*
+    [^\$]*[\$] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring10 := |*
+    [^\%]*[\%] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring11 := |*
+    [^\^]*[\^] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring12 := |*
+    [^\&]*[\&] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring13 := |*
+    [^\*]*[\*] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring14 := |*
+    [^\-]*[\-] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring15 := |*
+    [^\_]*[\_] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring16 := |*
+    [^\+]*[\+] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring17 := |*
+    [^\=]*[\=] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring18 := |*
+    [^\>]*[\>] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring19 := |*
+    [^\|]*[\|] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring20 := |*
+    [^\:]*[\:] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring21 := |*
+    [^\;]*[\;] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring22 := |*
+    [^\,]*[\,] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring23 := |*
+    [^\.]*[\.] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring24 := |*
+    [^\?]*[\?] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring25 := |*
+    [^\}]*[\}] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring26 := |*
+    [^\]]*[\]] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring27 := |*
+    [^\)]*[\)] => {
+      unless push_dstring(ts, te)
+        fgoto main;
+      end
+    };
+  *|;
+  dstring28 := |*
+    [^\\]*[\\] => {
       unless push_dstring(ts, te)
         fgoto main;
       end
