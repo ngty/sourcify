@@ -8,8 +8,6 @@ module Sourcify
       RUBY_2_RUBY = Ruby2Ruby.new
 
       IS_19x = RUBY_VERSION.include?('1.9.')
-      IS_JAVA = RUBY_PLATFORM =~ /java/i
-      SYMBOL_TO_PROC_SRC = '/lib/ruby/site_ruby/shared/builtin/core_ext/symbol.rb'
 
       def initialize(_proc)
         @arity, @source_code = _proc.arity, SourceCode.new(*_proc.source_location)
