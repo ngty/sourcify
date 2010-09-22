@@ -66,3 +66,26 @@ def capture(stdin_str = '')
     $stdin, $stdout, $stderr = $o_stdin, $o_stdout, $o_stderr
   end
 end
+
+def irb_exec(stdin_str = '')
+  require 'tempfile'
+  tf = Tempfile.new(nil) # get a unique tmp file (what we really want is the path)
+
+  begin
+    $o_stdin, $o_stdout = $stdin, $stdout # Backup the existing stdin/stdout
+    $stdin, $stdout = %w{in out}.map{|s| File.new("#{tf.path}~std#{s}",'w+') } # drying up
+    $stdin.puts [stdin_str, 'exit', ''].join("\n")
+    $stdin.rewind
+
+    require 'irb'
+    IRB.start
+
+    $stdout.rewind
+    irb_feedback = /^ => / # irb feedback string looks like this
+    $stdout.readlines.join.split("\n").
+      grep(irb_feedback).map{|s| s.sub(irb_feedback,'').strip }
+  ensure
+    [$stdin, $stdout, tf].each{|f| File.delete(f.path) }
+    $stdin, $stdout = $o_stdin, $o_stdout
+  end
+end
