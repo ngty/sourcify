@@ -39,7 +39,6 @@ module Sourcify
             begin
               eval(code).arity == @arity
             rescue Exception
-              p $!
               raise ParserInternalError
             end
           end
