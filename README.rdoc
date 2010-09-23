@@ -124,9 +124,6 @@ The same applies to *Blah#to_proc* & *&:blah*:
   klass.new.aa(&:bb).to_source
   # >> Sourcify::CannotHandleCreatedOnTheFlyProcError
 
-Also, irb code parsing doesn't work (yet), you will get Sourcify::CannotParseIrbCodeError
-when attempting to do so.
-
 === 2. Multiple matching procs per line error
 
 Sometimes, we may have multiple procs on a line, Sourcify can handle this as long as the
