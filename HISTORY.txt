@@ -1,3 +1,7 @@
+=== 0.3.0 (Sep 23, 2010)
+
+* Proc#to_source & friends now work in IRB as well [#ngty]
+
 === 0.2.3 (Sep 15, 2010)
 
 * since (static) code scanner doesn't run in 1.8.6, we enforce ParseTree mode
