@@ -67,25 +67,45 @@ def capture(stdin_str = '')
   end
 end
 
-def irb_exec(stdin_str = '')
-  require 'tempfile'
-  tf = Tempfile.new(nil) # get a unique tmp file (what we really want is the path)
-
+def irb_exec(stdin_str)
   begin
-    $o_stdin, $o_stdout = $stdin, $stdout # Backup the existing stdin/stdout
-    $stdin, $stdout = %w{in out}.map{|s| File.new("#{tf.path}~std#{s}",'w+') } # drying up
-    $stdin.puts [stdin_str, 'exit', ''].join("\n")
-    $stdin.rewind
+    require 'otaku'
 
-    require 'irb'
-    IRB.start
+    Otaku.start do |data|
+      # Otaku takes a SerializableProc (see http://github.com/ngty/serializable_proc),
+      # we don't want any variables isolation
+      @@_not_isolated_vars = :all
 
-    $stdout.rewind
-    irb_feedback = /^ => / # irb feedback string looks like this
-    $stdout.readlines.join.split("\n").
-      grep(irb_feedback).map{|s| s.sub(irb_feedback,'').strip }
+      # Since we are now in another process, need to explicitely require current dev sourcify
+      require 'lib/sourcify'
+
+      # Get a unique tmp file (what we really want is the path)
+      require 'tempfile'
+      tf = Tempfile.new('otaku')
+
+      begin
+        $o_stdin, $o_stdout = $stdin, $stdout # Backup the existing stdin/stdout
+        $stdin, $stdout = %w{in out}.map{|s| File.new("#{tf.path}~std#{s}",'w+') } # drying up
+        $stdin.puts [data, 'exit', ''].join("\n")
+        $stdin.rewind
+
+        require 'irb'
+        ARGV.clear # Need this to prevent IRB from blowing up
+        IRB.start(__FILE__)
+
+        $stdout.rewind
+        irb_feedback = /^ => / # irb feedback string looks like this
+        $stdout.readlines.join.split("\n").
+          grep(irb_feedback).map{|s| eval(s.sub(irb_feedback,'').strip) }
+      ensure
+        [$stdin, $stdout, tf].each{|f| File.delete(f.path) }
+        $stdin, $stdout = $o_stdin, $o_stdout
+      end
+    end
+
+    Otaku.process(stdin_str)
+
   ensure
-    [$stdin, $stdout, tf].each{|f| File.delete(f.path) }
-    $stdin, $stdout = $o_stdin, $o_stdout
+    Otaku.stop
   end
 end
