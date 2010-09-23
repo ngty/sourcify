@@ -6,14 +6,14 @@ module Sourcify
   class CannotHandleCreatedOnTheFlyProcError < Exception; end
 
   module Proc
-
     def self.included(base)
       base.class_eval do
 
-        # Rubies of 1.8.6 & earlier doesn't support something.map(&:blah)
-        meths = instance_methods.map{|m| m.to_s }
+        ref_proc = lambda {}
 
-        unless meths.include?('source_location')
+        # == Proc#source_location
+
+        unless ref_proc.respond_to?(:source_location)
 
           # Added as a bonus, by default, only 1.9.* implements this.
           def source_location
@@ -48,33 +48,36 @@ module Sourcify
 
         end
 
+        # == Proc#to_source
 
         if Object.const_defined?(:ParseTree)
+
           # When ParseTree is available, we just make use of all the convenience it offers :)
           alias_method :to_source, :to_ruby
 
-        else
+        elsif !ref_proc.respond_to?(:to_source)
+
           # Otherwise, we are going to do abit of static text parsing :(
-
-          unless meths.include?('to_source')
-            def to_source
-              Sourcify.require_rb('proc', 'parser')
-              (@parser ||= Parser.new(self)).source
-            end
-          end
-
-          unless meths.include?('to_sexp')
-            def to_sexp
-              Sourcify.require_rb('proc', 'parser')
-              (@parser ||= Parser.new(self)).sexp
-            end
+          def to_source
+            Sourcify.require_rb('proc', 'parser')
+            (@parser ||= Parser.new(self)).source
           end
 
         end
+
+        # == Proc#to_sexp
+
+        unless ref_proc.respond_to?(:to_sexp)
+          def to_sexp
+            Sourcify.require_rb('proc', 'parser')
+            (@parser ||= Parser.new(self)).sexp
+          end
+        end
+
       end
     end
-
   end
+
 end
 
 ::Proc.class_eval do
