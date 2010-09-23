@@ -11,6 +11,7 @@ begin
     gem.email = "ngty77@gmail.com"
     gem.homepage = "http://github.com/ngty/sourcify"
     gem.authors = ["NgTzeYang"]
+    gem.required_ruby_version = '>= 1.8.6'
     gem.add_dependency 'ruby2ruby', '>= 1.2.5'
     gem.add_development_dependency "bacon", ">= 0"
     gem.add_development_dependency "otaku", ">= 0.4.0"
