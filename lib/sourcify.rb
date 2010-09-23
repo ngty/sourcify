@@ -12,15 +12,18 @@ rescue LoadError
 end
 
 module Sourcify
-
-  ROOT = File.dirname(File.expand_path(__FILE__))
-
   class << self
-    def require_rb(*args)
-      require File.join(ROOT, 'sourcify', *args)
-    end
-  end
 
+    def require_rb(*args)
+      require root(*args)
+    end
+
+    def root(*args)
+      @root ||= File.join(File.dirname(File.expand_path(__FILE__)), 'sourcify')
+      File.join(@root, *args)
+    end
+
+  end
 end
 
 Sourcify.require_rb('proc')
