@@ -160,7 +160,7 @@ Under the hood, sourcify relies on RubyParser to yield s-expression, and since R
 does not yet fully handle 1.8.7/1.9.* syntax, you will get a nasty Racc::ParseError when
 you have any code that is not compatible with 1.8.6.
 
-== Is it working ??
+== Is it really working ??
 
 Sourcify spec suite currently passes in the following rubies:
 * MRI-1.8.6 (ParseTree mode ONLY)
@@ -176,6 +176,11 @@ For projects:
 * Redmine[http://github.com/edavis10/redmine]
 
 (TODO: the more the merrier)
+
+== Projects using it
+
+Projects using sourcify include:
+* wrong[http://github.com/sconover/wrong]
 
 == Additional Resources
 
