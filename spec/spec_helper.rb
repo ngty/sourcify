@@ -68,44 +68,10 @@ def capture(stdin_str = '')
 end
 
 def irb_exec(stdin_str)
-  begin
-    require 'otaku'
-
-    Otaku.start do |data|
-      # Otaku takes a SerializableProc (see http://github.com/ngty/serializable_proc),
-      # we don't want any variables isolation
-      @@_not_isolated_vars = :all
-
-      # Since we are now in another process, need to explicitely require current dev sourcify
-      require 'lib/sourcify'
-
-      # Get a unique tmp file (what we really want is the path)
-      require 'tempfile'
-      tf = Tempfile.new('otaku')
-
-      begin
-        $o_stdin, $o_stdout = $stdin, $stdout # Backup the existing stdin/stdout
-        $stdin, $stdout = %w{in out}.map{|s| File.new("#{tf.path}~std#{s}",'w+') } # drying up
-        $stdin.puts [data, 'exit', ''].join("\n")
-        $stdin.rewind
-
-        require 'irb'
-        ARGV.clear # Need this to prevent IRB from blowing up
-        IRB.start(__FILE__)
-
-        $stdout.rewind
-        irb_feedback = /^ => / # irb feedback string looks like this
-        $stdout.readlines.join.split("\n").
-          grep(irb_feedback).map{|s| eval(s.sub(irb_feedback,'').strip) }
-      ensure
-        [$stdin, $stdout, tf].each{|f| File.delete(f.path) }
-        $stdin, $stdout = $o_stdin, $o_stdout
-      end
-    end
-
-    Otaku.process(stdin_str)
-
-  ensure
-    Otaku.stop
-  end
+  # See http://tyenglog.heroku.com/2010/9/how-to-test-irb-specific-support &
+  # http://tyenglog.heroku.com/2010/9/how-to-test-irb-specific-support-2-
+  irb_feedback = /^ => /
+  %x(echo "#{stdin_str}" | irb -r lib/sourcify.rb).split("\n").
+    grep(irb_feedback).map{|s| eval(s.sub(irb_feedback,'').strip) }
 end
+
