@@ -14,7 +14,6 @@ begin
     gem.required_ruby_version = '>= 1.8.6'
     gem.add_dependency 'ruby2ruby', '>= 1.2.5'
     gem.add_development_dependency "bacon", ">= 0"
-    gem.add_development_dependency "otaku", ">= 0.4.0"
     # Plus one of the following groups:
     #
     # 1). ParseTree (better performance + dynamic goodness, but not supported on java & 1.9.*)
