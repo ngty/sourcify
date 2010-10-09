@@ -32,7 +32,7 @@ describe 'Proc#to_source from multi blocks w many matches' do
 
   else
 
-    describe 'wo nesting on same line' do
+    describe '>> wo nesting on same line' do
 
       should 'raise Sourcify::MultipleMatchingProcsPerLineError (all do...end blocks)' do
         lambda {
@@ -68,7 +68,7 @@ describe 'Proc#to_source from multi blocks w many matches' do
 
     end
 
-    describe 'w single level nesting on same line' do
+    describe '>> w single level nesting on same line' do
 
       should 'raise Sourcify::MultipleMatchingProcsPerLineError (all do...end blocks)' do
         lambda {
@@ -104,7 +104,7 @@ describe 'Proc#to_source from multi blocks w many matches' do
 
     end
 
-    describe 'w multi level nesting on same line' do
+    describe '>> w multi level nesting on same line' do
 
       should 'raise Sourcify::MultipleMatchingProcsPerLineError (all do...end blocks)' do
         lambda {
