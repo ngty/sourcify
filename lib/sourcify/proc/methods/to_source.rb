@@ -7,22 +7,26 @@ module Sourcify
 
             ref_proc = lambda {}
 
-            # Case 1: the current ruby already implements Proc#to_source, we just override it
-            # to ensure passing in extra args won't break it.
+            # Case 1: the current ruby already implements Proc#to_source,
+            # we override it to ensure it handles the extra args ..
             if ref_proc.respond_to?(:to_source)
 
               alias_method :__pre_sourcified_to_source, :to_source
 
               def to_source(opts = {})
-                __pre_sourcified_to_source
+                flag = opts[:strip_enclosure]
+                (@sourcified_sources ||= {})[flag] ||=
+                  flag ? Ruby2Ruby.new.process(to_sexp(opts)) : __pre_sourcified_to_source
               end
 
-            # Case 2: we have Proc#to_ruby (provided by ParseTree) available, let's have a thin
-            # wrapper round it.
+            # Case 2: we have Proc#to_ruby (eg. provided by ParseTree) available,
+            # we have a wrapper round it to ensure it handles the extra args ..
             elsif ref_proc.respond_to?(:to_ruby)
 
               def to_source(opts = {})
-                to_ruby
+                flag = opts[:strip_enclosure]
+                (@sourcified_sources ||= {})[flag] ||=
+                  flag ? Ruby2Ruby.new.process(to_sexp(opts)) : to_ruby
               end
 
             # Case 3: okko, we have to implement our own Proc#to_source ...
@@ -30,7 +34,7 @@ module Sourcify
 
               def to_source(opts = {})
                 Sourcify.require_rb('proc', 'parser')
-                (@parser ||= Parser.new(self, opts)).source
+                (@sourcified_parser ||= Parser.new(self)).source(opts)
               end
 
             end

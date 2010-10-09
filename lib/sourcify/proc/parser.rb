@@ -9,34 +9,37 @@ module Sourcify
 
       IS_19x = RUBY_VERSION.include?('1.9.')
 
-      def initialize(_proc, opts)
-        @opts, @arity, @source_code = opts, _proc.arity, SourceCode.new(*_proc.source_location)
+      def initialize(_proc)
+        @arity, @source_code = _proc.arity, SourceCode.new(*_proc.source_location)
         raise CannotHandleCreatedOnTheFlyProcError unless @source_code.file
         raise CannotParseEvalCodeError if @source_code.file == '(eval)'
         @binding = _proc.binding # this must come after the above check
       end
 
-      def source
-        @source ||= RUBY_2_RUBY.process(Sexp.from_array(sexp.to_a))
+      def source(opts)
+        (@sources ||= {})[opts.hash] ||=
+          RUBY_2_RUBY.process(Sexp.from_array(sexp(opts).to_a))
       end
 
-      def sexp
-        @sexp ||= (
-          raw_sexp = RUBY_PARSER.parse(raw_source, @source_code.file)
-          Sexp.from_array(Normalizer.process(raw_sexp, @binding))
+      def sexp(opts)
+        (@sexps ||= {})[opts.hash] ||= (
+          raw_sexp = RUBY_PARSER.parse(raw_source(opts), @source_code.file)
+          sexp = Normalizer.process(raw_sexp, @binding)
+          opts[:strip_enclosure] ? Sexp.from_array(sexp.to_a.last) : sexp
         )
       end
 
       private
 
-        def raw_source
-          CodeScanner.process(@source_code, @opts) do |code|
-            begin
-              eval(code).arity == @arity
-            rescue Exception
-              raise ParserInternalError
+        def raw_source(opts)
+          (@raw_sources ||= {})[opts[:attached_to] || false] ||=
+            CodeScanner.process(@source_code, opts) do |code|
+              begin
+                eval(code).arity == @arity
+              rescue Exception
+                raise ParserInternalError
+              end
             end
-          end
         end
 
         class Normalizer
@@ -44,7 +47,7 @@ module Sourcify
 
             def process(sexp, binding)
               @binding = binding
-              fix_no_arg_method_calls(sexp.to_a)
+              Sexp.from_array(fix_no_arg_method_calls(sexp.to_a))
             end
 
             def fix_no_arg_method_calls(array)

@@ -7,14 +7,18 @@ module Sourcify
 
             ref_proc = lambda {}
 
-            # Case 1: we already have Proc#to_sexp (provided by ParseTree) available, we just
-            # override it to ensure passing in extra args won't break it.
+            # Case 1: we already have Proc#to_sexp (eg. provided by ParseTree) available,
+            # we override it to ensure it handles the extra args ..
             if ref_proc.respond_to?(:to_sexp)
 
               alias_method :__pre_sourcified_to_sexp, :to_sexp
 
               def to_sexp(opts = {})
-                __pre_sourcified_to_sexp
+                sexp, flag = __pre_sourcified_to_sexp, opts[:strip_enclosure]
+                Marshal.load(Marshal.dump( # need a deep copy cos the caller may reset the sexp
+                  (@sourcified_sexps ||= {})[flag] ||=
+                    flag ? Sexp.from_array(sexp.to_a.last) : sexp
+                ))
               end
 
             # Case 2: okko, we have to implement our own Proc#to_sexp ...
@@ -22,7 +26,7 @@ module Sourcify
 
               def to_sexp(opts = {})
                 Sourcify.require_rb('proc', 'parser')
-                (@parser ||= Parser.new(self, opts)).sexp
+                (@sourcified_parser ||= Parser.new(self)).sexp(opts)
               end
 
             end
