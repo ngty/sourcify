@@ -42,16 +42,16 @@ def normalize_code(code)
   Ruby2Ruby.new.process(code_to_sexp(code))
 end
 
-def having_source(expected)
+def having_source(expected, opts={})
   lambda do |_proc|
-    normalize_code(_proc.to_source) == normalize_code(expected)
+    normalize_code(_proc.to_source(opts)) == normalize_code(expected)
   end
 end
 
-def having_sexp(expected)
+def having_sexp(expected, opts={})
   lambda do |_proc|
     expected = eval(expected) if expected.is_a?(String)
-    _proc.to_sexp.inspect == expected.inspect
+    _proc.to_sexp(opts).inspect == expected.inspect
   end
 end
 

@@ -9,8 +9,8 @@ module Sourcify
 
       IS_19x = RUBY_VERSION.include?('1.9.')
 
-      def initialize(_proc)
-        @arity, @source_code = _proc.arity, SourceCode.new(*_proc.source_location)
+      def initialize(_proc, opts)
+        @opts, @arity, @source_code = opts, _proc.arity, SourceCode.new(*_proc.source_location)
         raise CannotHandleCreatedOnTheFlyProcError unless @source_code.file
         raise CannotParseEvalCodeError if @source_code.file == '(eval)'
         @binding = _proc.binding # this must come after the above check
@@ -30,7 +30,7 @@ module Sourcify
       private
 
         def raw_source
-          CodeScanner.process(@source_code) do |code|
+          CodeScanner.process(@source_code, @opts) do |code|
             begin
               eval(code).arity == @arity
             rescue Exception
@@ -80,18 +80,21 @@ module Sourcify
         class CodeScanner
           class << self
 
-            def process(source_code, &matcher)
-              result = rscan(source_code.to_s, false).flatten.select(&matcher)
+            def process(source_code, opts, &matcher)
+              result = rscan(source_code.to_s, opts[:attached_to] || /.*/, false).flatten.select(&matcher)
               case result.size
+              when 0 then raise NoMatchingProcError
               when 1 then ("\n" * source_code.line) + result[0]
               else raise MultipleMatchingProcsPerLineError
               end
             end
 
-            def rscan(str, stop_on_newline)
-              (Scanner.process(str, stop_on_newline) || []).map do |outer|
-                inner = outer.is_a?(Symbol) ? [] : rscan(outer.sub(/^proc\s*(do|\{)/,''), true)
-                [outer, inner]
+            def rscan(str, start_pattern, stop_on_newline)
+              (Scanner.process(str, start_pattern, stop_on_newline) || []).map do |outer|
+                [
+                  outer,
+                  outer.is_a?(Symbol) ? [] : rscan(outer.sub(/^proc\s*(do|\{)/,''), start_pattern, true)
+                ]
               end
             end
 

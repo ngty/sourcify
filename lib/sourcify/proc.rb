@@ -1,6 +1,7 @@
 module Sourcify
 
   class MultipleMatchingProcsPerLineError < Exception; end
+  class NoMatchingProcError < Exception; end
   class ParserInternalError < Exception; end
   class CannotParseEvalCodeError < Exception; end
   class CannotHandleCreatedOnTheFlyProcError < Exception; end
@@ -50,27 +51,35 @@ module Sourcify
 
         # == Proc#to_source
 
-        if Object.const_defined?(:ParseTree)
+        if ref_proc.respond_to?(:to_ruby)
 
-          # When ParseTree is available, we just make use of all the convenience it offers :)
-          alias_method :to_source, :to_ruby
+          def to_source(opts = {})
+            to_ruby
+          end
 
-        elsif !ref_proc.respond_to?(:to_source)
+        else
 
-          # Otherwise, we are going to do abit of static text parsing :(
-          def to_source
+          def to_source(opts = {})
             Sourcify.require_rb('proc', 'parser')
-            (@parser ||= Parser.new(self)).source
+            (@parser ||= Parser.new(self, opts)).source
           end
 
         end
 
         # == Proc#to_sexp
 
-        unless ref_proc.respond_to?(:to_sexp)
-          def to_sexp
+        if ref_proc.respond_to?(:to_sexp)
+
+          alias_method :__pre_sourcify_to_sexp, :to_sexp
+
+          def to_sexp(opts = {})
+            __pre_sourcify_to_sexp
+          end
+
+        else
+          def to_sexp(opts = {})
             Sourcify.require_rb('proc', 'parser')
-            (@parser ||= Parser.new(self)).sexp
+            (@parser ||= Parser.new(self, opts)).sexp
           end
         end
 

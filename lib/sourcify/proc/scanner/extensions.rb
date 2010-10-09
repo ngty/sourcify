@@ -9,8 +9,9 @@ module Sourcify
 
         class Escape < Exception; end
 
-        def process(data, stop_on_newline = false)
+        def process(data, start_pattern = /.*/, stop_on_newline = false)
           begin
+            @start_pattern = start_pattern
             @stop_on_newline = stop_on_newline
             @results, @data = [], data.unpack("c*")
             reset_attributes
@@ -76,8 +77,14 @@ module Sourcify
 
         def increment_counter(key, count = 1)
           return if other_counter(key).started?
-          counter = this_counter(key)
-          offset_attributes unless counter.started?
+          unless (counter = this_counter(key)).started?
+#            puts ''
+#            puts 'codified_tokens = %s' % codified_tokens
+#            puts 'start_pattern = %s' % @start_pattern
+#            puts 'value = %s' % (codified_tokens =~ @start_pattern)
+            return unless codified_tokens =~ @start_pattern
+            offset_attributes
+          end
           counter.increment(count)
         end
 
@@ -101,7 +108,7 @@ module Sourcify
 
         def construct_result_code
           begin
-            code = 'proc ' + @tokens.map(&:last).join
+            code = 'proc ' + codified_tokens
             eval(code) # TODO: any better way to check for completeness of proc code ??
             @results << code
             raise Escape if @stop_on_newline or @lineno != 1
@@ -109,6 +116,10 @@ module Sourcify
           rescue Exception
             raise if $!.is_a?(Escape)
           end
+        end
+
+        def codified_tokens
+          @tokens.map(&:last).join
         end
 
         def reset_attributes
