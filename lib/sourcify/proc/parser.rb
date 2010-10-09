@@ -81,7 +81,8 @@ module Sourcify
           class << self
 
             def process(source_code, opts, &matcher)
-              result = rscan(source_code.to_s, opts[:attached_to] || /.*/, false).flatten.select(&matcher)
+              pattern = opts[:attached_to] || /.*/
+              result = rscan(source_code.to_s, pattern, false).flatten.select(&matcher)
               case result.size
               when 0 then raise NoMatchingProcError
               when 1 then ("\n" * source_code.line) + result[0]
@@ -89,12 +90,9 @@ module Sourcify
               end
             end
 
-            def rscan(str, start_pattern, stop_on_newline)
-              (Scanner.process(str, start_pattern, stop_on_newline) || []).map do |outer|
-                [
-                  outer,
-                  outer.is_a?(Symbol) ? [] : rscan(outer.sub(/^proc\s*(do|\{)/,''), start_pattern, true)
-                ]
+            def rscan(str, pattern, stop_on_newline)
+              (Scanner.process(str, pattern, stop_on_newline) || []).map do |outer|
+                [outer, rscan(outer.sub(/^proc\s*(do|\{)/,''), pattern, true)]
               end
             end
 
