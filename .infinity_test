@@ -1,0 +1,28 @@
+module RVM
+  module Shell
+    class AbstractWrapper
+      def raw_stdout_to_parts(c)
+        raise IncompleteCommandError if !command_complete?(c)
+        before, after = c.split(COMMAND_EPILOG_START, 2)
+        epilog, after = after.split(COMMAND_EPILOG_END, 2)
+        # HACK .. need to apply gsub to prevent yaml-related error
+        return before, YAML.load(epilog.strip.gsub("\\\"\n","\"\n")), after
+      end
+    end
+  end
+end
+
+# See http://github.com/tomas-stefano/infinity_test/wiki/Customize-Infinity-Test
+infinity_test do
+  use \
+    :test_framework => :bacon,
+    :rubies => %w(
+      ruby-1.8.6-p399@parsetree
+      ruby-1.8.7-p302@parsetree
+      ree-1.8.7-2010.02@parsetree
+      ruby-1.8.7-p302
+      ree-1.8.7-2010.02
+      ruby-1.9.1-p376
+      jruby-1.5.3
+    )
+end
