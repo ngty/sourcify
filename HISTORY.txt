@@ -1,3 +1,14 @@
+=== Current
+
+* adds Proc#to_source(:attached_to => ...) & the Proc#to_sexp equivalent to narrow
+  down code scanning, avoiding unnecessary Sourcify::MultipleMatchingProcsPerLineError,
+  useful for libs (eg. cross-stub), which specifically want to grab code block attached
+  to a specific method
+* adds Proc#to_source(:strip_enclosure => ...) & the Proc#to_sexp equivalent to ease
+  stripping of enclosing 'proc {|params| ... }', returning only the inner code body '...'
+* integrates with infinity_test (by adding .infinity_test) to ease specs running in
+  different rubies
+
 === 0.3.0 (Sep 23, 2010)
 
 * Proc#to_source & friends now work in IRB as well [#ngty]
