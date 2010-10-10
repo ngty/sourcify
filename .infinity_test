@@ -16,7 +16,7 @@ end
 # See http://github.com/tomas-stefano/infinity_test/wiki/Customize-Infinity-Test
 infinity_test do
 
-  # Sets bacon in mute mode to avoid excessive noise that makes it hard to pinpoint errors
+  # Sets bacon mute to avoid excessive noise that makes it hard to pinpoint errors
   ENV['MUTE_BACON'] = 'true'
 
   use \
@@ -26,6 +26,7 @@ infinity_test do
       ruby-1.8.7-p302
       ree-1.8.7-2010.02
       ruby-1.9.1-p376
+      ruby-1.9.2-p0
       jruby-1.5.3
     )
 end
