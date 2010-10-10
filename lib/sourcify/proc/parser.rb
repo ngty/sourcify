@@ -10,7 +10,7 @@ module Sourcify
       IS_19x = RUBY_VERSION.include?('1.9.')
 
       def initialize(_proc)
-        @arity, @source_code = _proc.arity, SourceCode.new(*_proc.source_location)
+        @arity, @source_code = _proc.arity, SourceCode.new(*_proc.source_location(false))
         raise CannotHandleCreatedOnTheFlyProcError unless @source_code.file
         raise CannotParseEvalCodeError if @source_code.file == '(eval)'
         @binding = _proc.binding # this must come after the above check
