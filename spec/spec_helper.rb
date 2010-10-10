@@ -18,6 +18,7 @@ rescue LoadError
   raise $!
 end
 
+Bacon.extend(Bacon::TestUnitOutput) # testunit-like output (just dots)
 Bacon.summary_on_exit
 
 def has_parsetree?
