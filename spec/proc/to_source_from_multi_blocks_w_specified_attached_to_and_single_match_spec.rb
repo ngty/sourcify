@@ -2,7 +2,7 @@ require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
 
 describe 'Proc#to_source w specified {:attached_to => ...} & single match' do
 
-  options = {:attached_to => /^.*?(\W|)watever(\W)/}
+  options = {:attached_to => :watever}
 
   should 'handle no nesting on same line' do
     b1 = lambda {|a| @x1+1 }; b2 = watever { @x1+2 }; b3 = lambda { @x1+3 }

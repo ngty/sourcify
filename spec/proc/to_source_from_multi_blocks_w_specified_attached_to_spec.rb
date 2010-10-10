@@ -1,79 +1,67 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
 
-describe 'Proc#to_source w specified {:attached_to => ...} & single match' do
+describe 'Proc#to_source w specified {:attached_to => ...}' do
+  unless has_parsetree?
 
-  options = {:attached_to => /^.*?(\W|)watever(\W)/}
+    err1 = Sourcify::MultipleMatchingProcsPerLineError
+    err2 = Sourcify::NoMatchingProcError
 
-  describe '>> wo nesting on same line' do
+    describe '>> w :attached_to as regexp' do
 
-    should 'handle (all do...end blocks)' do
-      b1 = lambda do |a| @x1+1 end; b2 = watever do @x1+2 end; b3 = lambda do @x1+3 end
-      b2.should.be having_source('proc { @x1+2 }', options)
+      should "raise Sourcify::MultipleMatchingProcsPerLineError for multiple matches" do
+        b1 = lambda {|a| @x }; b2 = lambda { @x }; b3 = lambda { @x }
+        lambda { b2.to_source(:attached_to => /^(?:.*?\W|)lambda(?:\W)/) }.should.raise(err1)
+      end
+
+      should "raise Sourcify::NoMatchingProcError for no match" do
+        b1 = lambda {|a| @x }; b2 = lambda { @x }; b3 = lambda { @x }
+        lambda { b2.to_source(:attached_to => /^(?:.*?\W|)proc(?:\W)/) }.should.raise(err2)
+      end
+
+      should "handle for single match" do
+        b1 = lambda {|a| @x1 }; b2 = proc { @x2 }; b3 = lambda { @x3 }
+        b2.should.be having_source('proc { @x2 }', :attached_to => /^(?:.*?\W|)proc(?:\W)/)
+      end
+
     end
 
-    should 'handle (all {...} blocks)' do
-      b1 = lambda {|a| @x2+1 }; b2 = watever { @x2+2 }; b3 = lambda { @x2+3 }
-      b2.should.be having_source('proc { @x2+2 }', options)
+    describe '>> w :attached_to as string' do
+
+      should "raise Sourcify::MultipleMatchingProcsPerLineError for multiple matches" do
+        b1 = lambda {|a| @x }; b2 = lambda { @x }; b3 = lambda { @x }
+        lambda { b2.to_source(:attached_to => 'lambda') }.should.raise(err1)
+      end
+
+      should "raise Sourcify::NoMatchingProcError for no match" do
+        b1 = lambda {|a| @x }; b2 = lambda { @x }; b3 = lambda { @x }
+        lambda { b2.to_source(:attached_to => 'proc') }.should.raise(err2)
+      end
+
+      should "handle for single match" do
+        b1 = lambda {|a| @x1 }; b2 = proc { @x2 }; b3 = lambda { @x3 }
+        b2.should.be having_source('proc { @x2 }', :attached_to => 'proc')
+      end
+
     end
 
-    should 'handle (mixed {...} w do...end blocks)' do
-      b1 = lambda {|a| @x3+1 }; b2 = watever do @x3+2 end; b3 = lambda { @x3+3 }
-      b2.should.be having_source('proc { @x3+2 }', options)
-    end
+    describe '>> w :attached_to as symbol' do
 
-    should 'handle (mixed do...end w {...} blocks)' do
-      b1 = lambda do |a| @x4+1 end; b2 = watever { @x4+2 }; b3 = lambda do @x4+3 end
-      b2.should.be having_source('proc { @x4+2 }', options)
-    end
+      should "raise Sourcify::MultipleMatchingProcsPerLineError for multiple matches" do
+        b1 = lambda {|a| @x }; b2 = lambda { @x }; b3 = lambda { @x }
+        lambda { b2.to_source(:attached_to => :lambda) }.should.raise(err1)
+      end
 
-  end
+      should "raise Sourcify::NoMatchingProcError for no match" do
+        b1 = lambda {|a| @x }; b2 = lambda { @x }; b3 = lambda { @x }
+        lambda { b2.to_source(:attached_to => :proc) }.should.raise(err2)
+      end
 
-  describe '>> w single level nesting on same line' do
+      should "handle for single match" do
+        b1 = lambda {|a| @x1 }; b2 = proc { @x2 }; b3 = lambda { @x3 }
+        b2.should.be having_source('proc { @x2 }', :attached_to => :proc)
+      end
 
-    should 'handle (all do...end blocks)' do
-      b1 = lambda do |a| @x1+1 end; b2 = watever do lambda do @x1+2 end end
-      b2.should.be having_source('proc { lambda { @x1+2 } }', options)
-    end
-
-    should 'handle (all {...} blocks)' do
-      b1 = lambda {|a| @x2+1 }; b2 = watever { lambda { @x2+2 } }
-      b2.should.be having_source('proc { lambda { @x2+2 } }', options)
-    end
-
-    should 'handle (mixed {...} w do...end blocks)' do
-      b1 = lambda {|a| @x3+1 }; b2 = watever do lambda { @x3+2 } end
-      b2.should.be having_source('proc { lambda { @x3+2 } }', options)
-    end
-
-    should 'handle (mixed do...end w {...} blocks)' do
-      b1 = lambda do |a| @x4+1 end; b2 = watever { lambda do @x4+2 end }
-      b2.should.be having_source('proc { lambda { @x4+2 } }', options)
-    end
-
-  end
-
-  describe '>> w multi level nesting on same line' do
-
-    should 'handle (all do...end blocks)' do
-      b1 = lambda do |a| watever do lambda do @x1 end end end
-      (b2 = b1.call(1)).should.be having_source('proc { lambda { @x1 } }', options)
-    end
-
-    should 'handle (all {...} blocks)' do
-      b1 = lambda {|a| watever { lambda { @x2 } } }
-      (b2 = b1.call(1)).should.be having_source('proc { lambda { @x2 } }', options)
-    end
-
-    should 'handle (mixed {...} w do...end blocks)' do
-      b1 = lambda {|a| watever do lambda { @x3 } end }
-      (b2 = b1.call(1)).should.be having_source('proc { lambda { @x3 } }', options)
-    end
-
-    should 'handle (mixed do...end w {...} blocks)' do
-      b1 = lambda do |a| watever { lambda do @x4 end } end
-      (b2 = b1.call(1)).should.be having_source('proc { lambda { @x4 } }', options)
     end
 
   end
-
 end

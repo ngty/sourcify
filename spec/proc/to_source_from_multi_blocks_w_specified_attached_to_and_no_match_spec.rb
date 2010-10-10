@@ -2,7 +2,7 @@ require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
 
 describe 'Proc#to_source w specified {:attached_to => ...} & no match' do
 
-  options = {:attached_to => /^.*?(\W|)forever(\W)/}
+  options = {:attached_to => :forever}
 
   if has_parsetree?
 

@@ -72,17 +72,15 @@ module Sourcify
 
         def increment_lineno
           @lineno += 1
-          raise Escape if @stop_on_newline || !@results.empty?
+          if @stop_on_newline || !@results.empty? || (@results.empty? && @rejecting_block)
+            raise Escape
+          end
         end
 
         def increment_counter(key, count = 1)
           return if other_counter(key).started?
           unless (counter = this_counter(key)).started?
-#            puts ''
-#            puts 'codified_tokens = %s' % codified_tokens
-#            puts 'start_pattern = %s' % @start_pattern
-#            puts 'value = %s' % (codified_tokens =~ @start_pattern)
-            return unless codified_tokens =~ @start_pattern
+            return if (@rejecting_block = codified_tokens !~ @start_pattern)
             offset_attributes
           end
           counter.increment(count)
@@ -128,6 +126,7 @@ module Sourcify
           @heredoc, @dstring, @comment = nil
           @do_end_counter = DoEndBlockCounter.new
           @brace_counter = BraceBlockCounter.new
+          @rejecting_block = false
         end
 
         def offset_attributes

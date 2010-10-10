@@ -2,7 +2,7 @@ require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
 
 describe 'Proc#to_source w specified {:attached_to => ...} & single match' do
 
-  options = {:attached_to => /^.*?(\W|)lambda(\W)/}
+  options = {:attached_to => :lambda}
 
   if has_parsetree?
 

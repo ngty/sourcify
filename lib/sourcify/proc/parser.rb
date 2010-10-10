@@ -84,12 +84,21 @@ module Sourcify
           class << self
 
             def process(source_code, opts, &matcher)
-              pattern = opts[:attached_to] || /.*/
-              result = rscan(source_code.to_s, pattern, false).flatten.select(&matcher)
-              case result.size
+              pattern = scan_pattern_hint(opts[:attached_to])
+              results = rscan(source_code.to_s, pattern, false).flatten.select(&matcher)
+              case results.size
               when 0 then raise NoMatchingProcError
-              when 1 then ("\n" * source_code.line) + result[0]
+              when 1 then ("\n" * source_code.line) + results[0]
               else raise MultipleMatchingProcsPerLineError
+              end
+            end
+
+            def scan_pattern_hint(val)
+              case val
+              when Regexp then val
+              when String, Symbol then /^(?:.*?\W|)#{val}(?:\W)/
+              when nil then /.*/
+              else raise TypeError
               end
             end
 
