@@ -19,8 +19,6 @@ infinity_test do
     :test_framework => :bacon,
     :rubies => %w(
       ruby-1.8.6-p399@parsetree
-      ruby-1.8.7-p302@parsetree
-      ree-1.8.7-2010.02@parsetree
       ruby-1.8.7-p302
       ree-1.8.7-2010.02
       ruby-1.9.1-p376
