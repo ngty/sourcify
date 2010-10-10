@@ -1,3 +1,4 @@
+# Hacking RVM
 module RVM
   module Shell
     class AbstractWrapper
@@ -14,7 +15,10 @@ end
 
 # See http://github.com/tomas-stefano/infinity_test/wiki/Customize-Infinity-Test
 infinity_test do
+
+  # Sets bacon in mute mode to avoid excessive noise that makes it hard to pinpoint errors
   ENV['MUTE_BACON'] = 'true'
+
   use \
     :test_framework => :bacon,
     :rubies => %w(
