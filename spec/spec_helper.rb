@@ -101,8 +101,9 @@ end
 def irb_exec(stdin_str)
   # See http://tyenglog.heroku.com/2010/9/how-to-test-irb-specific-support &
   # http://tyenglog.heroku.com/2010/9/how-to-test-irb-specific-support-2-
+  sourcify_rb = File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib', 'sourcify.rb')
   irb_feedback = /^ => /
-  %x(echo "#{stdin_str}" | irb -r lib/sourcify.rb).split("\n").
+  %x(echo "#{stdin_str}" | irb -r #{sourcify_rb}).split("\n").
     grep(irb_feedback).map{|s| eval(s.sub(irb_feedback,'').strip) }
 end
 

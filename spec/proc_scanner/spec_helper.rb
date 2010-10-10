@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), '..', 'spec_helper')
+require File.join(File.expand_path(File.dirname(__FILE__)), '..', 'spec_helper')
 
 module Sourcify::Proc::Scanner
   class << self ; attr_reader :tokens ; end
