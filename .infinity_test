@@ -14,6 +14,7 @@ end
 
 # See http://github.com/tomas-stefano/infinity_test/wiki/Customize-Infinity-Test
 infinity_test do
+  ENV['MUTE_BACON'] = 'true'
   use \
     :test_framework => :bacon,
     :rubies => %w(

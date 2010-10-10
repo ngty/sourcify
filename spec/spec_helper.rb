@@ -1,10 +1,13 @@
 require 'rubygems'
-require 'bacon'
 require 'ruby2ruby'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'sourcify'
+
+# ///////////////////////////////////////////////////////////
+# Regenerate ragel-based scanner
+# ///////////////////////////////////////////////////////////
 
 ragel_dir = File.join(File.dirname(__FILE__), '..', 'lib', 'sourcify', 'proc')
 ragel_file = File.join(ragel_dir, 'scanner.rl')
@@ -18,8 +21,35 @@ rescue LoadError
   raise $!
 end
 
-Bacon.extend(Bacon::TestUnitOutput) # testunit-like output (just dots)
+# ///////////////////////////////////////////////////////////
+# Bacon
+# ///////////////////////////////////////////////////////////
+
+require 'bacon'
+Bacon.extend(Bacon::TestUnitOutput)
 Bacon.summary_on_exit
+
+# Removing the extra noises in output, making bacon even less verbose !!
+if ENV['MUTE_BACON'] == 'true'
+  Bacon.extend(Module.new {
+
+    def handle_requirement(description)
+      unless (error = yield).empty?
+        print error[0..0]
+      end
+    end
+
+    def handle_summary
+      puts "", "  %d tests, %d assertions, %d failures, %d errors" %
+        Bacon::Counter.values_at(:specifications, :requirements, :failed, :errors)
+    end
+
+  })
+end
+
+# ///////////////////////////////////////////////////////////
+# Spec helpers & matchers
+# ///////////////////////////////////////////////////////////
 
 def has_parsetree?
   Object.const_defined?(:ParseTree)
