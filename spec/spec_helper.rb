@@ -103,7 +103,9 @@ def irb_exec(stdin_str)
   # http://tyenglog.heroku.com/2010/9/how-to-test-irb-specific-support-2-
   sourcify_rb = File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib', 'sourcify.rb')
   irb_feedback = /^ => /
-  %x(echo "#{stdin_str}" | irb -r #{sourcify_rb}).split("\n").
+  values = %x(echo "#{stdin_str}" | irb -r #{sourcify_rb}).split("\n").
     grep(irb_feedback).map{|s| eval(s.sub(irb_feedback,'').strip) }
+  # IRB behaves slightly differently in 1.9.2 for appending newline
+  (values[-1].nil? && RUBY_VERSION.include?('1.9.2')) ? values[0 .. -2] : values
 end
 
