@@ -8,6 +8,11 @@ describe 'Proc#to_source w specified {:attached_to => ...} & single match' do
     b1 = lambda {|a| @x1+1 }; b2 = watever { @x1+2 }; b3 = lambda { @x1+3 }
     b2.should.be having_source('proc { @x1+2 }', options)
   end
+  
+  should 'handle no nesting on same line with the / character' do
+    b1 = lambda {|a| @x1+1 }; b2 = watever { @x1/2 }; b3 = lambda { @x1+3 }
+    b2.should.be having_source('proc { @x1/2 }', options)
+  end
 
   should 'handle single level nesting on same line' do
     b1 = lambda {|a| @x2+1 }; b2 = watever { lambda { @x2+2 } }
