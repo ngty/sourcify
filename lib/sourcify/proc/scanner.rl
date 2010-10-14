@@ -132,7 +132,8 @@ module Sourcify
       sqm . sqs20 | sqm . sqs21 | sqm . sqs22 | sqm . sqs23 | sqm . sqs24 |
       sqm . sqs25 | sqm . sqs26 | sqm . sqs27 | sqm . sqs28
     ) => {
-      push(:sstring, ts, te)
+      push(:sstring, ts, te);
+      fgoto main;
     };
 
     ## == Double quote strings
@@ -441,8 +442,16 @@ module Sourcify
       fgoto heredoc;
     };
 
-    ('"' | "'" | '`' | '/' | '%') => {
+    ('"' | "'" | '`' | '%') => {
       fhold; fgoto string;
+    };
+
+    '/' => {
+      if preceded_with?(:char, :digit, :var, :const, :symbol, :dstring, :sstring, ')', ']', '}')
+        push(:op, ts, te)
+      else
+        fhold; fgoto string;
+      end
     };
 
     ## == Misc
@@ -451,6 +460,8 @@ module Sourcify
     const       => { push(:const, ts, te) };
     symbol      => { push(:symbol, ts, te) };
     mspaces     => { push(:space, ts, te) };
+    [0-9]       => { push(:digit, ts, te) };
+    lower       => { push(:char, ts, te) };
     any         => { push(:any, ts, te) };
 
   *|;

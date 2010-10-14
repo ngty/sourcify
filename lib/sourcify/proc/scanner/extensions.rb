@@ -70,6 +70,14 @@ module Sourcify
           @tokens << [:assoc, '=>']
         end
 
+        def preceded_with?(*args)
+          begin
+            prev_token = @tokens[-1][0] == :space ? @tokens[-2] : @tokens[-1]
+            !([args].flatten & prev_token).empty?
+          rescue
+          end
+        end
+
         def increment_lineno
           @lineno += 1
           if @stop_on_newline || !@results.empty? || (@results.empty? && @rejecting_block)
