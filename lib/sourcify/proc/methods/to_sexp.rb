@@ -1,6 +1,6 @@
 module Sourcify
   module Proc
-    module Methods
+    module Methods #:nodoc:all
       module ToSexp
         def self.included(base)
           base.class_eval do
