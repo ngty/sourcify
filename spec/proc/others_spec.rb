@@ -12,6 +12,10 @@ describe "Misc" do
     s_proc.should.be having_source('proc { :test }')
   end
 
+  should "handle proc with '/' char" do
+    (lambda { @x1/2 }).should.be having_source('proc { @x1/2 }')
+  end
+
   should "handle lexer bug in missing trailing chars after '=>' operator" do
     # This example addresses bug @ http://redmine.ruby-lang.org/issues/show/3765
     {
@@ -26,7 +30,7 @@ describe "Misc" do
     }.values.last.should.be having_source('proc { :test }')
   end
 
-  unless Object.const_defined?(:ParseTree)
+  unless has_parsetree?
     should "raise Sourcify::CannotParseEvalCodeError when proc is created from eval" do
       lambda { eval("proc {:test }").to_source }.should.
         raise(Sourcify::CannotParseEvalCodeError)
