@@ -13,15 +13,15 @@ begin
     gem.authors = ["NgTzeYang"]
     gem.required_ruby_version = '>= 1.8.6'
     gem.add_dependency 'ruby2ruby', '>= 1.2.5'
+    gem.add_dependency "sexp_processor", ">= 3.0.5"
     gem.add_development_dependency "bacon", ">= 0"
     # Plus one of the following groups:
     #
     # 1). ParseTree (better performance + dynamic goodness, but not supported on java & 1.9.*)
     # >> gem.add_dependency "ParseTree", ">= 3.0.6"
     #
-    # 2). RubyParser (supported for all)
+    # 2). RubyParser (supported for all except 1.8.6)
     # >> gem.add_dependency "ruby_parser", ">= 2.0.5"
-    # >> gem.add_dependency "sexp_processor", ">= 3.0.5"
     # >> gem.add_dependency "file-tail", ">= 1.0.5"
   end
   Jeweler::GemcutterTasks.new
