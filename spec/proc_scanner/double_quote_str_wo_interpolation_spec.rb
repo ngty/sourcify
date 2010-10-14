@@ -9,11 +9,11 @@ describe 'Double quote strings (wo interpolation)' do
     ['Q', 'W', 'x', 'r', ''].each do |t|
 
       should "handle %#{t}#{q1}...#{q2} (wo escape (single))" do
-        process(" xx %#{t}#{q1}hello#{q2} ").should.include([:dstring, "%#{t}#{q1}hello#{q2}"])
+        process(" xx; %#{t}#{q1}hello#{q2} ").should.include([:dstring, "%#{t}#{q1}hello#{q2}"])
       end
 
       should "handle %#{t}#{q1}...#{q2} (wo escape (multiple))" do
-        tokens = process(" xx  %#{t}#{q1}hello#{q2} %#{t}#{q1}world#{q2}  ")
+        tokens = process(" xx; %#{t}#{q1}hello#{q2} %#{t}#{q1}world#{q2}  ")
         tokens.should.include([:dstring, "%#{t}#{q1}hello#{q2}"])
         tokens.should.include([:dstring, "%#{t}#{q1}world#{q2}"])
       end
@@ -23,22 +23,22 @@ describe 'Double quote strings (wo interpolation)' do
       unless q1 == '\\'
 
         should "handle %#{t}#{q1}...#{q2} (w escape (single))" do
-          process(" xx %#{t}#{q1}hel\\#{q2}lo#{q2} ").should.
+          process(" xx; %#{t}#{q1}hel\\#{q2}lo#{q2} ").should.
             include([:dstring, "%#{t}#{q1}hel\\#{q2}lo#{q2}"])
         end
 
         should "handle %#{t}#{q1}...#{q2} (w escape (multiple))" do
-          process(" xx %#{t}#{q1}h\\#{q2}el\\#{q2}lo#{q2} ").should.
+          process(" xx; %#{t}#{q1}h\\#{q2}el\\#{q2}lo#{q2} ").should.
             include([:dstring, "%#{t}#{q1}h\\#{q2}el\\#{q2}lo#{q2}"])
         end
 
         should "handle %#{t}#{q1}\\\\#{q2}" do
-          process(" xx %#{t}#{q1}\\\\#{q2} %#{t}#{q2}lo#{q2} ").should.
+          process(" xx; %#{t}#{q1}\\\\#{q2} %#{t}#{q2}lo#{q2} ").should.
             include([:dstring, "%#{t}#{q1}\\\\#{q2}"])
         end
 
         should "handle %#{t}#{q1}#{q2}" do
-          process(" xx %#{t}#{q1}#{q2} %#{t}#{q2}lo#{q2} ").should.
+          process(" xx; %#{t}#{q1}#{q2} %#{t}#{q2}lo#{q2} ").should.
             include([:dstring, "%#{t}#{q1}#{q2}"])
         end
 
@@ -50,27 +50,27 @@ describe 'Double quote strings (wo interpolation)' do
   %w{" / `}.each do |q|
 
     should "handle #{q}...#{q} (wo escape (single))" do
-      process(%Q( xx #{q}hello#{q} )).should.include([:dstring, %Q(#{q}hello#{q})])
+      process(%Q( xx; #{q}hello#{q} )).should.include([:dstring, %Q(#{q}hello#{q})])
     end
 
     should "handle #{q}...#{q} (wo escape & multiple)" do
-      tokens = process(%Q( xx #{q}hello#{q} #{q}world#{q} ))
+      tokens = process(%Q( xx; #{q}hello#{q} ; #{q}world#{q} ))
       tokens.should.include([:dstring, %Q(#{q}hello#{q})])
       tokens.should.include([:dstring, %Q(#{q}world#{q})])
     end
 
     should "handle #{q}...#{q} (w escape (single))" do
-      process(%Q( xx #{q}hel\\#{q}lo#{q} )).should.include([:dstring, %Q(#{q}hel\\#{q}lo#{q})])
+      process(%Q( xx; #{q}hel\\#{q}lo#{q} )).should.include([:dstring, %Q(#{q}hel\\#{q}lo#{q})])
     end
 
     should "handle #{q}...#{q} (w escape (multiple))" do
-      process(%Q( xx #{q}h\\#{q}el\\#{q}lo#{q} )).should.
+      process(%Q( xx; #{q}h\\#{q}el\\#{q}lo#{q} )).should.
         include([:dstring, %Q(#{q}h\\#{q}el\\#{q}lo#{q})])
     end
 
     should "handle #{q}\\\\#{q}" do
       process(%Q(
-        aa #{q}\\\\#{q} 
+        aa; #{q}\\\\#{q} 
         cc
         #{q}dd#{q}
       )).should.include([:dstring, "#{q}\\\\#{q}"])
@@ -78,7 +78,7 @@ describe 'Double quote strings (wo interpolation)' do
 
     should "handle #{q}#{q}" do
       process(%Q(
-        aa #{q}#{q} 
+        aa; #{q}#{q} 
         cc
         #{q}dd#{q}
       )).should.include([:dstring, "#{q}#{q}"])
