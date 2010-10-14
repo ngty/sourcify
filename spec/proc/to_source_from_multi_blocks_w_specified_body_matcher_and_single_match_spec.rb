@@ -6,7 +6,7 @@ describe 'Proc#to_source w specified body matcher & single match' do
 
   should 'handle no nesting on same line' do
     b1 = lambda {|a| @x1+1 }; b2 = lambda { @x1+2 }; b3 = lambda { def aa; end }
-    b2.should.be having_source('proc { def aa; end }', &matcher)
+    b3.should.be having_source('proc { def aa; end }', &matcher)
   end
 
   should 'handle single level nesting on same line' do
