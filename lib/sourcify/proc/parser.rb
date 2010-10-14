@@ -32,14 +32,13 @@ module Sourcify
       private
 
         def raw_source(opts)
-          (@raw_sources ||= {})[opts[:attached_to] || false] ||=
-            CodeScanner.process(@source_code, opts) do |code|
-              begin
-                eval(code).arity == @arity
-              rescue Exception
-                raise ParserInternalError
-              end
+          CodeScanner.process(@source_code, opts) do |code|
+            begin
+              eval(code).arity == @arity
+            rescue Exception
+              raise ParserInternalError
             end
+          end
         end
 
         class Normalizer
@@ -84,8 +83,11 @@ module Sourcify
           class << self
 
             def process(source_code, opts, &matcher)
-              pattern = scan_pattern_hint(opts[:attached_to])
-              results = rscan(source_code.to_s, pattern, false).flatten.select(&matcher)
+              results = rscan(source_code.to_s, {
+                :start_pattern => scan_pattern_hint(opts[:attached_to]),
+                :body_matcher => opts[:body_matcher],
+                :stop_on_newline => false,
+              }).flatten.select(&matcher)
               case results.size
               when 0 then raise NoMatchingProcError
               when 1 then ("\n" * source_code.line) + results[0]
@@ -102,9 +104,10 @@ module Sourcify
               end
             end
 
-            def rscan(str, pattern, stop_on_newline)
-              (Scanner.process(str, pattern, stop_on_newline) || []).map do |outer|
-                [outer, rscan(outer.sub(/^proc\s*(do|\{)/,''), pattern, true)]
+            def rscan(str, opts)
+              (Scanner.process(str, opts) || []).map do |outer|
+                inner = rscan(outer.sub(/^proc\s*(do|\{)/,''), opts.merge(:stop_on_newline => true))
+                [outer, inner]
               end
             end
 

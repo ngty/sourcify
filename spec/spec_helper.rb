@@ -73,16 +73,24 @@ def normalize_code(code)
   Ruby2Ruby.new.process(code_to_sexp(code))
 end
 
-def having_source(expected, opts={})
+def having_source(expected, opts={}, &matcher)
   lambda do |_proc|
-    normalize_code(_proc.to_source(opts)) == normalize_code(expected)
+    if block_given?
+      normalize_code(_proc.to_source(&matcher)) == normalize_code(expected)
+    else
+      normalize_code(_proc.to_source(opts)) == normalize_code(expected)
+    end
   end
 end
 
-def having_sexp(expected, opts={})
+def having_sexp(expected, opts={}, &matcher)
   lambda do |_proc|
     expected = eval(expected) if expected.is_a?(String)
-    _proc.to_sexp(opts).inspect == expected.inspect
+    if block_given?
+      _proc.to_sexp(&matcher).inspect == expected.inspect
+    else
+      _proc.to_sexp(opts).inspect == expected.inspect
+    end
   end
 end
 

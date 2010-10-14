@@ -13,28 +13,30 @@ module Sourcify
 
               alias_method :__pre_sourcified_to_source, :to_source
 
-              def to_source(opts = {})
+              def to_source(opts = {}, &blk)
                 flag = opts[:strip_enclosure]
                 (@sourcified_sources ||= {})[flag] ||=
-                  flag ? Ruby2Ruby.new.process(to_sexp(opts)) : __pre_sourcified_to_source
+                  flag ? Ruby2Ruby.new.process(to_sexp(opts, &blk)) : __pre_sourcified_to_source
               end
 
             # Case 2: we have Proc#to_ruby (eg. provided by ParseTree) available,
             # we have a wrapper round it to ensure it handles the extra args ..
             elsif ref_proc.respond_to?(:to_ruby)
 
-              def to_source(opts = {})
+              def to_source(opts = {}, &blk)
                 flag = opts[:strip_enclosure]
                 (@sourcified_sources ||= {})[flag] ||=
-                  flag ? Ruby2Ruby.new.process(to_sexp(opts)) : to_ruby
+                  flag ? Ruby2Ruby.new.process(to_sexp(opts, &blk)) : to_ruby
               end
 
             # Case 3: okko, we have to implement our own Proc#to_source ...
             else
 
-              def to_source(opts = {})
-                Sourcify.require_rb('proc', 'parser')
-                (@sourcified_parser ||= Parser.new(self)).source(opts)
+              Sourcify.require_rb('proc', 'parser')
+
+              def to_source(opts = {}, &blk)
+                (@sourcified_parser ||= Parser.new(self)).
+                  source(opts.merge(:body_matcher => blk))
               end
 
             end

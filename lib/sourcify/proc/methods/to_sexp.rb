@@ -13,7 +13,7 @@ module Sourcify
 
               alias_method :__pre_sourcified_to_sexp, :to_sexp
 
-              def to_sexp(opts = {})
+              def to_sexp(opts = {}, &body_matcher)
                 sexp, flag = __pre_sourcified_to_sexp, opts[:strip_enclosure]
                 Marshal.load(Marshal.dump( # need a deep copy cos the caller may reset the sexp
                   (@sourcified_sexps ||= {})[flag] ||=
@@ -24,9 +24,11 @@ module Sourcify
             # Case 2: okko, we have to implement our own Proc#to_sexp ...
             else
 
-              def to_sexp(opts = {})
-                Sourcify.require_rb('proc', 'parser')
-                (@sourcified_parser ||= Parser.new(self)).sexp(opts)
+              Sourcify.require_rb('proc', 'parser')
+
+              def to_sexp(opts = {}, &body_matcher)
+                (@sourcified_parser ||= Parser.new(self)).
+                  sexp(opts.merge(:body_matcher => body_matcher))
               end
 
             end

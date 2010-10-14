@@ -9,10 +9,11 @@ module Sourcify
 
         class Escape < Exception; end
 
-        def process(data, start_pattern = /.*/, stop_on_newline = false)
+        def process(data, opts={})
           begin
-            @start_pattern = start_pattern
-            @stop_on_newline = stop_on_newline
+            @start_pattern = opts[:start_pattern] || /.*/
+            @body_matcher = opts[:body_matcher] || lambda{|_| true }
+            @stop_on_newline = opts[:stop_on_newline]
             @results, @data = [], data.unpack("c*")
             reset_attributes
             execute!
@@ -116,9 +117,11 @@ module Sourcify
           begin
             code = 'proc ' + codified_tokens
             eval(code) # TODO: any better way to check for completeness of proc code ??
-            @results << code
-            raise Escape if @stop_on_newline or @lineno != 1
-            reset_attributes
+            if @body_matcher.call(code)
+              @results << code
+              raise Escape if @stop_on_newline or @lineno != 1
+              reset_attributes
+            end
           rescue Exception
             raise if $!.is_a?(Escape)
           end
