@@ -5,14 +5,13 @@
 
 Gem::Specification.new do |s|
   s.name = %q{sourcify}
-  s.version = "0.3.0"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["NgTzeYang"]
-  s.date = %q{2010-09-24}
+  s.date = %q{2010-10-15}
   s.description = %q{}
   s.email = %q{ngty77@gmail.com}
-  s.extensions = ["ext/sourcify/extconf.rb"]
   s.extra_rdoc_files = [
     "LICENSE",
      "README.rdoc"
@@ -20,6 +19,7 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
      ".gitignore",
+     ".infinity_test",
      "HISTORY.txt",
      "LICENSE",
      "README.rdoc",
@@ -27,6 +27,10 @@ Gem::Specification.new do |s|
      "VERSION",
      "lib/sourcify.rb",
      "lib/sourcify/proc.rb",
+     "lib/sourcify/proc/methods.rb",
+     "lib/sourcify/proc/methods/source_location.rb",
+     "lib/sourcify/proc/methods/to_sexp.rb",
+     "lib/sourcify/proc/methods/to_source.rb",
      "lib/sourcify/proc/parser.rb",
      "lib/sourcify/proc/scanner.rb",
      "lib/sourcify/proc/scanner.rl",
@@ -41,7 +45,10 @@ Gem::Specification.new do |s|
      "spec/proc/created_on_the_fly_proc_spec.rb",
      "spec/proc/others_spec.rb",
      "spec/proc/readme",
+     "spec/proc/spec_helper.rb",
+     "spec/proc/to_sexp_from_multi_blocks_w_specified_attached_to_spec.rb",
      "spec/proc/to_sexp_variables_spec.rb",
+     "spec/proc/to_sexp_w_specified_strip_enclosure_spec.rb",
      "spec/proc/to_sexp_within_irb_spec.rb",
      "spec/proc/to_source_from_braced_block_w_nested_braced_block_spec.rb",
      "spec/proc/to_source_from_braced_block_w_nested_hash_spec.rb",
@@ -61,10 +68,19 @@ Gem::Specification.new do |s|
      "spec/proc/to_source_from_do_end_block_wo_nesting_complication_spec.rb",
      "spec/proc/to_source_from_multi_blocks_w_many_matches_spec.rb",
      "spec/proc/to_source_from_multi_blocks_w_single_match_spec.rb",
+     "spec/proc/to_source_from_multi_blocks_w_specified_attached_to_and_many_matches_spec.rb",
+     "spec/proc/to_source_from_multi_blocks_w_specified_attached_to_and_no_match_spec.rb",
+     "spec/proc/to_source_from_multi_blocks_w_specified_attached_to_and_single_match_spec.rb",
+     "spec/proc/to_source_from_multi_blocks_w_specified_attached_to_spec.rb",
+     "spec/proc/to_source_from_multi_blocks_w_specified_body_matcher_and_many_matches_spec.rb",
+     "spec/proc/to_source_from_multi_blocks_w_specified_body_matcher_and_no_match_spec.rb",
+     "spec/proc/to_source_from_multi_blocks_w_specified_body_matcher_and_single_match_spec.rb",
+     "spec/proc/to_source_from_multi_blocks_w_specified_ignore_nested_spec.rb",
      "spec/proc/to_source_from_multi_do_end_blocks_w_single_match_spec.rb",
      "spec/proc/to_source_magic_file_var_spec.rb",
      "spec/proc/to_source_magic_line_var_spec.rb",
      "spec/proc/to_source_variables_spec.rb",
+     "spec/proc/to_source_w_specified_strip_enclosure_spec.rb",
      "spec/proc/to_source_within_irb_spec.rb",
      "spec/proc_scanner/block_comment_spec.rb",
      "spec/proc_scanner/double_colons_spec.rb",
@@ -75,6 +91,7 @@ Gem::Specification.new do |s|
      "spec/proc_scanner/kw_do_alias2_spec.rb",
      "spec/proc_scanner/per_line_comment_spec.rb",
      "spec/proc_scanner/single_quote_str_spec.rb",
+     "spec/proc_scanner/slash_operator_spec.rb",
      "spec/proc_scanner/spec_helper.rb",
      "spec/spec_helper.rb"
   ]
@@ -87,6 +104,7 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/proc_scanner/kw_do_alias1_spec.rb",
      "spec/proc_scanner/single_quote_str_spec.rb",
+     "spec/proc_scanner/slash_operator_spec.rb",
      "spec/proc_scanner/kw_do_alias2_spec.rb",
      "spec/proc_scanner/double_colons_spec.rb",
      "spec/proc_scanner/block_comment_spec.rb",
@@ -96,6 +114,8 @@ Gem::Specification.new do |s|
      "spec/proc_scanner/spec_helper.rb",
      "spec/proc_scanner/double_quote_str_wo_interpolation_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_until_spec.rb",
+     "spec/proc/to_source_from_multi_blocks_w_specified_body_matcher_and_single_match_spec.rb",
+     "spec/proc/to_source_from_multi_blocks_w_specified_attached_to_and_no_match_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_begin_spec.rb",
      "spec/proc/to_source_from_braced_block_w_nested_hash_spec.rb",
      "spec/proc/created_on_the_fly_proc_spec.rb",
@@ -107,18 +127,28 @@ Gem::Specification.new do |s|
      "spec/proc/to_sexp_within_irb_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_module_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_do_end_block_spec.rb",
+     "spec/proc/to_source_from_multi_blocks_w_specified_attached_to_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_method_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_class_spec.rb",
      "spec/proc/to_source_within_irb_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_case_spec.rb",
      "spec/proc/to_source_magic_line_var_spec.rb",
+     "spec/proc/to_sexp_w_specified_strip_enclosure_spec.rb",
+     "spec/proc/to_source_from_multi_blocks_w_specified_body_matcher_and_many_matches_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_literal_keyword_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_unless_spec.rb",
+     "spec/proc/to_source_from_multi_blocks_w_specified_body_matcher_and_no_match_spec.rb",
      "spec/proc/others_spec.rb",
      "spec/proc/19x_extras.rb",
+     "spec/proc/to_source_from_multi_blocks_w_specified_attached_to_and_many_matches_spec.rb",
      "spec/proc/to_source_from_braced_block_w_nested_braced_block_spec.rb",
      "spec/proc/to_source_from_do_end_block_wo_nesting_complication_spec.rb",
      "spec/proc/to_source_variables_spec.rb",
+     "spec/proc/to_source_w_specified_strip_enclosure_spec.rb",
+     "spec/proc/to_source_from_multi_blocks_w_specified_attached_to_and_single_match_spec.rb",
+     "spec/proc/to_sexp_from_multi_blocks_w_specified_attached_to_spec.rb",
+     "spec/proc/to_source_from_multi_blocks_w_specified_ignore_nested_spec.rb",
+     "spec/proc/spec_helper.rb",
      "spec/proc/to_sexp_variables_spec.rb",
      "spec/proc/to_source_magic_file_var_spec.rb",
      "spec/proc/to_source_from_do_end_block_w_nested_if_spec.rb",
@@ -133,17 +163,17 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<ruby2ruby>, [">= 1.2.5"])
+      s.add_runtime_dependency(%q<sexp_processor>, [">= 3.0.5"])
       s.add_development_dependency(%q<bacon>, [">= 0"])
-      s.add_development_dependency(%q<otaku>, [">= 0.4.0"])
     else
       s.add_dependency(%q<ruby2ruby>, [">= 1.2.5"])
+      s.add_dependency(%q<sexp_processor>, [">= 3.0.5"])
       s.add_dependency(%q<bacon>, [">= 0"])
-      s.add_dependency(%q<otaku>, [">= 0.4.0"])
     end
   else
     s.add_dependency(%q<ruby2ruby>, [">= 1.2.5"])
+    s.add_dependency(%q<sexp_processor>, [">= 3.0.5"])
     s.add_dependency(%q<bacon>, [">= 0"])
-    s.add_dependency(%q<otaku>, [">= 0.4.0"])
   end
 end
 
