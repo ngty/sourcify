@@ -86,6 +86,7 @@ module Sourcify
               results = rscan(source_code.to_s, {
                 :start_pattern => scan_pattern_hint(opts[:attached_to]),
                 :body_matcher => opts[:body_matcher],
+                :ignore_nested => opts[:ignore_nested],
                 :stop_on_newline => false,
               }).flatten.select(&matcher)
               case results.size
@@ -105,7 +106,9 @@ module Sourcify
             end
 
             def rscan(str, opts)
-              (Scanner.process(str, opts) || []).map do |outer|
+              results = Scanner.process(str, opts) || []
+              return results if opts[:ignore_nested]
+              results.map do |outer|
                 inner = rscan(outer.sub(/^proc\s*(do|\{)/,''), opts.merge(:stop_on_newline => true))
                 [outer, inner]
               end
