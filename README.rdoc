@@ -5,7 +5,8 @@ ParseTree[http://github.com/seattlerb/parsetree] is great, it accesses the runti
 S-expression, BUT ParseTree doesn't work for 1.9.* & JRuby.
 
 RubyParser[http://github.com/seattlerb/ruby_parser] is great, and it works for any rubies
-(of course, not 100% compatible for 1.9.* syntax yet), BUT it works only with static code.
+(of course, not 100% compatible for 1.8.7 & 1.9.* syntax yet), BUT it works only with
+static code.
 
 I truely enjoy using the above tools, but with my other projects, the absence of ParseTree
 on the different rubies is forcing me to hand-baked my own solution each time to extract
@@ -14,8 +15,8 @@ never perfect, and i'm reinventing the wheel each time just to address a particu
 pattern of usage (using regexp kungfu).
 
 Enough is enough, and now we have Sourcify, a unified solution to extract proc code.
-When ParseTree is available, it simply works as a wrapper round it, otherwise, it uses
-a home-baked ragel-generated scanner to extract the proc code. Further processing
+When ParseTree is available, it simply works as a thin wrapper round it, otherwise, it
+uses a home-baked ragel-generated scanner to extract the proc code. Further processing
 with RubyParser & Ruby2Ruby to ensure 100% with ParseTree (yup, there is no denying that
 i really like ParseTree).
 
@@ -39,28 +40,39 @@ Returns the code representation of the proc:
 
   require 'sourcify'
 
-  proc1 = lambda { x + y }
-  puts proc1.to_source # proc { (x + y) }
+  lambda { x + y }.to_source
+  # >> "proc { (x + y) }"
 
-  proc2 = proc { x + y }
-  puts proc2.to_source # proc { (x + y) }
+  proc { x + y }.to_source
+  # >> "proc { (x + y) }"
 
 Like it or not, a lambda is represented as a proc when converted to source (exactly the
-same way as ParseTree).
+same way as ParseTree). It is possible to only extract the body of the proc by passing
+in {:strip_enclosure => true}:
+
+  lambda { x + y }.to_source(:strip_enclosure => true)
+  # >> "(x + y)"
+
+  lambda {|i| i + 2 }.to_source(:strip_enclosure => true)
+  # >> "(i + 2)"
 
 === 2. Proc#to_sexp
 
 Returns the S-expression of the proc:
 
   require 'sourcify'
-  require 'pp'
 
   x = 1
-  pp lambda { x + y }.to_sexp
+  lambda { x + y }.to_sexp
   # >> s(:iter,
   # >>  s(:call, nil, :proc, s(:arglist)),
   # >>   nil,
   # >>    s(:call, s(:lvar, :x), :+, s(:arglist, s(:call, nil, :y, s(:arglist)))))
+
+To extract only the body of the proc:
+
+  lambda { x + y }.to_sexp(:strip_enclosure => true)
+  # >> s(:call, s(:lvar, :x), :+, s(:arglist, s(:call, nil, :y, s(:arglist)))))
 
 === 3. Proc#source_location
 
@@ -69,9 +81,8 @@ consistency under 1.8.*:
 
   # /tmp/test.rb
   require 'sourcify'
-  require 'pp'
 
-  pp lambda { x + y }.source_location
+  lambda { x + y }.source_location
   # >> ["/tmp/test.rb", 5]
 
 == Performance
@@ -105,10 +116,10 @@ will not work:
     eval('lambda { x + y }')
   end
 
-  pp test.source_location
+  test.source_location
   # >> ["(eval)", 1]
 
-  puts test.to_source
+  test.to_source
   # >> Sourcify::CannotParseEvalCodeError
 
 The same applies to *Blah#to_proc* & *&:blah*:
@@ -131,7 +142,7 @@ subject proc has arity that is unique from others:
 
   # Yup, this works as expected :)
   b1 = lambda {|a| a+1 }; b2 = lambda { 1+2 }
-  puts b2.to_source
+  b2.to_source
   # >> proc { (1 + 2) }
 
   # Nope, this won't work :(
@@ -139,25 +150,38 @@ subject proc has arity that is unique from others:
   b2.to_source
   # >> raises Sourcify::MultipleMatchingProcsPerLineError
 
-Using Proc#arity is a pretty good way to uniquely identify the subject proc, since having
-too many procs per line is not a good practice as it reduces readability. However, the
-following bug[http://redmine.ruby-lang.org/issues/show/574] under 1.8.* may trip u over:
+As observed, the above does not work when there are multiple procs having the same arity,
+on the same line. Furthermore, this bug[http://redmine.ruby-lang.org/issues/show/574]
+under 1.8.* affects the accuracy of this approach.
 
-  lambda { }.arity         # 1.8.* (-1) / 1.9.* (0)  (?!)
-  lambda {|| }.arity       # 1.8.* (0)  / 1.9.* (0)
-  lambda {|x| }.arity      # 1.8.* (1)  / 1.9.* (1)
-  lambda {|x,y| }.arity    # 1.8.* (2)  / 1.9.* (2)
-  lambda {|*x| }.arity     # 1.8.* (-1) / 1.9.* (-1)
-  lambda {|x, *y| }.arity  # 1.8.* (-2) / 1.9.* (-2)
-  lambda {|(x,y)| }.arity  # 1.8.* (1)  / 1.9.* (1)
+To better narrow down the scanning, try:
 
-This is another reason to install ParseTree when u are on 1.8.*. On JRuby, where u don't
-have the choice, just avoid multiple procs per line.
+* passing in the {:attached_to => ...} option
+
+    x = lambda { proc { :blah } }
+
+    x.to_source
+    # >> Sourcify::MultipleMatchingProcsPerLineError
+
+    x.to_source(:attached_to => :lambda)
+    # >> "proc { proc { :blah } }"
+
+* attaching a body matcher proc
+
+    x, y = lambda { def secret; 1; end }, lambda { :blah }
+
+    x.to_source
+    # >> Sourcify::MultipleMatchingProcsPerLineError
+
+    x.to_source{|body| body =~ /^(.*\W|)def\W/ }
+    # >> 'proc { def secret; 1; end }'
+
+Pls refer to the rdoc for more details.
 
 === 3. Occasional Racc::ParseError
 
 Under the hood, sourcify relies on RubyParser to yield s-expression, and since RubyParser
-does not yet fully handle 1.8.7/1.9.* syntax, you will get a nasty Racc::ParseError when
+does not yet fully handle 1.8.7 & 1.9.* syntax, you will get a nasty Racc::ParseError when
 you have any code that is not compatible with 1.8.6.
 
 == Is it really working ??
