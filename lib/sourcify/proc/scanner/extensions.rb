@@ -90,6 +90,7 @@ module Sourcify
           return if other_counter(key).started?
           unless (counter = this_counter(key)).started?
             return if (@rejecting_block = codified_tokens !~ @start_pattern)
+            @false_start_backup = @tokens.dup if key == :brace
             offset_attributes
           end
           counter.increment(count)
@@ -102,7 +103,9 @@ module Sourcify
         end
 
         def fix_counter_false_start(key)
-          reset_attributes if this_counter(key).just_started?
+          return unless this_counter(key).just_started?
+          reset_attributes
+          @tokens, @false_start_backup = @false_start_backup.dup, nil if @false_start_backup
         end
 
         def other_counter(type)

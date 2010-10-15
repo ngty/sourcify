@@ -63,5 +63,21 @@ describe 'Proc#to_source w specified {:attached_to => ...}' do
 
     end
 
+    describe '>> w false start as a result of preceding hash' do
+
+      option = {:attached_to => :watever}
+
+      should 'handle for do ... end block' do
+        x = watever({:aa => 1, :bb => 3}) do :blah end
+        x.should.be having_source('proc { :blah }', option)
+      end
+
+      should 'handle for { ... } block' do
+        x = watever({:aa => 1, :bb => 3}) { :blah }
+        x.should.be having_source('proc { :blah }', option)
+      end
+
+    end
+
   end
 end
