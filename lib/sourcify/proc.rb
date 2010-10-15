@@ -65,7 +65,7 @@ module Sourcify
       #
       # The following options are supported:
       #
-      # * +:strip_enclosure+ when set to true, strips the enclosing 'proc { ... }' to get
+      # * +:strip_enclosure+ when set to true, strips the enclosing "proc { ... }" to get
       #   just the meat within.
       #
       #     lambda {|i| i+1 }.to_source(:strip_enclosure => true)
@@ -96,7 +96,30 @@ module Sourcify
       #     # >> Sourcify::MultipleMatchingProcsPerLineError
       #
       #     x.to_source(:attached_to => /^(.*\W|)(lambda|proc)\W/)
-      #     # >> 'proc { ignore { :blah } }'
+      #     # >> "proc { ignore { :blah } }"
+      #
+      #   (this option is effective ONLY when ParseTree is not available)
+      #
+      # * +:ignore_nested+ is useful when only the outermost proc matters and we want to
+      #   ignore all other nested proc(s):
+      #
+      #     x = lambda { lambda { :blah } }
+      #
+      #     x.to_source
+      #     # >> Sourcify::MultipleMatchingProcsPerLineError
+      #
+      #     x.to_source(:ignore_nested => true)
+      #     # >> "proc { lambda { :blah } }"
+      #
+      #   However, since code scanning stops at the outermost proc, beware of the following:
+      #
+      #     x = lambda {|_| lambda { lambda { :blah } } }.call(nil)
+      #
+      #     x.to_source
+      #     # >> "proc { lambda { :blah } }"
+      #
+      #     x.to_source(:ignore_nested => true)
+      #     # >> Sourcify::NoMatchingProcError
       #
       #   (this option is effective ONLY when ParseTree is not available)
       #
@@ -109,7 +132,7 @@ module Sourcify
       #     # >> Sourcify::MultipleMatchingProcsPerLineError
       #
       #     x.to_source{|body| body =~ /^(.*\W|)def\W/ }
-      #     # >> 'proc { def secret; 1; end }'
+      #     # >> "proc { def secret; 1; end }"
       #
       def to_source(opts={}, &body_matcher)
         # NOTE: this is a stub for the actual one in Methods::ToSource

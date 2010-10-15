@@ -1,17 +1,13 @@
 === Current
 
 * adds support for running in MRI-1.9.2 [#ngty]
-* adds Proc#to_source(:attached_to => ...) & the Proc#to_sexp equivalent to narrow
-  down code scanning, avoiding unnecessary Sourcify::MultipleMatchingProcsPerLineError,
-  useful for libs (eg. cross-stub which specifically want to grab code block attached
-  to a specific method [#ngty]
-* addes Proc#to_source{...} & the Proc#to_sexp equivalent to further narrow down code
-  scanning, again avoiding unnecessary Sourcify::MultipleMatchingProcsPerLineError,
-  useful for libs (eg. cross-stub) which expects the code block to contain code body
-  (or args) that matches a specific pattern [#ngty]
 * adds Proc#to_source(:strip_enclosure => ...) & the Proc#to_sexp equivalent to ease
   stripping of enclosing 'proc {|params| ... }', returning only the inner code body
   '...' [#ngty]
+* adds Proc#to_source(:attached_to => ..., :ignore_nested => ..., &body_matcher) (& the
+  Proc#to_sexp equivalent) to narrow down code scanning, avoiding unnecessary
+  Sourcify::MultipleMatchingProcsPerLineError, useful for libs that can anticipate
+  how the proc should look like [#ngty]
 * integrates with infinity_test (by adding .infinity_test) to ease specs running in
   different rubies [#ngty]
 * fixes '/' operator always treated as start of regexp [#ngty & #seamusabshere]

@@ -166,6 +166,16 @@ To better narrow down the scanning, try:
     x.to_source(:attached_to => :lambda)
     # >> "proc { proc { :blah } }"
 
+* passing in the {:ignore_nested => ...} option
+
+    x = lambda { lambda { :blah } }
+
+    x.to_source
+    # >> Sourcify::MultipleMatchingProcsPerLineError
+
+    x.to_source(:ignore_nested => true)
+    # >> "proc { lambda { :blah } }"
+
 * attaching a body matcher proc
 
     x, y = lambda { def secret; 1; end }, lambda { :blah }
