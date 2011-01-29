@@ -1,3 +1,8 @@
+=== 0.4.1 (Jan 29, 2011)
+
+* fixes Sourcify::NoMatchingProcError when if/unless/until/while modifier follows
+  a trailing backslash (see issue#5) [#ngty]
+
 === 0.4.0 (Oct 15, 2010)
 
 * adds Proc#to_source(:strip_enclosure => ...) (& the Proc#to_sexp equivalent) to ease
