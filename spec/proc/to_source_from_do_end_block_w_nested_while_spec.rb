@@ -173,4 +173,17 @@ describe "Proc#to_source from do ... end block (w nested while block)" do
     \)
   end
 
+  should 'handle modifier w trailing backslash' do
+    (
+      lambda do
+        @x1 = 9 \
+          while true
+      end
+    ).should.be having_source(%Q\
+      proc do
+        @x1 = 9 while true
+      end
+    \)
+  end
+
 end

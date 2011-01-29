@@ -54,6 +54,19 @@ describe "Proc#to_source from do ... end block (w nested if)" do
     \)
   end
 
+  should 'handle modifier w trailing backslash' do
+    (
+      lambda do
+        @x1 = 1 \
+          if true
+      end
+    ).should.be having_source(%Q\
+      proc do
+        @x1 = 1 if true
+      end
+    \)
+  end
+
   should 'handle modifier within block' do
     (
       lambda do

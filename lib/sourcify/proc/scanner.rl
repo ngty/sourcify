@@ -37,6 +37,7 @@ module Sourcify
   rbrace  = '}';
   smcolon = ';';
   newline = '\n';
+  bslash  = '\\' . newline;
   ospaces = space* -- newline;
   mspaces = space+ -- newline;
 
@@ -457,6 +458,7 @@ module Sourcify
     ## == Misc
 
     var         => { push(:var, ts, te) };
+    bslash      => { push(:bslash, ts, te) };
     const       => { push(:const, ts, te) };
     symbol      => { push(:symbol, ts, te) };
     mspaces     => { push(:space, ts, te) };
