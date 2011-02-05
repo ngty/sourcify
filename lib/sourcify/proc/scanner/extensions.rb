@@ -104,6 +104,7 @@ module Sourcify
 
         def fix_counter_false_start(key)
           return unless this_counter(key).just_started?
+          return unless really_false_started?
           reset_attributes
           @tokens, @false_start_backup = @false_start_backup.dup, nil if @false_start_backup
         end
@@ -141,6 +142,17 @@ module Sourcify
           @do_end_counter = DoEndBlockCounter.new
           @brace_counter = BraceBlockCounter.new
           @rejecting_block = false
+        end
+
+        def really_false_started?
+          begin
+            # TODO: any better way to check for a hash ??
+            eval("#{codified_tokens} 1}") && true
+          rescue SyntaxError
+            false
+          rescue Exception
+            true
+          end
         end
 
         def offset_attributes
