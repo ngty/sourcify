@@ -75,11 +75,9 @@ end
 
 def having_source(expected, opts={}, &matcher)
   lambda do |_proc|
-    if block_given?
-      normalize_code(_proc.to_source(&matcher)) == normalize_code(expected)
-    else
-      normalize_code(_proc.to_source(opts)) == normalize_code(expected)
-    end
+    normalize_code(expected) # added for bug fixing
+    normalize_code(block_given? ? _proc.to_source(&matcher) : _proc.to_source(opts)) \
+      == normalize_code(expected)
   end
 end
 
