@@ -6,22 +6,6 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'sourcify'
 
 # ///////////////////////////////////////////////////////////
-# Regenerate ragel-based scanner
-# ///////////////////////////////////////////////////////////
-
-ragel_dir = File.join(File.dirname(__FILE__), '..', 'lib', 'sourcify', 'proc')
-ragel_file = File.join(ragel_dir, 'scanner.rl')
-ruby_file = File.join(ragel_dir, 'scanner.rb')
-File.delete(ruby_file) rescue nil
-system("ragel -R #{ragel_file}")
-
-begin
-  require File.join(ragel_dir, 'scanner.rb')
-rescue LoadError
-  raise $!
-end
-
-# ///////////////////////////////////////////////////////////
 # Bacon
 # ///////////////////////////////////////////////////////////
 
@@ -115,3 +99,20 @@ def irb_exec(stdin_str)
   (values[-1].nil? && RUBY_VERSION.include?('1.9.2')) ? values[0 .. -2] : values
 end
 
+# ///////////////////////////////////////////////////////////
+# Regenerate ragel-based scanner
+# ///////////////////////////////////////////////////////////
+
+unless has_parsetree?
+  ragel_dir = File.join(File.dirname(__FILE__), '..', 'lib', 'sourcify', 'proc')
+  ragel_file = File.join(ragel_dir, 'scanner.rl')
+  ruby_file = File.join(ragel_dir, 'scanner.rb')
+  File.delete(ruby_file) rescue nil
+  system("ragel -R #{ragel_file}")
+
+  begin
+    require File.join(ragel_dir, 'scanner.rb')
+  rescue LoadError
+    raise $!
+  end
+end
