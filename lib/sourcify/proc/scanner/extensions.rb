@@ -8,6 +8,7 @@ module Sourcify
       module Extensions
 
         class Escape < Exception; end
+        RUBY_PARSER = RubyParser.new
 
         def process(data, opts={})
           begin
@@ -119,8 +120,7 @@ module Sourcify
 
         def construct_result_code
           begin
-            code = 'proc ' + codified_tokens
-            eval(code) # TODO: any better way to check for completeness of proc code ??
+            safe_eval(code = "proc #{codified_tokens}")
             if @body_matcher.call(code)
               @results << code
               raise Escape if @stop_on_newline or @lineno != 1
@@ -145,14 +145,7 @@ module Sourcify
         end
 
         def really_false_started?
-          begin
-            # TODO: any better way to check for a hash ??
-            eval("#{codified_tokens} 1}") && true
-          rescue SyntaxError
-            false
-          rescue Exception
-            true
-          end
+          safe_eval("#{codified_tokens} 1}", nil) && true
         end
 
         def offset_attributes
@@ -161,6 +154,14 @@ module Sourcify
             last = @tokens[-1]
             @tokens.clear
             @tokens << last
+          end
+        end
+
+        def safe_eval(string, raisable = SyntaxError)
+          begin
+            RUBY_PARSER.parse(string)
+          rescue Exception
+            raisable ? raise(raisable) : nil
           end
         end
 
