@@ -1,3 +1,8 @@
+=== 0.4.2 (Feb 06, 2011)
+
+* fixes Sourcify::NoMatchingProcError when inline proc contains hashes (issue#7) [#ngty]
+* uses RubyParser#parse to eval correctness of code instead of Kernel#eval [#ngty]
+
 === 0.4.1 (Jan 29, 2011)
 
 * fixes Sourcify::NoMatchingProcError when if/unless/until/while modifier follows

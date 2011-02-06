@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["NgTzeYang"]
-  s.date = %q{2011-01-29}
+  s.date = %q{2011-02-06}
   s.description = %q{}
   s.email = %q{ngty77@gmail.com}
   s.extra_rdoc_files = [
@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
     ".infinity_test",
+    ".rvmrc",
     "HISTORY.txt",
     "LICENSE",
     "README.rdoc",
@@ -31,6 +32,10 @@ Gem::Specification.new do |s|
     "lib/sourcify/proc/methods/to_sexp.rb",
     "lib/sourcify/proc/methods/to_source.rb",
     "lib/sourcify/proc/parser.rb",
+    "lib/sourcify/proc/parser/code_scanner.rb",
+    "lib/sourcify/proc/parser/converter.rb",
+    "lib/sourcify/proc/parser/normalizer.rb",
+    "lib/sourcify/proc/parser/source_code.rb",
     "lib/sourcify/proc/scanner.rb",
     "lib/sourcify/proc/scanner.rl",
     "lib/sourcify/proc/scanner/comment.rb",
@@ -162,15 +167,18 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<ruby2ruby>, [">= 1.2.5"])
       s.add_runtime_dependency(%q<sexp_processor>, [">= 3.0.5"])
+      s.add_runtime_dependency(%q<file-tail>, [">= 1.0.5"])
       s.add_development_dependency(%q<bacon>, [">= 0"])
     else
       s.add_dependency(%q<ruby2ruby>, [">= 1.2.5"])
       s.add_dependency(%q<sexp_processor>, [">= 3.0.5"])
+      s.add_dependency(%q<file-tail>, [">= 1.0.5"])
       s.add_dependency(%q<bacon>, [">= 0"])
     end
   else
     s.add_dependency(%q<ruby2ruby>, [">= 1.2.5"])
     s.add_dependency(%q<sexp_processor>, [">= 3.0.5"])
+    s.add_dependency(%q<file-tail>, [">= 1.0.5"])
     s.add_dependency(%q<bacon>, [">= 0"])
   end
 end
