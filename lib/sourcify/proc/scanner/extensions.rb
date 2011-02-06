@@ -118,8 +118,8 @@ module Sourcify
 
         def construct_result_code
           begin
-            safe_eval(code = "proc #{codified_tokens}")
-            if @body_matcher.call(code)
+            code = "proc #{codified_tokens}"
+            if safe_eval(code) && @body_matcher.call(code)
               @results << code
               raise Escape if @stop_on_newline or @lineno != 1
               reset_attributes
@@ -143,7 +143,7 @@ module Sourcify
         end
 
         def really_false_started?
-          safe_eval("#{codified_tokens} 1}", nil) && true
+          safe_eval("#{codified_tokens} 1}") && true
         end
 
         def offset_attributes
@@ -155,12 +155,8 @@ module Sourcify
           end
         end
 
-        def safe_eval(string, raisable = SyntaxError)
-          begin
-            RUBY_PARSER.parse(string)
-          rescue Exception
-            raisable ? raise(raisable) : nil
-          end
+        def safe_eval(string)
+          Parser::Converter.to_sexp(string)
         end
 
       end
