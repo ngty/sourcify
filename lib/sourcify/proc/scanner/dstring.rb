@@ -29,12 +29,9 @@ module Sourcify
 
           def parsable?
             begin
-              RubyParser.new.parse(<<-SOURCIFIED_HEREDOKIE
-                  #{safe_contents}
-                SOURCIFIED_HEREDOKIE
-              ) && true
-            rescue Racc::ParseError, SyntaxError
-              false
+              Parser::Converter.to_sexp <<-SOURCIFIED_HEREDOKIE
+                #{safe_contents}
+              SOURCIFIED_HEREDOKIE
             rescue Exception
               true
             end
