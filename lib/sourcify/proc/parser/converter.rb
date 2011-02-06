@@ -11,7 +11,7 @@ module Sourcify
             retried = false
             begin
               RUBY_PARSER.reset
-              (retried ? RubyParser.new : RUBY_PARSER).parse(code, file)
+              (retried ? RubyParser.new : RUBY_PARSER).parse(*[code, file].compact)
             rescue Racc::ParseError, SyntaxError
               return nil if retried
               retried = true; retry
