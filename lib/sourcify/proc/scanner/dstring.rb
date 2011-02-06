@@ -29,7 +29,7 @@ module Sourcify
 
           def parsable?
             begin
-              Parser::Converter.to_sexp <<-SOURCIFIED_HEREDOKIE
+              Parser::Converter.to_sexp <<-SOURCIFIED_HEREDOKIE.strip
                 #{safe_contents}
               SOURCIFIED_HEREDOKIE
             rescue Exception

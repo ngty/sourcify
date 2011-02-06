@@ -117,8 +117,11 @@ module Sourcify
         end
 
         def construct_result_code
+          code = <<-SOURCIFIED_HEREDOKIE.strip
+            proc #{codified_tokens}
+          SOURCIFIED_HEREDOKIE
+
           begin
-            code = "proc #{codified_tokens}"
             if safe_eval(code) && @body_matcher.call(code)
               @results << code
               raise Escape if @stop_on_newline or @lineno != 1
@@ -143,7 +146,10 @@ module Sourcify
         end
 
         def really_false_started?
-          safe_eval("#{codified_tokens} 1}") && true
+          safe_eval(<<-SOURCIFIED_HEREDOKIE.strip
+              #{codified_tokens} 1}
+            SOURCIFIED_HEREDOKIE
+          ) && true
         end
 
         def offset_attributes
