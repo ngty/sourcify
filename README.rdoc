@@ -216,6 +216,7 @@ For projects:
 Projects using sourcify include:
 * wrong[http://github.com/sconover/wrong]
 * ruote[http://ruote.rubyforge.org/]
+* dm-ambition[https://github.com/dkubb/dm-ambition]
 
 == Additional Resources
 
