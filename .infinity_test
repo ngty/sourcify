@@ -17,7 +17,7 @@ end
 infinity_test do
 
   # Sets bacon mute to avoid excessive noise that makes it hard to pinpoint errors
-  ENV['MUTE_BACON'] = 'true'
+  #ENV['MUTE_BACON'] = 'true'
 
   # Avoids ParseTree's segmentation fault
   require 'fileutils'
@@ -25,18 +25,22 @@ infinity_test do
     Dir["#{ENV['HOME']}/.ruby_inline/*ParseTree*"].each{|f| FileUtils.rm(f) }
   end
 
-  use \
-    :test_framework => :bacon,
-    :rubies => %w(
-      ruby-1.9.2-p136@sourcify
-      ruby-1.9.2-p0@sourcify
-      ruby-1.9.1-p378@sourcify
-      ruby-1.8.7-p330@sourcify
-      ree-1.8.7-2010.02@sourcify
-      ruby-1.8.7-p330@sourcify-parsetree
-      ree-1.8.7-2010.02@sourcify-parsetree
-      ruby-1.8.6-p420@sourcify-parsetree
-      ree-1.8.6-20090610@sourcify-parsetree
-      jruby-1.5.6@sourcify
-    )
+  # Rubies to run against
+  use :test_framework => :bacon, :rubies => [
+
+    # Static code analysis
+    'ruby-1.8.7-p334@sourcify',
+    'ree-1.8.7-2011.03@sourcify',
+    'ruby-1.9.1-p378@sourcify',
+    'ruby-1.9.2-p180@sourcify',
+
+    # Weird, jruby fails here but running the corresponding
+    # 'rake spec' pass 
+    #'jruby-1.6.1@sourcify',
+
+    # ParseTree support
+    'ruby-1.8.6-p420@sourcify-parsetree',
+    'ruby-1.8.7-p334@sourcify-parsetree',
+    'ree-1.8.7-2011.03@sourcify-parsetree'
+  ]
 end
