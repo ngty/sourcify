@@ -1,3 +1,16 @@
+=== 0.5.0 (May 2, 2011)
+
+* adds Proc#to_raw_source that supports extracting of raw code, as it is written in
+  the source code (see issue#9), it supports all options that are already supported
+  by Proc#to_source.
+* MRI-1.8.6 now supports both ParseTree & static-scanner mode
+* out with infinity_test (due to unresolvable & unexpected consistent failure in
+  running specs for jruby-1.6.1 & always running ParseTree mode specs in static-scanner
+  mode), use homebaked rake tasks (spec:parsetree, spec:static & spec:all) to acheive
+  testing of different rubies in different modes
+* removd dependency on jeweler, & use bundler instead to handle dependency & also have
+  our own handcrafted gemspec file
+
 === 0.4.2 (Feb 06, 2011)
 
 * fixes Sourcify::NoMatchingProcError when inline proc contains hashes (issue#7) [#ngty]
