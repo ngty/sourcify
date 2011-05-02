@@ -32,7 +32,7 @@ module Sourcify
       def raw_source(opts)
         raw_code = extracted_source(opts).strip
         opts[:strip_enclosure] ?
-          raw_code.sub(/^proc\s*(\{|do)(.*)(\}|end)$/, '\2').strip : raw_code
+          raw_code.sub(/^proc\s*(\{|do)\s*(\|[^\|]+\|)?(.*)(\}|end)$/m, '\3').strip : raw_code
       end
 
       private
