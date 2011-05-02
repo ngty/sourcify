@@ -13,7 +13,7 @@ module Sourcify
             }).flatten.select(&matcher)
             case results.size
             when 0 then raise NoMatchingProcError
-            when 1 then ("\n" * source_code.line) + results[0]
+            when 1 then results[0]
             else raise MultipleMatchingProcsPerLineError
             end
           end

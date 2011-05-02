@@ -12,6 +12,7 @@ module Sourcify
       base.class_eval do
         Sourcify.require_rb('proc', 'methods')
         include Methods::SourceLocation
+        include Methods::ToRawSource
         include Methods::ToSource
         include Methods::ToSexp
       end

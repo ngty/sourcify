@@ -22,15 +22,22 @@ module Sourcify
 
       def sexp(opts)
         (@sexps ||= {})[opts.hash] ||= (
-          raw_sexp = Converter.to_sexp(raw_source(opts), @source_code.file)
+          raw_code = ("\n" * @source_code.line) + extracted_source(opts)
+          raw_sexp = Converter.to_sexp(raw_code, @source_code.file)
           sexp = Normalizer.process(raw_sexp, @binding)
           opts[:strip_enclosure] ? Sexp.from_array(sexp.to_a.last) : sexp
         )
       end
 
+      def raw_source(opts)
+        raw_code = extracted_source(opts).strip
+        opts[:strip_enclosure] ?
+          raw_code.sub(/^proc\s*(\{|do)(.*)(\}|end)$/, '\2').strip : raw_code
+      end
+
       private
 
-        def raw_source(opts)
+        def extracted_source(opts)
           CodeScanner.process(@source_code, opts) do |code|
             begin
               eval(code).arity == @arity

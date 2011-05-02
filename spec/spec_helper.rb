@@ -65,6 +65,13 @@ def having_source(expected, opts={}, &matcher)
   end
 end
 
+def having_raw_source(expected, opts={}, &matcher)
+  lambda do |_proc|
+    found = block_given? ? _proc.to_raw_source(&matcher) : _proc.to_raw_source(opts)
+    found == expected.strip
+  end
+end
+
 def having_sexp(expected, opts={}, &matcher)
   lambda do |_proc|
     expected = eval(expected) if expected.is_a?(String)
