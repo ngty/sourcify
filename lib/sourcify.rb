@@ -27,4 +27,5 @@ module Sourcify #:nodoc:
 end
 
 Sourcify.require_rb('facets')
+Sourcify.require_rb('version')
 Sourcify.require_rb('proc')
