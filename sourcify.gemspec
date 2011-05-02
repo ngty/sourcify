@@ -20,11 +20,10 @@ Gem::Specification.new do |s|
 
   # ParseTree (better performance + dynamic goodness, but not supported on java & 1.9.*),
   # optional for any 1.8.*.
-  #if RUBY_VERSION.include?('1.8.6')
-    #s.add_dependency "ParseTree", ">= 3.0.6"
-  #end
+  #s.add_dependency "ParseTree", ">= 3.0.6"
 
-  s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- spec/*`.split("\n")
-  s.require_paths = ["lib"]
+  s.extra_rdoc_files = ["README.rdoc"]
+  s.files            = `git ls-files`.split("\n")
+  s.test_files       = `git ls-files -- spec/*`.split("\n")
+  s.require_paths    = ["lib"]
 end
