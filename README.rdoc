@@ -32,7 +32,7 @@ Or on 1.9.* or JRuby:
 
 == Using It
 
-Sourcify adds 3 methods to Proc:
+Sourcify adds 4 methods to Proc:
 
 === 1. Proc#to_source
 
@@ -74,7 +74,23 @@ To extract only the body of the proc:
   lambda { x + y }.to_sexp(:strip_enclosure => true)
   # >> s(:call, s(:lvar, :x), :+, s(:arglist, s(:call, nil, :y, s(:arglist)))))
 
-=== 3. Proc#source_location
+=== 3. Proc#to_raw_source
+
+Unlike Proc#to_source, which returns code that retains only functional aspects,
+fetching of raw source returns the raw code enclosed within the proc, including
+fluff like comments:
+
+  lambda do |i|
+    i+1 # (blah)
+  end.to_source
+  # >> "proc do |i|
+  # >>   i+1 # (blah)
+  # >> end"
+
+NOTE: This is extracting of raw code, it relies on static code scanning (even when
+running in ParseTree mode), the gotchas for static code scanning always apply.
+
+=== 4. Proc#source_location
 
 By default, this is only available on 1.9.*, it is added (as a bonus) to provide
 consistency under 1.8.*:
