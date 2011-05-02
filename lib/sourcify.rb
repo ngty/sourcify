@@ -8,7 +8,7 @@ begin
   require 'parse_tree'
   require 'parse_tree_extensions'
 rescue LoadError
-  raise if RUBY_VERSION == '1.8.6' # support for code scanner in 1.8.6 is too tedious
+  # ParseTree is now optional for all supported rubies :)
 end
 
 module Sourcify #:nodoc:
@@ -26,4 +26,5 @@ module Sourcify #:nodoc:
   end
 end
 
+Sourcify.require_rb('facets')
 Sourcify.require_rb('proc')

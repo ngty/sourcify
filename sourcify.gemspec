@@ -18,11 +18,11 @@ Gem::Specification.new do |s|
   s.add_dependency 'file-tail', '>= 1.0.5'
   s.add_development_dependency 'bacon'
 
-  # ParseTree (better performance + dynamic goodness, but not supported on java & 1.9.*)
-  # Mandatory for 1.8.6, but optional for 1.8.7 onwards
-  if RUBY_VERSION.include?('1.8.6')
-    s.add_dependency "ParseTree", ">= 3.0.6"
-  end
+  # ParseTree (better performance + dynamic goodness, but not supported on java & 1.9.*),
+  # optional for any 1.8.*.
+  #if RUBY_VERSION.include?('1.8.6')
+    #s.add_dependency "ParseTree", ">= 3.0.6"
+  #end
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- spec/*`.split("\n")

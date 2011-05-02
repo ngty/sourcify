@@ -32,8 +32,8 @@ module Sourcify
           end
 
           def bounded_var?(var)
-            qvar = (@q ||= (IS_19x ? ":%s" : "'%s'")) % var
-            @binding.eval("local_variables.include?(#{qvar})")
+            lvar = (@q ||= (IS_19x ? ":%s" : "'%s'")) % var
+            @binding.has_local_variable?(lvar)
           end
 
         end
