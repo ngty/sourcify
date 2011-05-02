@@ -1,14 +1,14 @@
 require 'rubygems'
 require 'ruby2ruby'
 require 'sexp_processor'
+require 'ruby_parser'
+require 'file/tail'
 
 begin
   require 'parse_tree'
   require 'parse_tree_extensions'
 rescue LoadError
   raise if RUBY_VERSION == '1.8.6' # support for code scanner in 1.8.6 is too tedious
-  require 'ruby_parser'
-  require 'file/tail'
 end
 
 module Sourcify #:nodoc:
