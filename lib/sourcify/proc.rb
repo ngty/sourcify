@@ -59,8 +59,9 @@ module Sourcify
       end
 
       ###
-      # Returns the code representation of this proc. Unlike #to_raw_source, the returned
-      # code retains only the functional aspects, fluff like comments are stripped off.
+      # Returns the code representation of this proc. Unlike Proc#to_raw_source, the
+      # returned code retains only the functional aspects, fluff like comments are
+      # stripped off.
       #
       #   lambda do |i|
       #     i+1 # (blah)
@@ -167,7 +168,7 @@ module Sourcify
       #   # >>   i+1 # (blah)
       #   # >> end"
       #
-      # NOTE: See Proc#to_source for all options supported.
+      # NOTE: The options supported are the same as those for Proc#to_source.
       #
       def to_raw_source(opts={}, &body_matcher)
         # NOTE: this is a stub for the actual one in Methods::ToRawSource
