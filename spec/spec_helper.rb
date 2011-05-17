@@ -111,15 +111,19 @@ end
 # ///////////////////////////////////////////////////////////
 
 unless has_parsetree?
-  ragel_dir = File.join(File.dirname(__FILE__), '..', 'lib', 'sourcify', 'proc')
-  ragel_file = File.join(ragel_dir, 'scanner.rl')
-  ruby_file = File.join(ragel_dir, 'scanner.rb')
-  File.delete(ruby_file) rescue nil
-  system("ragel -R #{ragel_file}")
+  %w{proc}.each do |m|
+    common_dir = File.expand_path('../../lib/sourcify/common/ragel', __FILE__)
+    ragel_dir = File.expand_path("../../lib/sourcify/#{m}", __FILE__)
+    ragel_file = File.join(ragel_dir, 'scanner.rl')
+    ruby_file = File.join(ragel_dir, 'scanner.rb')
+    File.delete(ruby_file) rescue nil
+    system("ragel -I #{common_dir} -R #{ragel_file}")
 
-  begin
-    require File.join(ragel_dir, 'scanner.rb')
-  rescue LoadError
-    raise $!
+    begin
+      require File.join(ragel_dir, 'scanner.rb')
+    rescue LoadError
+      raise $!
+    end
   end
 end
+
