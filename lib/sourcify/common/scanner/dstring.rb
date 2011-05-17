@@ -1,5 +1,5 @@
 module Sourcify
-  module Proc
+  module Common
     module Scanner #:nodoc:all
       class DString < Struct.new(:tag)
 
@@ -29,11 +29,10 @@ module Sourcify
 
           def parsable?
             begin
-              Parser::Converter.to_sexp <<-SOURCIFIED_HEREDOKIE.strip
-                #{safe_contents}
-              SOURCIFIED_HEREDOKIE
-            rescue Exception
+              RubyParser.new.parse(safe_contents)
               true
+            rescue Exception
+              false
             end
           end
 

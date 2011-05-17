@@ -1,5 +1,5 @@
 module Sourcify
-  module Proc
+  module Common
     module Scanner #:nodoc:all
       class Counter
 
@@ -35,9 +35,6 @@ module Sourcify
         end
 
       end
-
-      class DoEndBlockCounter < Counter; end
-      class BraceBlockCounter < Counter; end
 
     end
   end

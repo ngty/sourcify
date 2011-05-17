@@ -1,5 +1,5 @@
 module Sourcify
-  module Proc
+  module Common
     module Scanner #:nodoc:all
       class Comment
 

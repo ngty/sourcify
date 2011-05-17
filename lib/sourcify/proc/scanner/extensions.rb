@@ -1,12 +1,17 @@
 %w{heredoc comment dstring counter}.each do |f|
-  Sourcify.require_rb('proc', 'scanner', f)
+  Sourcify.require_rb('common', 'scanner', f)
 end
 
 module Sourcify
   module Proc
     module Scanner #:nodoc:all
+
+      class DoEndBlockCounter < Common::Scanner::Counter; end
+      class BraceBlockCounter < Common::Scanner::Counter; end
+
       module Extensions
 
+        include Common::Scanner
         class Escape < Exception; end
         RUBY_PARSER = RubyParser.new
 
