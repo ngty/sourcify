@@ -18,14 +18,14 @@ end
 shared 'has started do...end counter' do
 
   before do
-    Sourcify::Proc::Scanner::DoEndBlockCounter.class_eval do
+    Sourcify::Proc::Scanner::Extensions::DoEndBlockCounter.class_eval do
       alias_method :orig_started?, :started?
       def started?; true; end
     end
   end
 
   after do
-    Sourcify::Proc::Scanner::DoEndBlockCounter.class_eval do
+    Sourcify::Proc::Scanner::Extensions::DoEndBlockCounter.class_eval do
       alias_method :started?, :orig_started?
     end
   end
