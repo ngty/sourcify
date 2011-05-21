@@ -106,24 +106,3 @@ def irb_exec(stdin_str)
   (values[-1].nil? && RUBY_VERSION.include?('1.9.2')) ? values[0 .. -2] : values
 end
 
-# ///////////////////////////////////////////////////////////
-# Regenerate ragel-based scanner
-# ///////////////////////////////////////////////////////////
-
-unless has_parsetree?
-  %w{proc}.each do |m|
-    common_dir = File.expand_path('../../lib/sourcify/common/ragel', __FILE__)
-    ragel_dir = File.expand_path("../../lib/sourcify/#{m}/parser", __FILE__)
-    ragel_file = File.join(ragel_dir, 'raw_scanner.rl')
-    ruby_file = File.join(ragel_dir, 'raw_scanner.rb')
-    File.delete(ruby_file) rescue nil
-    system("ragel -I #{common_dir} -R #{ragel_file}")
-
-    begin
-      require File.join(ragel_dir, 'raw_scanner.rb')
-    rescue LoadError
-      raise $!
-    end
-  end
-end
-

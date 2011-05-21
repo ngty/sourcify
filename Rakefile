@@ -49,6 +49,21 @@ task :'spec:static' do
 end
 
 # ///////////////////////////////////////////////////////////
+# Build ruby files from ragel definitions
+# ///////////////////////////////////////////////////////////
+desc "Run ragel to generate ruby scanner files from ragel definitions"
+task :ragel do
+  %w{proc}.each do |m|
+    common_dir = File.expand_path('../lib/sourcify/common/ragel', __FILE__)
+    ragel_dir = File.expand_path("../lib/sourcify/#{m}/parser", __FILE__)
+    ragel_file = File.join(ragel_dir, 'raw_scanner.rl')
+    ruby_file = File.join(ragel_dir, 'raw_scanner.rb')
+    File.delete(ruby_file) rescue nil
+    system("ragel -I #{common_dir} -R #{ragel_file}")
+  end
+end
+
+# ///////////////////////////////////////////////////////////
 # Benchmarking
 # ///////////////////////////////////////////////////////////
 desc "Benchmarking"
