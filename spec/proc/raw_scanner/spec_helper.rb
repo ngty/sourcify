@@ -1,4 +1,5 @@
 require File.expand_path('../../../spec_helper', __FILE__)
+require File.expand_path('../../../raw_scanner/shared_specs', __FILE__)
 
 module Sourcify::Proc::Parser::RawScanner
   class << self ; attr_reader :tokens ; end
@@ -31,5 +32,3 @@ shared 'has started do...end counter' do
   end
 
 end
-
-require File.expand_path('../../../raw_scanner/shared_specs', __FILE__)
