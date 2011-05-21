@@ -1,7 +1,4 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
-
-unless has_parsetree?
-describe 'Double quote strings (w interpolation)' do
+shared 'Double quote strings (w interpolation)' do
 
   # NOTE: we skip %Q#...# cos %Q#..#{..}..# is invalid syntax.
   %w{~ ` ! @ $ % ^ & * _ - + = | ; : ' " , . ? / \\}.map{|w| [w,w] }.concat(
@@ -60,5 +57,4 @@ describe 'Double quote strings (w interpolation)' do
 
   end
 
-end
 end

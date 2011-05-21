@@ -1,7 +1,4 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
-
-unless has_parsetree?
-describe 'Single quote strings (\', %q & %w)' do
+shared 'Single quote strings (\', %q & %w)' do
 
   %w{~ ` ! @ # $ % ^ & * _ - + = \\ | ; : ' " , . ? /}.map{|w| [w,w] }.concat(
     [%w{( )}, %w{[ ]}, %w({ }), %w{< >}]
@@ -79,5 +76,4 @@ describe 'Single quote strings (\', %q & %w)' do
     )).should.include([:sstring, "''"])
   end
 
-end
 end

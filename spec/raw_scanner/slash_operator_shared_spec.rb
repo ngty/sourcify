@@ -1,7 +1,4 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
-
-unless has_parsetree?
-describe "Shash operator" do
+shared "Slash operator" do
 
   should 'handle w preceding variable' do
     process(%Q(a / b)).should.include([:op, '/'])
@@ -71,5 +68,4 @@ describe "Shash operator" do
     process(%Q([ / b /)).should.not.include([:op, '/'])
   end
 
-end
 end

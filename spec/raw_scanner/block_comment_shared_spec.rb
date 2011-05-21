@@ -1,7 +1,4 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
-
-unless has_parsetree?
-describe "Block comment (=begin ... =end)" do
+shared "Block comment (=begin ... =end)" do
 
   should 'handle =begin\n ... =end\n' do
     process(<<EOL
@@ -57,5 +54,4 @@ EOL
            ).should.not.include([:comment, "\n=begin\n bb \n=end cc"])
   end
 
-end
 end

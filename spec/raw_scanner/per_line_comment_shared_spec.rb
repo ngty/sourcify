@@ -1,7 +1,4 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
-
-unless has_parsetree?
-describe "Per line comment (# ...)" do
+shared "Per line comment (# ...)" do
 
   should 'handle start of line' do
     process(<<EOL
@@ -32,5 +29,4 @@ EOL
 
   end
 
-end
 end
