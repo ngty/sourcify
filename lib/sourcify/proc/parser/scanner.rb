@@ -1,7 +1,9 @@
+Sourcify.require_rb('proc', 'parser', 'raw_scanner')
+
 module Sourcify
   module Proc
     class Parser #:nodoc:all
-      class CodeScanner
+      class Scanner
         class << self
 
           def process(source_code, opts, &matcher)
@@ -28,7 +30,7 @@ module Sourcify
           end
 
           def rscan(str, opts)
-            results = Scanner.process(str, opts) || []
+            results = RawScanner.process(str, opts) || []
             return results if opts[:ignore_nested]
             results.map do |outer|
               inner = rscan(outer.sub(/^proc\s*(do|\{)/,''), opts.merge(:stop_on_newline => true))

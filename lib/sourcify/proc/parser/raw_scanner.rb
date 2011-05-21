@@ -1,16 +1,17 @@
 
-# line 1 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
-Sourcify.require_rb('proc', 'scanner', 'extensions')
+# line 1 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
+Sourcify.require_rb('proc', 'parser', 'raw_scanner_extensions')
 
 module Sourcify
   module Proc
-    module Scanner #:nodoc:all
+    class Parser
+      module RawScanner #:nodoc:all
 
 
-# line 108 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 109 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 
 
-# line 2 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rb"
+# line 2 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rb"
 class << self
 	attr_accessor :_scanner_actions
 	private :_scanner_actions, :_scanner_actions=
@@ -876,15 +877,15 @@ end
 self.scanner_en_main = 224;
 
 
-# line 110 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 111 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 
-      extend Scanner::Extensions
+        extend Extensions
 
-      def self.execute!
-        data = @data
-        eof = data.length
-        
-# line 2 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rb"
+        def self.execute!
+          data = @data
+          eof = data.length
+          
+# line 2 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -894,9 +895,9 @@ begin
 	act = 0
 end
 
-# line 117 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
-        
-# line 2 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rb"
+# line 118 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
+          
+# line 2 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -930,7 +931,7 @@ begin
 		begin
 ts = p
 		end
-# line 2 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rb"
+# line 2 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rb"
 		end # from state action switch
 	end
 	if _trigger_goto
@@ -2123,23 +2124,23 @@ when 83 then
   end
 		end
 when 84 then
-# line 17 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 18 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 act = 66;		end
 when 85 then
-# line 23 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 24 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 act = 67;		end
 when 86 then
-# line 58 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 59 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 act = 73;		end
 when 87 then
-# line 97 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 98 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 act = 79;		end
 when 88 then
-# line 30 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 31 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p+1
  begin 
@@ -2148,7 +2149,7 @@ te = p+1
      end
 		end
 when 89 then
-# line 35 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 36 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p+1
  begin 
@@ -2157,7 +2158,7 @@ te = p+1
      end
 		end
 when 90 then
-# line 40 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 41 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p+1
  begin 
@@ -2166,7 +2167,7 @@ te = p+1
      end
 		end
 when 91 then
-# line 45 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 46 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p+1
  begin 
@@ -2175,7 +2176,7 @@ te = p+1
      end
 		end
 when 92 then
-# line 58 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 59 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p+1
  begin 
@@ -2190,7 +2191,7 @@ te = p+1
      end
 		end
 when 93 then
-# line 65 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 66 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p+1
  begin 
@@ -2204,7 +2205,7 @@ te = p+1
      end
 		end
 when 94 then
-# line 69 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 70 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p+1
  begin 
@@ -2220,7 +2221,7 @@ te = p+1
      end
 		end
 when 95 then
-# line 77 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 78 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p+1
  begin 
@@ -2236,7 +2237,7 @@ te = p+1
      end
 		end
 when 96 then
-# line 83 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 84 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p+1
  begin 
@@ -2250,7 +2251,7 @@ te = p+1
      end
 		end
 when 97 then
-# line 87 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 88 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p+1
  begin 
@@ -2268,25 +2269,25 @@ te = p+1
      end
 		end
 when 98 then
-# line 98 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 99 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p+1
  begin  push(:bslash, ts, te)  end
 		end
 when 99 then
-# line 102 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 103 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p+1
  begin  push(:digit, ts, te)  end
 		end
 when 100 then
-# line 104 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 105 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p+1
  begin  push(:any, ts, te)  end
 		end
 when 101 then
-# line 45 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 46 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p
 p = p - 1; begin 
@@ -2295,7 +2296,7 @@ p = p - 1; begin
      end
 		end
 when 102 then
-# line 52 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 53 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p
 p = p - 1; begin 
@@ -2311,7 +2312,7 @@ p = p - 1; begin
      end
 		end
 when 103 then
-# line 58 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 59 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p
 p = p - 1; begin 
@@ -2326,37 +2327,37 @@ p = p - 1; begin
      end
 		end
 when 104 then
-# line 97 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 98 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p
 p = p - 1; begin  push(:var, ts, te)  end
 		end
 when 105 then
-# line 99 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 100 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p
 p = p - 1; begin  push(:const, ts, te)  end
 		end
 when 106 then
-# line 100 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 101 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p
 p = p - 1; begin  push(:symbol, ts, te)  end
 		end
 when 107 then
-# line 101 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 102 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p
 p = p - 1; begin  push(:space, ts, te)  end
 		end
 when 108 then
-# line 104 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 105 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
 te = p
 p = p - 1; begin  push(:any, ts, te)  end
 		end
 when 109 then
-# line 45 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 46 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
  begin p = ((te))-1; end
  begin 
@@ -2365,7 +2366,7 @@ when 109 then
      end
 		end
 when 110 then
-# line 52 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 53 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
  begin p = ((te))-1; end
  begin 
@@ -2381,13 +2382,13 @@ when 110 then
      end
 		end
 when 111 then
-# line 100 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 101 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
  begin p = ((te))-1; end
  begin  push(:symbol, ts, te)  end
 		end
 when 112 then
-# line 104 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
+# line 105 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
 		begin
  begin p = ((te))-1; end
  begin  push(:any, ts, te)  end
@@ -2432,7 +2433,7 @@ when 113 then
  push(:var, ts, te) end
 end 
 			end
-# line 2 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rb"
+# line 2 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rb"
 			end # action switch
 		end
 	end
@@ -2457,7 +2458,7 @@ when 1 then
 		begin
 act = 0
 		end
-# line 2 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rb"
+# line 2 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rb"
 		end # to state action switch
 	end
 	if _trigger_goto
@@ -2488,9 +2489,10 @@ end
 	end
 	end
 
-# line 118 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/scanner.rl"
-      end
+# line 119 "/home/ty.archlinux/dev/ty/sourcify/lib/sourcify/proc/parser/raw_scanner.rl"
+        end
 
+      end
     end
   end
 end

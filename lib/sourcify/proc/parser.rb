@@ -1,5 +1,4 @@
-Sourcify.require_rb('proc', 'scanner')
-%w{normalizer code_scanner source_code converter}.each do |file|
+%w{normalizer scanner source_code converter}.each do |file|
   Sourcify.require_rb('proc', 'parser', file)
 end
 
@@ -38,7 +37,7 @@ module Sourcify
       private
 
         def extracted_source(opts)
-          CodeScanner.process(@source_code, opts) do |code|
+          Scanner.process(@source_code, opts) do |code|
             begin
               eval(code).arity == @arity
             rescue Exception

@@ -1,8 +1,9 @@
-Sourcify.require_rb('proc', 'scanner', 'extensions')
+Sourcify.require_rb('proc', 'parser', 'raw_scanner_extensions')
 
 module Sourcify
   module Proc
-    module Scanner #:nodoc:all
+    class Parser
+      module RawScanner #:nodoc:all
 
 %%{
 
@@ -108,15 +109,16 @@ module Sourcify
 }%%
 %% write data;
 
-      extend Scanner::Extensions
+        extend Extensions
 
-      def self.execute!
-        data = @data
-        eof = data.length
-        %% write init;
-        %% write exec;
+        def self.execute!
+          data = @data
+          eof = data.length
+          %% write init;
+          %% write exec;
+        end
+
       end
-
     end
   end
 end
