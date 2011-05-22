@@ -1,15 +1,9 @@
-require File.expand_path('../spec_helper', __FILE__)
-
-unless has_parsetree?
-describe "Proc's raw scanner > keyword do alias #2 (increment do..end block counter by 0..1)" do
-
-  behaves_like 'has started do...end counter'
-
-  %w{while until for}.each do |kw|
+shared "Keyword block start alias #2 (incrementing counter by 0..1)" do
+  kw_block_start_alias2.each do |kw|
 
     %w{_ x 1}.each do |c|
       should "not increment counter with ... (#{kw}#{c} ...)" do
-        do_end_counter(<<EOL
+        kw_block_start_counter(<<EOL
 aa (#{kw}#{c} bb ... )
 cc
 EOL
@@ -18,7 +12,7 @@ EOL
     end
 
     should "increment counter with ... (#{kw} ...)" do
-      do_end_counter(<<EOL
+      kw_block_start_counter(<<EOL
 aa (#{kw} bb ... )
 cc
 EOL
@@ -26,7 +20,7 @@ EOL
     end
 
     should "increment counter with ... ; #{kw} ..." do
-      do_end_counter(<<EOL
+      kw_block_start_counter(<<EOL
 aa; #{kw} bb ...
 cc
 EOL
@@ -34,7 +28,7 @@ EOL
     end
 
     should "increment counter with ... \\n #{kw} ..." do
-      do_end_counter(<<EOL
+      kw_block_start_counter(<<EOL
 aa
  #{kw} bb ...
 cc
@@ -43,7 +37,7 @@ EOL
     end
 
     should "increment counter with ... \\n \t #{kw} ..." do
-      do_end_counter(<<EOL
+      kw_block_start_counter(<<EOL
 aa
  \t #{kw} bb ...
 cc
@@ -52,7 +46,7 @@ EOL
     end
 
     should "increment counter with ... = #{kw} ..." do
-    do_end_counter(<<EOL
+    kw_block_start_counter(<<EOL
 aa = #{kw} bb ...
 cc
 EOL
@@ -60,7 +54,7 @@ EOL
     end
 
     should "increment counter with ... , #{kw} ..." do
-    do_end_counter(<<EOL
+    kw_block_start_counter(<<EOL
 aa , #{kw} bb ...
 cc
 EOL
@@ -68,7 +62,7 @@ EOL
     end
 
     should "increment counter with ... do #{kw} ..." do
-    do_end_counter(<<EOL
+    kw_block_start_counter(<<EOL
 aa do #{kw} bb ...
 cc
 EOL
@@ -76,7 +70,7 @@ EOL
     end
 
     should "increment counter with ... then #{kw} ..." do
-      do_end_counter(<<EOL
+      kw_block_start_counter(<<EOL
 aa then #{kw} bb ...
 cc
 EOL
@@ -84,5 +78,4 @@ EOL
     end
 
   end
-end
 end
