@@ -61,14 +61,6 @@ EOL
                   ).should.equal([0,1])
     end
 
-    should "increment counter with ... do #{kw} ..." do
-    kw_block_start_counter(<<EOL
-aa do #{kw} bb ...
-cc
-EOL
-                  ).should.equal([1,2])
-    end
-
     should "increment counter with ... then #{kw} ..." do
       kw_block_start_counter(<<EOL
 aa then #{kw} bb ...
