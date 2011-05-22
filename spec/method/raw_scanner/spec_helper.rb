@@ -6,7 +6,7 @@ module Sourcify::Method::Parser::RawScanner
   SCANNER = self
 
   class << self
-    attr_reader :tokens, :def_end_counter
+    attr_reader :tokens, :counter
   end
 
   module Spec
@@ -27,21 +27,21 @@ module Sourcify::Method::Parser::RawScanner
         base.instance_eval do
 
           before do
-            Extensions::DoEndBlockCounter.class_eval do
+            Extensions::Counter.class_eval do
               alias_method :orig_started?, :started?
               def started?; true; end
             end
           end
 
           after do
-            Extensions::DoEndBlockCounter.class_eval do
+            Extensions::Counter.class_eval do
               alias_method :started?, :orig_started?
             end
           end
 
           def kw_block_start_counter(data)
             SCANNER.process(data)
-            SCANNER.def_end_counter.counts
+            SCANNER.counter.counts
           end
 
           def kw_block_start_alias1
