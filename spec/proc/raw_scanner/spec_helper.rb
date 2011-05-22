@@ -2,21 +2,27 @@ require File.expand_path('../../../spec_helper', __FILE__)
 require File.expand_path('../../../raw_scanner/shared_specs', __FILE__)
 
 module Sourcify::Proc::Parser::RawScanner
-  class << self ; attr_reader :tokens ; end
-  class << self ; attr_reader :do_end_counter ; end
-end
-
-def process(data)
-  Sourcify::Proc::Parser::RawScanner.process(data)
-  Sourcify::Proc::Parser::RawScanner.tokens
-end
-
-module Sourcify::Proc::Parser::RawScanner
 
   SCANNER = self
 
+  class << self
+    attr_reader :tokens, :do_end_counter
+  end
+
   module Spec
-    module Setup
+
+    module GenericSupport
+      def self.extended(base)
+        base.instance_eval do
+          def process(data)
+            SCANNER.process(data)
+            SCANNER.tokens
+          end
+        end
+      end
+    end
+
+    module KwBlockStartSupport
       def self.extended(base)
         base.instance_eval do
 
@@ -45,9 +51,9 @@ module Sourcify::Proc::Parser::RawScanner
           def kw_block_start_alias2
             %w{while until for}
           end
-
         end
       end
     end
+
   end
 end
