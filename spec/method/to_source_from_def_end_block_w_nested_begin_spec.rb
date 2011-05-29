@@ -21,9 +21,11 @@ describe "Method#to_source from def ... end block (w nested begin)" do
       end
     end
     method(:m2).should.be having_source(%(
-      begin
-        @x1 = 1
-        begin @x2 = 2 end
+      def m2
+        begin
+          @x1 = 1
+          begin @x2 = 2 end
+        end
       end
     ))
   end
