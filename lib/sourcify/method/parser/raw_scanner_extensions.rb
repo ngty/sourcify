@@ -7,7 +7,7 @@ module Sourcify
         module Extensions
 
           include Common::Scanner::Extensions
-          class Counter < Common::Scanner::Counter; end
+          Counter = Common::Scanner::Counter
 
           def increment_counter(count = 1)
             unless @counter.started?
