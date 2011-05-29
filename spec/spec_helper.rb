@@ -58,27 +58,27 @@ def normalize_code(code)
 end
 
 def having_source(expected, opts={}, &matcher)
-  lambda do |_proc|
+  lambda do |thing|
     normalize_code(expected) # added for bug fixing
-    normalize_code(block_given? ? _proc.to_source(&matcher) : _proc.to_source(opts)) \
+    normalize_code(block_given? ? thing.to_source(&matcher) : thing.to_source(opts)) \
       == normalize_code(expected)
   end
 end
 
 def having_raw_source(expected, opts={}, &matcher)
-  lambda do |_proc|
-    found = block_given? ? _proc.to_raw_source(&matcher) : _proc.to_raw_source(opts)
+  lambda do |thing|
+    found = block_given? ? thing.to_raw_source(&matcher) : thing.to_raw_source(opts)
     found == expected.strip
   end
 end
 
 def having_sexp(expected, opts={}, &matcher)
-  lambda do |_proc|
+  lambda do |thing|
     expected = eval(expected) if expected.is_a?(String)
     if block_given?
-      _proc.to_sexp(&matcher).inspect == expected.inspect
+      thing.to_sexp(&matcher).inspect == expected.inspect
     else
-      _proc.to_sexp(opts).inspect == expected.inspect
+      thing.to_sexp(opts).inspect == expected.inspect
     end
   end
 end
