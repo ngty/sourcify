@@ -2,8 +2,6 @@ module Sourcify
 
   class MultipleMatchingProcsPerLineError < Exception; end
   class NoMatchingProcError < Exception; end
-  class ParserInternalError < Exception; end
-  class CannotParseEvalCodeError < Exception; end
   class CannotHandleCreatedOnTheFlyProcError < Exception; end
 
   module Proc
