@@ -6,8 +6,6 @@ module Sourcify
   module Method
     class Parser #:nodoc:all
 
-      IS_19x = RUBY_VERSION.include?('1.9.')
-
       def initialize(_meth)
         @arity, @parameters, @name = _meth.arity, _meth.parameters, _meth.name
         @source_code = SourceCode.new(*_meth.source_location)

@@ -12,6 +12,9 @@ rescue LoadError
 end
 
 module Sourcify #:nodoc:
+
+  IS_19x = RUBY_VERSION.include?('1.9.')
+
   class << self
 
     def require_rb(*args)

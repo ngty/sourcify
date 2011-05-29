@@ -6,8 +6,6 @@ module Sourcify
   module Proc
     class Parser #:nodoc:all
 
-      IS_19x = RUBY_VERSION.include?('1.9.')
-
       def initialize(_proc)
         @arity, @source_code = _proc.arity, SourceCode.new(*_proc.source_location(false))
         raise CannotHandleCreatedOnTheFlyProcError unless @source_code.file
