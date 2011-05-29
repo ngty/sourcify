@@ -18,7 +18,6 @@ module Sourcify
           end
 
           def decrement_counter
-            return unless @counter.started?
             @counter.decrement
             construct_result_code if @counter.balanced?
           end

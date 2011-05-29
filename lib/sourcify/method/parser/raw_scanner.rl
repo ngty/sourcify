@@ -37,7 +37,7 @@ module Sourcify
   ## MACHINE >> Main
   main := |*
 
-    ## == Start/end of do..end block
+    ## == Start/end of def..end block
 
     kw_def => {
       push(:kw_def, ts, te)
