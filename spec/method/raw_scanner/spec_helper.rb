@@ -14,10 +14,31 @@ module Sourcify::Method::Parser::RawScanner
     module GenericSupport
       def self.extended(base)
         base.instance_eval do
+
+          before do
+            SCANNER.instance_eval do
+              class << self
+                alias_method :orig_stop_if_probably_defined_by_proc,
+                  :stop_if_probably_defined_by_proc
+                def stop_if_probably_defined_by_proc; end
+              end
+            end
+          end
+
+          after do
+            SCANNER.instance_eval do
+              class << self
+                alias_method :stop_if_probably_defined_by_proc,
+                  :orig_stop_if_probably_defined_by_proc
+              end
+            end
+          end
+
           def process(data)
             SCANNER.process(data)
             SCANNER.tokens
           end
+
         end
       end
     end
