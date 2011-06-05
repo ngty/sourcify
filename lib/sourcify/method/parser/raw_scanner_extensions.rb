@@ -9,6 +9,15 @@ module Sourcify
           include Common::Scanner::Extensions
           Counter = Common::Scanner::Counter
 
+          def increment_lineno
+            stop_if_probably_defined_by_proc
+            super
+          end
+
+          def stop_if_probably_defined_by_proc
+            raise ProbablyDefinedByProc if @lineno == 1 && !@counter.started?
+          end
+
           def increment_counter(count = 1)
             unless @counter.started?
               return if (@rejecting_block = codified_tokens !~ @start_pattern)
