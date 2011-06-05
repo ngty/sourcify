@@ -94,7 +94,14 @@ module Sourcify
         end
 
         def valid?(snippet)
-          (RubyParser.new.parse(snippet) && true) rescue false
+          begin
+            require 'ripper'
+            Ripper.sexp(snippet) && true
+          rescue LoadError
+            RubyParser.new.parse(snippet) && true
+          rescue
+            false
+          end
         end
 
       end
