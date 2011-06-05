@@ -32,7 +32,7 @@ module Sourcify
           rescue ProbablyDefinedByProc
             pattern = /^proc\s*(\{|do)\s*(\|[^\|]*\|)?(.+)(\}|end)$/m
             match = extracted_source_from_proc(opts).match(pattern)
-            if @arity.zero?
+            if @parameters.empty?
               %Q(def #{@name}\n#{match[3]}\nend)
             else
               args = match[2].sub(/^\|([^\|]+)\|$/, '\1')
