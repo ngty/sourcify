@@ -9,7 +9,7 @@ module Sourcify
       class ProbablyDefinedByProc < Exception; end
 
       def initialize(_meth)
-        @arity, @parameters, @name = _meth.arity, _meth.parameters, _meth.name
+        @parameters, @name = _meth.parameters, _meth.name
         @source_code = SourceCode.new(*_meth.source_location)
       end
 
@@ -44,8 +44,8 @@ module Sourcify
         def extracted_source_from_method(opts)
           Scanner.process(@source_code, opts) do |code|
             begin
-              meth = Object.new.instance_eval("#{code}; self").method(@name)
-              meth.arity == @arity && meth.parameters == @parameters
+              Object.new.instance_eval("#{code}; self").
+                method(@name).parameters == @parameters
             rescue NameError
               false
             rescue Exception
@@ -57,12 +57,11 @@ module Sourcify
         def extracted_source_from_proc(opts)
           Proc::Parser::Scanner.process(@source_code, opts) do |code|
             begin
-              obj = Object.new
-              (class << obj; self; end).class_eval(%Q(
-                define_method(:#{@name}, &(#{code}))
-              ))
-              meth = obj.method(@name)
-              meth.arity == @arity && meth.parameters == @parameters
+              Object.new.instance_eval(%(
+                (class << self; self; end).class_eval do
+                  define_method(:#{@name}, &(#{code}))
+                end; self
+              )).method(@name).parameters == @parameters
             rescue NameError
               false
             rescue Exception
