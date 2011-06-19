@@ -59,7 +59,7 @@ end
 
 def having_source(expected, opts={}, &matcher)
   lambda do |thing|
-    normalize_code(expected) # added for bug fixing
+    #normalize_code(expected) # added for bug fixing
     normalize_code(block_given? ? thing.to_source(&matcher) : thing.to_source(opts)) \
       == normalize_code(expected)
   end
