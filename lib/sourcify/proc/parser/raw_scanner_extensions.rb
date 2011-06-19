@@ -56,7 +56,7 @@ module Sourcify
           end
 
           def really_false_started?
-            valid?(%Q(#{codified_tokens} 1}))
+            valid?(%Q(#{codified_tokens} 1}), :hash)
           end
 
           def reset_attributes
