@@ -21,7 +21,7 @@ module Sourcify
 
     (
       ((kw_class | kw_module | kw_do | kw_begin | kw_case | kw_if | kw_unless) . ^vchar) |
-      (kw_class . ospaces . '<<' . ospaces . ^newline+)
+      (kw_class . ospaces . '<<' . ospaces . ^(newline | smcolon)+)
     ) => {
       push(:kw_do_alias1, ts, te)
       increment_counter(1)
