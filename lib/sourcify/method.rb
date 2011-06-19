@@ -1,6 +1,6 @@
 module Sourcify
 
-  #class MultipleMatchingMethodsPerLineError < Exception; end
+  class MultipleMatchingMethodsPerLineError < Exception; end
   class NoMatchingMethodError < Exception; end
 
   module Method

@@ -15,7 +15,7 @@ module Sourcify
           end
 
           def stop_if_probably_defined_by_proc
-            raise ProbablyDefinedByProc if @lineno == 1 && !@counter.started?
+            raise ProbablyDefinedByProc if @lineno == 1 && @results.empty? && !@counter.started?
           end
 
           def increment_counter(count = 1)

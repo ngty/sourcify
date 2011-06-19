@@ -31,13 +31,13 @@ module Sourcify
 
           def rscan(str, opts)
             results = RawScanner.process(str, opts) || []
-            return results # TODO: WIP
             return results if opts[:ignore_nested]
             results.map do |outer|
-              [outer,nil]
-              #inner = rscan(outer.sub(/^def\s+(do|\{)/,''), opts.merge(:stop_on_newline => true))
-                #[outer, inner]
-              end
+              inner = rscan(
+                outer.sub(/^def(.*)end$/,'\1').sub(/^(?:.*?)(def.*)$/,'\1'),
+                opts.merge(:stop_on_newline => true)
+              )
+              [outer, inner]
             end
           end
 
@@ -45,3 +45,4 @@ module Sourcify
       end
     end
   end
+end
