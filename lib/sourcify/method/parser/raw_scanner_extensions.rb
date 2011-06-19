@@ -50,6 +50,11 @@ module Sourcify
             super
           end
 
+          def valid?(*args)
+            # TODO: shouldn't need this check, there seems to be a bug w raw_scanner.rl.
+            args[0].start_with?('def') && super
+          end
+
         end
       end
     end
