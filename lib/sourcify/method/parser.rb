@@ -20,7 +20,8 @@ module Sourcify
       def sexp(opts)
         (@sexps ||= {})[opts.hash] ||= (
           raw_code = ("\n" * @source_code.line) + extracted_source(opts)
-          Converter.to_sexp(raw_code, @source_code.file)
+          sexp = Converter.to_sexp(raw_code, @source_code.file)
+          opts[:strip_enclosure] ? Sexp.from_array(sexp.to_a[-1]) : sexp
         )
       end
 
