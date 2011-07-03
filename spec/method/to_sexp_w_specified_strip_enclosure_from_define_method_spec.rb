@@ -4,6 +4,11 @@ describe 'Method#to_sexp w specified {:strip_enclosure => ...} (from define_meth
 
   before { @thing = Object.new }
 
+  # NOTE: This is a potential bug !! Strictly speaking, when we create any
+  # method via Module#define_method, the scope is not block. Anyway, we're
+  # keeping things simple for now & see how things go .. which may or may
+  # not matter.
+
   describe '>> w true' do
 
     options = {:strip_enclosure => true}
