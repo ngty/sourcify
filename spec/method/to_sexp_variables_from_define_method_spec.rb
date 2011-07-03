@@ -14,7 +14,7 @@ describe "Method#to_sexp variables (from define_method))" do
     )
   end
 
-  should 'handle local var' do
+  should 'not handle local var' do
     # NOTE: This can be a potential bug, cos we purposely ignore the local
     # var captured in the proc's binding ... anyway, we see how things go
     # (eg. maybe nobody would ever care abt it)
