@@ -1,6 +1,6 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
 
-describe 'Method#to_source w specified {:attached_to => ...} & single match' do
+describe 'Method#to_source w specified {:attached_to => ...} & single match (from define_method)' do
 
   before { @thing = Object.new }
   options = {:attached_to => :watever}

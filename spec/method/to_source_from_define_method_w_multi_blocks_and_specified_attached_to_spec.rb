@@ -1,6 +1,6 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
 
-describe 'Proc#to_source w specified {:attached_to => ...}' do
+describe 'Method#to_source w specified {:attached_to => ...} (from define_method)' do
   unless has_parsetree?
 
     before { @thing = Object.new }
