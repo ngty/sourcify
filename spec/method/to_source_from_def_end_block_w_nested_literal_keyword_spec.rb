@@ -1,139 +1,141 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
 
-describe "Method#to_source from def ... end block (w nested literal keyword)" do
+describe "Method#to_source (from def ... end block)" do
+  describe "w nested literal keyword" do
 
-  # See http://redmine.ruby-lang.org/issues/show/3764
+    # See http://redmine.ruby-lang.org/issues/show/3764
 
-  should 'handle :class' do
-    def m1
-      x = :class
-    end
-    method(:m1).should.be having_source(%(
+    should 'handle :class' do
       def m1
         x = :class
       end
-    ))
-  end
-
-  should 'handle :module' do
-    def m2
-      x = :module
+      method(:m1).should.be having_source(%(
+        def m1
+          x = :class
+        end
+      ))
     end
-    method(:m2).should.be having_source(%(
+
+    should 'handle :module' do
       def m2
         x = :module
       end
-    ))
-  end
-
-  should 'handle :def' do
-    def m3
-      x = :def
+      method(:m2).should.be having_source(%(
+        def m2
+          x = :module
+        end
+      ))
     end
-    method(:m3).should.be having_source(%(
+
+    should 'handle :def' do
       def m3
         x = :def
       end
-    ))
-  end
-
-  should 'handle :if' do
-    def m4
-      x = :if
+      method(:m3).should.be having_source(%(
+        def m3
+          x = :def
+        end
+      ))
     end
-    method(:m4).should.be having_source(%(
+
+    should 'handle :if' do
       def m4
         x = :if
       end
-    ))
-  end
-
-  should 'handle :unless' do
-    def m5
-      x = :unless
+      method(:m4).should.be having_source(%(
+        def m4
+          x = :if
+        end
+      ))
     end
-    method(:m5).should.be having_source(%(
+
+    should 'handle :unless' do
       def m5
         x = :unless
       end
-    ))
-  end
-
-  should 'handle :for' do
-    def m6
-      x = :for
+      method(:m5).should.be having_source(%(
+        def m5
+          x = :unless
+        end
+      ))
     end
-    method(:m6).should.be having_source(%(
+
+    should 'handle :for' do
       def m6
         x = :for
       end
-    ))
-  end
-
-  should 'handle :while' do
-    def m7
-      x = :while
+      method(:m6).should.be having_source(%(
+        def m6
+          x = :for
+        end
+      ))
     end
-    method(:m7).should.be having_source(%(
+
+    should 'handle :while' do
       def m7
         x = :while
       end
-    ))
-  end
-
-  should 'handle :until' do
-    def m8
-      x = :until
+      method(:m7).should.be having_source(%(
+        def m7
+          x = :while
+        end
+      ))
     end
-    method(:m8).should.be having_source(%(
+
+    should 'handle :until' do
       def m8
         x = :until
       end
-    ))
-  end
-
-  should 'handle :begin' do
-    def m9
-      x = :begin
+      method(:m8).should.be having_source(%(
+        def m8
+          x = :until
+        end
+      ))
     end
-    method(:m9).should.be having_source(%(
+
+    should 'handle :begin' do
       def m9
         x = :begin
       end
-    ))
-  end
-
-  should 'handle :case' do
-    def m10
-      x = :case
+      method(:m9).should.be having_source(%(
+        def m9
+          x = :begin
+        end
+      ))
     end
-    method(:m10).should.be having_source(%(
+
+    should 'handle :case' do
       def m10
         x = :case
       end
-    ))
-  end
-
-  should 'handle :do' do
-    def m11
-      x = :do
+      method(:m10).should.be having_source(%(
+        def m10
+          x = :case
+        end
+      ))
     end
-    method(:m11).should.be having_source(%(
+
+    should 'handle :do' do
       def m11
         x = :do
       end
-    ))
-  end
-
-  should 'handle :end' do
-    def m12
-      x = :end
+      method(:m11).should.be having_source(%(
+        def m11
+          x = :do
+        end
+      ))
     end
-    method(:m12).should.be having_source(%(
+
+    should 'handle :end' do
       def m12
         x = :end
       end
-    ))
-  end
+      method(:m12).should.be having_source(%(
+        def m12
+          x = :end
+        end
+      ))
+    end
 
+  end
 end
