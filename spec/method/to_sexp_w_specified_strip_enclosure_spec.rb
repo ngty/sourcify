@@ -1,23 +1,15 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
 
-describe 'Method#to_sexp (from define_method)' do
+describe 'Method#to_sexp' do
   describe 'w specified {:strip_enclosure => ...}' do
-
-    before { @thing = Object.new }
-
-    # NOTE: This is a potential bug !! Strictly speaking, when we create any
-    # method via Module#define_method, the scope is not block. Anyway, we're
-    # keeping things simple for now & see how things go .. which may or may
-    # not matter.
 
     describe '>> w true' do
 
       options = {:strip_enclosure => true}
 
       should 'strip enclosing proc wo arg' do
-        blk = lambda { a+b }
-        @thing.class.send(:define_method, :m1, &blk)
-        @thing.method(:m1).should.be having_sexp(
+        def m1; a+b; end
+        method(:m1).should.be having_sexp(
           s(:scope,
             s(:block,
               s(:call,
@@ -29,9 +21,8 @@ describe 'Method#to_sexp (from define_method)' do
       end
 
       should 'strip enclosing proc w arg' do
-        blk = lambda{|a| a+b }
-        @thing.class.send(:define_method, :m2, &blk)
-        @thing.method(:m2).should.be having_sexp(
+        def m2(a); a+b; end
+        method(:m2).should.be having_sexp(
           s(:scope,
             s(:block,
               s(:call,
@@ -49,9 +40,8 @@ describe 'Method#to_sexp (from define_method)' do
       options = {:strip_enclosure => false}
 
       should 'not strip enclosing proc wo arg' do
-        blk = lambda { a+b }
-        @thing.class.send(:define_method, :m3, &blk)
-        @thing.method(:m3).should.be having_sexp(
+        def m3; a+b; end
+        method(:m3).should.be having_sexp(
           s(:defn,
             :m3,
             s(:args),
@@ -66,9 +56,8 @@ describe 'Method#to_sexp (from define_method)' do
       end
 
       should 'not strip enclosing proc w arg' do
-        blk = lambda{|a| a+b }
-        @thing.class.send(:define_method, :m4, &blk)
-        @thing.method(:m4).should.be having_sexp(
+        def m4(a); a+b; end
+        method(:m4).should.be having_sexp(
           s(:defn,
             :m4,
             s(:args, :a),
