@@ -36,7 +36,9 @@ module Sourcify
 
             begin
               if valid?(code) && @body_matcher.call(code)
-                @results << code
+                # NOTE: Need to fix singleton method to avoid errors (eg. undefined object)
+                # downstream
+                @results << code.sub(%r{^(def\s+)(?:[^\.]+\.)?(#{@name}.*end)$}m, '\1\2')
                 raise Escape if @stop_on_newline or @lineno != 1
                 reset_attributes
               end
