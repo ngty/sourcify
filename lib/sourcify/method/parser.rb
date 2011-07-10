@@ -14,7 +14,8 @@ module Sourcify
       end
 
       def raw_source(opts)
-        extracted_source(opts).strip
+        raw_source = extracted_source(opts).strip
+        opts[:strip_enclosure] ? strip_raw_enclosure(raw_source) : raw_source
       end
 
       def source(opts)
@@ -30,6 +31,27 @@ module Sourcify
       end
 
       private
+
+        def strip_raw_enclosure(source)
+          inner =
+            if @parameters.empty?
+              '\s*'
+            else
+              @parameters.map do |param|
+                if name = param[1]
+                  case param[0]
+                  when :req then name
+                  when :opt then "#{name}\s*=\s*.*?"
+                  when :rest then "\\*#{name}"
+                  end
+                else
+                  '\(.*?\)'
+                end
+              end.join('\s*,\s*')
+            end
+          pattern = %r{^def\s+#{@name}(?:(?:\(\s*#{inner}\s*\))|(?:\s+#{inner}\s+))?(.*)end$}m
+          source.sub(pattern, '\1').strip
+        end
 
         def extracted_source(opts)
           begin
