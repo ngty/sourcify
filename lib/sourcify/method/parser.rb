@@ -13,6 +13,10 @@ module Sourcify
         @source_code = SourceCode.new(*_meth.source_location)
       end
 
+      def raw_source(opts)
+        extracted_source(opts).strip
+      end
+
       def source(opts)
         (@sources ||= {})[opts.hash] ||= Converter.to_code(sexp(opts))
       end

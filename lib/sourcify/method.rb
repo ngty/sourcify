@@ -10,6 +10,7 @@ module Sourcify
         Sourcify.require_rb('method', 'methods')
         include Methods::ToSource
         include Methods::ToSexp
+        include Methods::ToRawSource
       end
     end
 
@@ -21,6 +22,10 @@ module Sourcify
 
       def to_sexp(opts={}, &body_matcher)
         # NOTE: this is a stub for the actual one in Methods::ToSexp
+      end
+
+      def to_raw_source(opts={}, &body_matcher)
+        # NOTE: this is a stub for the actual one in Methods::ToRawSource
       end
 
     end
