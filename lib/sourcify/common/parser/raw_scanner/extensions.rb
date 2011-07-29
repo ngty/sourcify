@@ -109,8 +109,8 @@ module Sourcify
 
           rescue LoadError
 
-            def valid?(snippet, validate_as = nil)
-              RubyParser.new.parse(snippet) && true
+            def valid?(snippet, _ = nil)
+              RubyParser.new.parse("#{snippet}") rescue false
             end
 
           end
