@@ -4,7 +4,7 @@ echo ''
 echo `gem env | grep 'INSTALLATION DIRECTORY' | sed 's/.*\/\(.*\)/\1:/'`
 rm -rf ~/.ruby_inline/*ParseTree*
 
-SKIPPABLE=`ruby -e '"".method(:to_i).source_location rescue puts "oops"'`
+SKIPPABLE=`ruby -e 'm = 1.method(:to_s); (m.source_location; m.parameters) rescue puts "oops"'`
 
 if [ -z "$SKIPPABLE" ]; then
   bacon spec/*/*/*_spec.rb spec/*/*_spec.rb
