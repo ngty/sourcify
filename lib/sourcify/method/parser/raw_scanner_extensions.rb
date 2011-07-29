@@ -1,4 +1,4 @@
-Sourcify.require_rb('common', 'scanner', 'extensions')
+Sourcify.require_rb('common', 'parser', 'raw_scanner', 'extensions')
 
 module Sourcify
   module Method
@@ -6,8 +6,8 @@ module Sourcify
       module RawScanner #:nodoc:all
         module Extensions
 
-          include Common::Scanner::Extensions
-          Counter = Common::Scanner::Counter
+          include Common::Parser::RawScanner::Extensions
+          Counter = Common::Parser::RawScanner::Counter
 
           def increment_lineno
             stop_if_probably_defined_by_proc

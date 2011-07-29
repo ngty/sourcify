@@ -1,4 +1,4 @@
-Sourcify.require_rb('common', 'scanner', 'extensions')
+Sourcify.require_rb('common', 'parser', 'raw_scanner', 'extensions')
 
 module Sourcify
   module Proc
@@ -6,9 +6,9 @@ module Sourcify
       module RawScanner #:nodoc:all
         module Extensions
 
-          include Common::Scanner::Extensions
-          class DoEndBlockCounter < Common::Scanner::Counter; end
-          class BraceBlockCounter < Common::Scanner::Counter; end
+          include Common::Parser::RawScanner::Extensions
+          class DoEndBlockCounter < Common::Parser::RawScanner::Counter; end
+          class BraceBlockCounter < Common::Parser::RawScanner::Counter; end
 
           def fix_counter_false_start(key)
             return unless this_counter(key).just_started?
