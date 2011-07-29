@@ -15,6 +15,14 @@ module Sourcify #:nodoc:
 
   IS_19x = RUBY_VERSION.include?('1.9.')
 
+  HAS_RIPPER =
+    begin
+      require 'ripper'
+      true
+    rescue LoadError
+      false
+    end
+
   class << self
 
     def require_rb(*args)
