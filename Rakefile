@@ -13,12 +13,16 @@ RUBIES = {
     'ree-1.8.7-2011.03@sourcify-parsetree'
   ],
   :static => [
-    'ruby-1.8.6-p420@sourcify',
-    'ruby-1.8.7-p334@sourcify',
-    'ree-1.8.7-2011.03@sourcify',
-    'jruby-1.6.1@sourcify',
-    'ruby-1.9.1-p378@sourcify',
-    'ruby-1.9.2-p180@sourcify',
+    [nil, 'ruby-1.8.6-p420@sourcify'],
+    [nil, 'ruby-1.8.7-p334@sourcify'],
+    [nil, 'ree-1.8.7-2011.03@sourcify'],
+    [nil, 'jruby-1.6.3@sourcify'],
+    [nil, 'ruby-1.9.1-p378@sourcify'],
+    [nil, 'ruby-1.9.2-p290@sourcify'],
+
+    # NOTE: This doesn't work yet due to jruby's Method#parameters bug,
+    # see http://jira.codehaus.org/browse/JRUBY-5954
+    #['JRUBY_OPTS="--1.9"', 'jruby-1.6.3@sourcify'],
   ]
 }
 
@@ -44,8 +48,15 @@ end
 
 desc "Run specs in rubies supporting static scanner mode"
 task :'spec:static' do
+  rubies_wo_env = RUBIES[:static].map{|env,ruby| env ? nil : ruby }.compact
+  rubies_w_env = RUBIES[:static].select{|env,ruby| env }
+
   system 'export MUTE_BACON=true; rvm ' +
-    RUBIES[:static].join(',') + ' exec ' + SPEC_SCRIPT
+    rubies_wo_env.join(',') + ' exec ' + SPEC_SCRIPT
+
+  rubies_w_env.each do |env, rubi|
+    system "export MUTE_BACON=true; export #{env}; rvm #{rubi} exec #{SPEC_SCRIPT}"
+  end
 end
 
 # ///////////////////////////////////////////////////////////
