@@ -94,9 +94,10 @@ module Sourcify
             @tokens = [@tokens[-1]] unless @tokens.empty?
           end
 
-          def valid?(snippet, validate_as = nil)
-            begin
-              require 'ripper'
+          begin
+            require 'ripper'
+
+            def valid?(snippet, validate_as = nil)
               sexp = Ripper.sexp(snippet)
 
               case validate_as
@@ -104,12 +105,14 @@ module Sourcify
               when nil then sexp && true
               else raise ArgumentError
               end
-
-            rescue LoadError
-              RubyParser.new.parse(snippet) && true
-            rescue
-              false
             end
+
+          rescue LoadError
+
+            def valid?(snippet, validate_as = nil)
+              RubyParser.new.parse(snippet) && true
+            end
+
           end
 
         end
