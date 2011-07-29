@@ -27,16 +27,20 @@ module Sourcify::Proc::Parser::RawScanner
         base.instance_eval do
 
           before do
-            Extensions::DoEndBlockCounter.class_eval do
+            counter(:DoEndBlockCounter).class_eval do
               alias_method :orig_started?, :started?
               def started?; true; end
             end
           end
 
           after do
-            Extensions::DoEndBlockCounter.class_eval do
+            counter(:DoEndBlockCounter).class_eval do
               alias_method :started?, :orig_started?
             end
+          end
+
+          def counter(type)
+            Sourcify::Proc::Parser::RawScanner::Extensions.const_get(type)
           end
 
           def kw_block_start_counter(data)
