@@ -36,8 +36,10 @@ module Sourcify
       # approach of defining method yields exactly the same result as above:
       #
       #   class MyMath
-      #     define_method(:sum) do |x,y|
-      #       x + y # (blah)
+      #     class << self
+      #       define_method(:sum) do |x,y|
+      #         x + y # (blah)
+      #       end
       #     end
       #   end
       #
