@@ -20,6 +20,7 @@ uses a home-baked ragel-generated scanner to extract the proc code. Further proc
 with RubyParser & Ruby2Ruby to ensure 100% with ParseTree (yup, there is no denying that
 i really like ParseTree).
 
+
 == Installing It
 
 The religiously standard way:
@@ -30,9 +31,8 @@ Or on 1.9.* or JRuby:
 
   $ gem install ruby_parser file-tail sourcify
 
-== Using It
 
-Sourcify adds 4 methods to Proc:
+== Sourcify adds 4 methods to Proc
 
 === 1. Proc#to_source
 
@@ -101,6 +101,81 @@ consistency under 1.8.*:
   lambda { x + y }.source_location
   # >> ["/tmp/test.rb", 5]
 
+
+== Sourcify adds 3 methods to Method
+
+*IMPORTANT*: These only work for MRI-1.9.2, as currently, only it supports
+(1) discovering of the original source location with Method#source_location,
+and (2) reliably determinig a method's parameters with Method#parameters.
+
+*NOTE*: The following works for methods defined using both def .. end &
+Module#define_method. However, when a method is defined using the later
+approach, sourcify uses Proc#to_source to handle the processing, thus, the
+usual gotchas related to proc source extraction apply.
+
+=== 1. Method#to_source
+
+Returns the code representation of the method:
+
+  require 'sourcify'
+
+  class MyMath
+    def self.sum(x, y)
+      x + y # (blah)
+    end
+  end
+
+  MyMath.method(:sum).to_source
+  # >> "def sum(x, y)
+  # >>   (x + y)
+  # >> end"
+
+Just like the Proc#to_source equivalent, u can set :strip_enclosure => true
+to extract only the body within.
+
+=== 2. Method#to_sexp
+
+Returns the S-expression of the method:
+
+  require 'sourcify'
+
+  class MyMath
+    def self.sum(x, y)
+      x + y # (blah)
+    end
+  end
+
+  MyMath.method(:sum).to_sexp
+  >> s(:defn,
+  >>  :sum,
+  >>  s(:args, :x, :y),
+  >>  s(:scope, s(:block, s(:call, s(:lvar, :x), :+, s(:arglist, s(:lvar, :y))))))
+
+Just like the Proc#to_sexp equivalent, u can set :strip_enclosure => true
+to extract only the body within.
+
+=== 3. Method#to_raw_source
+
+Unlike Method#to_source, which returns code that retains only functional aspects,
+fetching of raw source returns the method's raw code, including fluff like comments:
+
+  require 'sourcify'
+
+  class MyMath
+    def self.sum(x, y)
+      x + y # (blah)
+    end
+  end
+
+  MyMath.method(:sum).to_source
+  # >> "def sum(x, y)
+  # >>   x + y # (blah)
+  # >> end"
+
+Just like the Proc#to_raw_source equivalent, u can set :strip_enclosure => true
+to extract only the body within.
+
+
 == Performance
 
 Performance is embarassing for now, benchmarking results for processing 500 procs
@@ -116,6 +191,7 @@ Since i'm still pretty new to ragel[http://www.complang.org/ragel], the code sca
 probably become better & faster as my knowlegde & skills with ragel improve. Also,
 instead of generating a pure ruby scanner, we can generate native code (eg. C or java, or
 whatever) instead. As i'm a C & java noob, this will probably take some time to realize.
+
 
 == Gotchas
 
@@ -210,6 +286,7 @@ Under the hood, sourcify relies on RubyParser to yield s-expression, and since R
 does not yet fully handle 1.8.7 & 1.9.* syntax, you will get a nasty Racc::ParseError when
 you have any code that is not compatible with 1.8.6.
 
+
 == Is it really working ??
 
 Sourcify spec suite currently passes in the following rubies:
@@ -226,12 +303,14 @@ For projects:
 
 (TODO: the more the merrier)
 
+
 == Projects using it
 
 Projects using sourcify include:
 * wrong[http://github.com/sconover/wrong]
 * ruote[http://ruote.rubyforge.org/]
 * dm-ambition[https://github.com/dkubb/dm-ambition]
+
 
 == Additional Resources
 
@@ -243,8 +322,9 @@ Sourcify is heavily inspired by many ideas gathered from the ruby community:
 The sad fact that Proc#to_source wouldn't be available in the near future:
 * http://redmine.ruby-lang.org/issues/show/2080
 
+
 == Note on Patches/Pull Requests
- 
+
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a
@@ -252,6 +332,7 @@ The sad fact that Proc#to_source wouldn't be available in the near future:
 * Commit, do not mess with rakefile, version, or history.
   (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
+
 
 == Copyright
 
