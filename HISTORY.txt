@@ -1,3 +1,8 @@
+=== Current
+
+* adds Method#to_source, Method#to_sexp & Method#to_raw_source (issue#3)
+* extensive refactoring to existing proc support to support the above
+
 === 0.5.0 (May 2, 2011)
 
 * adds Proc#to_raw_source that supports extracting of raw code, as it is written in
