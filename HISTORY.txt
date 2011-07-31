@@ -1,6 +1,6 @@
-=== Current
+=== Current (pre 0.6.0)
 
-* adds Method#to_source, Method#to_sexp & Method#to_raw_source (issue#3)
+* adds Method#to_source, Method#to_sexp & Method#to_raw_source to MRI-1.9.2 (issue#3)
 * extensive refactoring to existing proc support to support the above
 
 === 0.5.0 (May 2, 2011)
