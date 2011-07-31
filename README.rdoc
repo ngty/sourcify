@@ -107,6 +107,8 @@ consistency under 1.8.*:
 *IMPORTANT*: These only work for MRI-1.9.2, as currently, only it supports
 (1) discovering of the original source location with Method#source_location,
 and (2) reliably determinig a method's parameters with Method#parameters.
+Attempting to use these methods on other rubies will raise
+Sourcify::PlatformNotSupportedError.
 
 *NOTE*: The following works for methods defined using both def .. end &
 Module#define_method. However, when a method is defined using the later
