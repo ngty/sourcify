@@ -2,6 +2,7 @@ module Sourcify
 
   class MultipleMatchingMethodsPerLineError < Exception; end
   class NoMatchingMethodError < Exception; end
+  class CannotFindSourceLocationError < Exception; end
 
   module Method
 

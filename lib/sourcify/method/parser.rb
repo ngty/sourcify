@@ -11,6 +11,7 @@ module Sourcify
       def initialize(_meth)
         @parameters, @name = _meth.parameters, _meth.name
         @source_code = SourceCode.new(*_meth.source_location)
+        raise CannotFindSourceLocationError unless @source_code.file
         raise CannotParseEvalCodeError if @source_code.file == '(eval)'
       end
 

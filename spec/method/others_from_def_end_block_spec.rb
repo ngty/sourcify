@@ -34,6 +34,11 @@ describe "Misc (from def..end block)" do
     ))
   end
 
+  should 'raise Sourcify::CannotFindSourceLocationError when Method#source_location is nil' do
+    lambda { 1.method(:to_s).to_source }.should.
+      raise(Sourcify::CannotFindSourceLocationError)
+  end
+
   unless has_parsetree?
     should "raise Sourcify::CannotParseEvalCodeError when method is created from eval" do
       lambda { eval("def m5; x; end; method(:m5)").to_source }.should.
