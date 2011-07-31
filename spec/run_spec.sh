@@ -10,5 +10,5 @@ if [ -z "$SKIPPABLE" ]; then
   bacon spec/*/*/*_spec.rb spec/*/*_spec.rb
 else
   echo "NOTE: This ruby doesn't support Method#to_source (& friends) !!"
-  bacon spec/proc/*/*_spec.rb spec/proc/*_spec.rb
+  bacon spec/proc/*/*_spec.rb spec/proc/*_spec.rb spec/no_method/*_spec.rb
 fi

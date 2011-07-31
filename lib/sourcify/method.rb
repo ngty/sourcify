@@ -3,6 +3,16 @@ module Sourcify
   class MultipleMatchingMethodsPerLineError < Exception; end
   class NoMatchingMethodError < Exception; end
   class CannotFindSourceLocationError < Exception; end
+  class PlatformNotSupportedError < Exception; end
+
+  IS_PLATFORM_SUPPORTED =
+    begin
+      [:source_location, :parameters].each{|meth| 1.method(:to_s).send(meth) }
+      raise PlatformNotSupportedError if RUBY_PLATFORM =~ /java/i
+      true
+    rescue NoMethodError, PlatformNotSupportedError
+      false
+    end
 
   module Method
 

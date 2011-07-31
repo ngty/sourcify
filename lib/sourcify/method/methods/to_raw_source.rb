@@ -7,9 +7,19 @@ module Sourcify
 
             Sourcify.require_rb('method', 'parser')
 
-            def to_raw_source(opts = {}, &body_matcher)
-              (@sourcified_parser ||= Parser.new(self)).
-                raw_source(opts.merge(:body_matcher => body_matcher))
+            if IS_PLATFORM_SUPPORTED
+
+              def to_raw_source(opts = {}, &body_matcher)
+                (@sourcified_parser ||= Parser.new(self)).
+                  raw_source(opts.merge(:body_matcher => body_matcher))
+              end
+
+            else
+
+              def to_raw_source(*args)
+                raise PlatformNotSupportedError
+              end
+
             end
 
           end
