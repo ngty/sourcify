@@ -82,7 +82,7 @@ fluff like comments:
 
   lambda do |i|
     i+1 # (blah)
-  end.to_source
+  end.to_raw_source
   # >> "proc do |i|
   # >>   i+1 # (blah)
   # >> end"
@@ -169,7 +169,7 @@ fetching of raw source returns the method's raw code, including fluff like comme
     end
   end
 
-  MyMath.method(:sum).to_source
+  MyMath.method(:sum).to_raw_source
   # >> "def sum(x, y)
   # >>   x + y # (blah)
   # >> end"
