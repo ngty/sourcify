@@ -82,7 +82,7 @@ fluff like comments:
 
   lambda do |i|
     i+1 # (blah)
-  end.to_source
+  end.to_raw_source
   # >> "proc do |i|
   # >>   i+1 # (blah)
   # >> end"
