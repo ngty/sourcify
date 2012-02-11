@@ -162,7 +162,7 @@ module Sourcify
         end
 
         def safe_eval(string)
-          Parser::Converter.to_sexp(string)
+          Parser::Converter.to_sexp("#{string}")
         end
 
       end
