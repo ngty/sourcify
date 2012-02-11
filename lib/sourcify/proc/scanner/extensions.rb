@@ -145,10 +145,11 @@ module Sourcify
         end
 
         def really_false_started?
-          safe_eval(<<-SOURCIFIED_HEREDOKIE.strip
-              #{codified_tokens} 1}
-            SOURCIFIED_HEREDOKIE
-          ) && true
+          code = <<-SOURCIFIED_HEREDOKIE.strip
+            #{codified_tokens} 1}
+          SOURCIFIED_HEREDOKIE
+
+          safe_eval(code, :hash) && true
         end
 
         def offset_attributes
@@ -163,13 +164,19 @@ module Sourcify
         begin
           require 'ripper'
 
-          def safe_eval(string)
-            !! Ripper.sexp(string)
+          def safe_eval(string, eval_as = nil)
+            sexp = Ripper.sexp(string)
+
+            case eval_as
+            when :hash then sexp[-1][0][0] == :hash
+            when nil then sexp && true
+            else raise ArgumentError
+            end
           end
 
         rescue LoadError
 
-          def safe_eval(string)
+          def safe_eval(string, _ = nil)
             !! Parser::Converter.to_sexp("#{string}")
           end
 
