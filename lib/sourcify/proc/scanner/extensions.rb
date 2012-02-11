@@ -8,7 +8,6 @@ module Sourcify
       module Extensions
 
         class Escape < Exception; end
-        RUBY_PARSER = RubyParser.new
 
         def process(data, opts={})
           begin
@@ -161,8 +160,19 @@ module Sourcify
           end
         end
 
-        def safe_eval(string)
-          Parser::Converter.to_sexp("#{string}")
+        begin
+          require 'ripper'
+
+          def safe_eval(string)
+            !! Ripper.sexp(string)
+          end
+
+        rescue LoadError
+
+          def safe_eval(string)
+            !! Parser::Converter.to_sexp("#{string}")
+          end
+
         end
 
       end

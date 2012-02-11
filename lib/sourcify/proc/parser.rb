@@ -31,8 +31,7 @@ module Sourcify
 
       def raw_source(opts)
         raw_code = extracted_source(opts).strip
-        opts[:strip_enclosure] ?
-          raw_code.sub(/^proc\s*(\{|do)\s*(\|[^\|]+\|)?(.*)(\}|end)$/m, '\3').strip : raw_code
+        opts[:strip_enclosure] ? strip_enclosure(raw_code) : raw_code
       end
 
       private
@@ -40,11 +39,19 @@ module Sourcify
         def extracted_source(opts)
           CodeScanner.process(@source_code, opts) do |code|
             begin
-              eval(code).arity == @arity
+              eval(strip_content(code)).arity == @arity
             rescue Exception
               raise ParserInternalError
             end
           end
+        end
+
+        def strip_enclosure(proc_string)
+          proc_string.sub(/^proc\s*(\{|do)\s*(\|[^\|]+\|)?(.*)(\}|end)$/m, '\3').strip
+        end
+
+        def strip_content(proc_string)
+          proc_string.sub(/^(proc\s*(?:\{|do)\s*(?:\|[^\|]+\|)?).*(\}|end)$/m, '\1\2')
         end
 
     end
