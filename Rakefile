@@ -9,16 +9,16 @@ task :default => :spec
 RUBIES = {
   :parsetree => [
     'ruby-1.8.6-p420@sourcify-parsetree',
-    'ruby-1.8.7-p334@sourcify-parsetree',
-    'ree-1.8.7-2011.03@sourcify-parsetree'
+    'ruby-1.8.7-p357@sourcify-parsetree',
+    'ree-1.8.7-2012.01@sourcify-parsetree'
   ],
   :static => [
     'ruby-1.8.6-p420@sourcify',
-    'ruby-1.8.7-p334@sourcify',
-    'ree-1.8.7-2011.03@sourcify',
-    'jruby-1.6.1@sourcify',
-    'ruby-1.9.1-p378@sourcify',
-    'ruby-1.9.2-p180@sourcify',
+    'ruby-1.8.7-p357@sourcify',
+    'ree-1.8.7-2012.01@sourcify',
+    'jruby-1.6.6@sourcify',
+    'ruby-1.9.2-p290@sourcify',
+    'ruby-1.9.3-p0@sourcify',
   ]
 }
 
