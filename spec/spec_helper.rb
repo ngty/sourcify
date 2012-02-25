@@ -30,9 +30,7 @@ module Sourcify
 
     def examplify_fixtures(name)
       SpecHelper.reset_fixtures!
-
-      klass, type = "#{name}".split('/')
-      load File.expand_path("../#{klass}/fixtures/#{type}.rb", __FILE__)
+      load File.expand_path("../fixtures/#{name}.rb", __FILE__)
 
       SpecHelper.each_fixture do |description, expected, block|
         it description do
