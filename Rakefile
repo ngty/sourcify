@@ -7,10 +7,10 @@ end
 
 desc "Run only proc specs"
 task :'spec:proc' do
-  system %(testrb spec/proc/*/*_spec.rb)
+  system %(testrb spec/proc/*_spec.rb)
 end
 
 desc "Run only method specs"
 task :'spec:method' do
-  system %(testrb spec/method/*/*_spec.rb)
+  system %(testrb spec/method/*_spec.rb)
 end
