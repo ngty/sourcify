@@ -52,7 +52,7 @@ module Sourcify
 
     end
 
-    def examplify_fixtures(name)
+    def run_examples(name)
       SpecHelper.reset_fixtures!
       load File.expand_path("../fixtures/#{name}.rb", __FILE__)
 
