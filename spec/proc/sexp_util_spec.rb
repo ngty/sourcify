@@ -9,9 +9,9 @@ describe Sourcify::Proc::SexpUtil do
       Sourcify::Proc::SexpUtil.new(File.read(file)).locate(:line => line)
     end
 
-    run_examples 'sexp_util/class_locate'
-    run_examples 'sexp_util/instance_locate'
-    run_examples 'sexp_util/self_locate'
+    run_examples 'sexp_util/locate_wrt_attache'
+    run_examples 'sexp_util/locate_wrt_block_type'
+    run_examples 'sexp_util/locate_wrt_block_arg'
   end
 
   describe '#extract' do
@@ -20,8 +20,8 @@ describe Sourcify::Proc::SexpUtil do
       Sourcify::Proc::SexpUtil.new(File.read(file)).extract(:line => line)
     end
 
-    run_examples 'sexp_util/class_extract'
-    run_examples 'sexp_util/instance_extract'
-    run_examples 'sexp_util/self_extract'
+    run_examples 'sexp_util/extract_wrt_attache'
+    run_examples 'sexp_util/extract_wrt_block_type'
+    run_examples 'sexp_util/extract_wrt_block_arg'
   end
 end
