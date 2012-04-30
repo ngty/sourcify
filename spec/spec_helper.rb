@@ -54,7 +54,7 @@ module Sourcify
 
     def run_examples(name)
       SpecHelper.reset_fixtures!
-      load File.expand_path("../fixtures/#{name}.rb", __FILE__)
+      load_examples_file(name)
 
       SpecHelper.each_fixture do |description, expected, block|
         expected.each do |type, val|
@@ -64,6 +64,10 @@ module Sourcify
     end
 
   private
+
+    def load_examples_file(name)
+      load File.expand_path("../fixtures/#{name}.rb", __FILE__)
+    end
 
     def example_for_source(description, expected, block)
       it description do
