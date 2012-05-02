@@ -2,28 +2,30 @@ module Sourcify
   module Proc
     class SexpUtil < Ripper::SexpBuilder
 
-      def locate(constraints)
-        @mode, @constraints = :locate, Constraints.new(constraints)
+      def locate(conditions)
+        @mode, @constraints = :locate, Constraints.new(conditions)
         parse
       end
 
-      def extract(constraints)
-        @mode, @constraints = :extract, Constraints.new(constraints)
+      def extract(conditions)
+        @mode, @constraints = :extract, Constraints.new(conditions)
         parse
       end
 
       def on_method_add_block(*args)
-        super(*args).tap do |x|
-          @extracted << send(:"perform_#{@mode}", x) if @constraints.match?(args)
+        super(*args).tap do |expr|
+          if @constraints.match?(expr)
+            @processed << send(:"perform_#{@mode}", expr)
+          end
         end
       end
 
     private
 
       def parse
-        @extracted = []
+        @processed = []
         super
-        @extracted.first
+        @processed.first
       end
 
       def perform_extract(sexp)
@@ -61,9 +63,9 @@ module Sourcify
 
         def match_line?
           @conditions[:line] ==
-            case @sexp[0][0]
-            when :method_add_arg then @sexp[0][1][1][-1][0]
-            when :call then @sexp[0][-1][-1][0]
+            case @sexp[1][0]
+            when :method_add_arg then @sexp[1][1][1][-1][0]
+            when :call then @sexp[1][-1][-1][0]
             else 0
             end
         end
