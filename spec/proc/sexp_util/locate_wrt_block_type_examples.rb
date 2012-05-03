@@ -3,10 +3,10 @@
 f(%%
 ## w do-block
 ##
-#> {:from => [9,2], :till => [11,5]}
+#> {:from => [9,6], :till => [11,5]}
 ##
 %,(
-  proc do
+  b = proc do
     :nil
   end
 ))
@@ -14,10 +14,10 @@ f(%%
 f(%%
 ## w brace-block
 ##
-#> {:from => [20,2], :till => [22,3]}
+#> {:from => [20,6], :till => [22,3]}
 ##
 %,(
-  proc {
+  b = proc {
     :nil
   }
 ))

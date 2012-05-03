@@ -4,7 +4,7 @@ f(%%
 ## w no arg
 ##
 #> [:method_add_block,
-#>  [:method_add_arg, [:fcall, [:@ident, "proc", [15, 2]]], [:args_new]],
+#>  [:method_add_arg, [:fcall, [:@ident, "proc", [15, 6]]], [:args_new]],
 #>  [:do_block,
 #>   nil,
 #>   [:stmts_add,
@@ -12,7 +12,7 @@ f(%%
 #>    [:symbol_literal, [:symbol, [:@kw, "nil", [16, 5]]]]]]]
 ##
 %,(
-  proc do
+  b = proc do
     :nil
   end
 ))
@@ -21,17 +21,17 @@ f(%%
 ## w 1 arg
 ##
 #> [:method_add_block,
-#>  [:method_add_arg, [:fcall, [:@ident, "proc", [34, 2]]], [:args_new]],
+#>  [:method_add_arg, [:fcall, [:@ident, "proc", [34, 6]]], [:args_new]],
 #>  [:do_block,
 #>   [:block_var,
-#>    [:params, [[:@ident, "x", [34, 11]]], nil, nil, nil, nil],
+#>    [:params, [[:@ident, "x", [34, 15]]], nil, nil, nil, nil],
 #>    nil],
 #>   [:stmts_add,
 #>    [:stmts_new],
 #>    [:symbol_literal, [:symbol, [:@kw, "nil", [35, 5]]]]]]]
 ##
 %,(
-  proc do |x|
+  b = proc do |x|
     :nil
   end
 ))

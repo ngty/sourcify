@@ -3,10 +3,10 @@
 f(%%
 ## w no arg
 ##
-#> {:from => [9,2], :till => [11,5]}
+#> {:from => [9,6], :till => [11,5]}
 ##
 %,(
-  proc do
+  b = proc do
     :nil
   end
 ))
@@ -14,10 +14,10 @@ f(%%
 f(%%
 ## w 1 arg
 ##
-#> {:from => [20,2], :till => [22,5]}
+#> {:from => [20,6], :till => [22,5]}
 ##
 %,(
-  proc do |x|
+  b = proc do |x|
     :nil
   end
 ))
@@ -25,10 +25,10 @@ f(%%
 f(%%
 ## w multiple args
 ##
-#> {:from => [31,2], :till => [33,5]}
+#> {:from => [31,6], :till => [33,5]}
 ##
 %,(
-  proc do |x, y, z|
+  b = proc do |x, y, z|
     :nil
   end
 ))

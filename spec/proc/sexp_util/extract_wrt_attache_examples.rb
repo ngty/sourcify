@@ -5,9 +5,9 @@ f(%%
 ##
 #> [:method_add_block,
 #>  [:call,
-#>   [:var_ref, [:@const, "Proc", [18, 2]]],
+#>   [:var_ref, [:@const, "Proc", [18, 6]]],
 #>   :".",
-#>   [:@ident, "new", [18, 7]]],
+#>   [:@ident, "new", [18, 11]]],
 #>  [:do_block,
 #>   nil,
 #>   [:stmts_add,
@@ -15,7 +15,7 @@ f(%%
 #>    [:symbol_literal, [:symbol, [:@kw, "nil", [19, 5]]]]]]]
 ##
 %,(
-  Proc.new do
+  b = Proc.new do
     :nil
   end
 ))
@@ -24,7 +24,7 @@ f(%%
 ## w implied self method
 ##
 #> [:method_add_block,
-#>  [:method_add_arg, [:fcall, [:@ident, "proc", [35, 2]]], [:args_new]],
+#>  [:method_add_arg, [:fcall, [:@ident, "proc", [35, 6]]], [:args_new]],
 #>  [:do_block,
 #>   nil,
 #>   [:stmts_add,
@@ -32,7 +32,7 @@ f(%%
 #>    [:symbol_literal, [:symbol, [:@kw, "nil", [36, 5]]]]]]]
 ##
 %,(
-  proc do
+  b = proc do
     :nil
   end
 ))

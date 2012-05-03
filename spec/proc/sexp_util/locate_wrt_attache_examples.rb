@@ -3,10 +3,10 @@
 f(%%
 ## w declared recipient & method
 ##
-#> {:from => [9,2], :till => [11,5]}
+#> {:from => [9,6], :till => [11,5]}
 ##
 %,(
-  Proc.new do
+  b = Proc.new do
     :nil
   end
 ))
@@ -14,10 +14,10 @@ f(%%
 f(%%
 ## w implied self method
 ##
-#> {:from => [20,2], :till => [22,5]}
+#> {:from => [20,6], :till => [22,5]}
 ##
 %,(
-  proc do
+  b = proc do
     :nil
   end
 ))
