@@ -33,4 +33,26 @@ f(%%
   end
 ))
 
+f(%%
+## w only splat args
+##
+#> {:from => [42,6], :till => [44,5]}
+##
+%,(
+  b = proc do |*x|
+    :nil
+  end
+))
+
+f(%%
+## w multiple & splat args
+##
+#> {:from => [53,6], :till => [55,5]}
+##
+%,(
+  b = proc do |x, y, *z|
+    :nil
+  end
+))
+
 # __END__
