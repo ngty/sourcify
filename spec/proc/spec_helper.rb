@@ -12,12 +12,6 @@ module Sourcify
             load File.expand_path("../#{name}_examples.rb", __FILE__)
           end
 
-          def self.example_for_source(description, expected, block)
-            it description do
-              process(block).must_equal(eval(expected))
-            end
-          end
-
         end
       end
     end

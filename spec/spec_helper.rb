@@ -27,7 +27,7 @@ module Sourcify
       def extract_args(paragraph)
         lines = paragraph.split("\n")
 
-        description, source, error = %w{## #> #!}.map do |pfx|
+        description, evaluable, literal, error = %w{## #> #" "#!}.map do |pfx|
           pattern = /^#{pfx} /
           lines.grep(pattern).map{|s| s.sub(pattern,'') }.join("\n")
         end
@@ -40,7 +40,11 @@ module Sourcify
 
         [
           description,
-          {:source => source, :error => error}.reject{|k,v| v.empty? }
+          {
+            :evaluable => evaluable,
+            :literal => literal,
+            :error => error
+          }.reject{|k,v| v.empty? }
         ]
       end
 
@@ -69,15 +73,21 @@ module Sourcify
       load File.expand_path("../fixtures/#{name}.rb", __FILE__)
     end
 
-    def example_for_source(description, expected, block)
+    def example_for_evaluable(description, expected, block)
       it description do
-        block.to_source.must_equal(expected)
+        process(block).must_equal(eval(expected))
+      end
+    end
+
+    def example_for_literal(description, expected, block)
+      it description do
+        process(block).must_equal(expected)
       end
     end
 
     def example_for_error(description, expected, block)
       it description do
-        lambda { block.to_source }.must_raise(expected.to_constant)
+        lambda { process(block) }.must_raise(expected.to_constant)
       end
     end
 
