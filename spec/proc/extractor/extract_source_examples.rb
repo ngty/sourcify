@@ -3,7 +3,7 @@
 f(%%
 ## wo comment
 ##
-#" lambda { |x| :nil }
+#" lambda do |x| :nil end
 ##
 %,(
   b = lambda do |x|
@@ -14,7 +14,7 @@ f(%%
 f(%%
 ## w comment
 ##
-#" lambda { |x| :nil }
+#" lambda do |x| :nil end
 ##
 %,(
   b = lambda do |x|
