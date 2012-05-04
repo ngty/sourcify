@@ -1,3 +1,5 @@
+require 'sorcerer'
+
 module Sourcify
   class << self
     def require_rb(*files)
