@@ -1,5 +1,4 @@
 require 'minitest/spec'
-require 'minitest/autorun'
 require File.expand_path('../../lib/sourcify', __FILE__)
 
 

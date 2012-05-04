@@ -6,15 +6,15 @@ end
 
 desc "Run all specs"
 task :spec do
-  system %(ruby #{spec_files('spec')})
+  system %(testrb #{spec_files('spec')})
 end
 
 desc "Run only proc specs"
 task :'spec:proc' do
-  system %(ruby #{spec_files('spec/proc')})
+  system %(testrb #{spec_files('spec/proc')})
 end
 
 desc "Run only method specs"
 task :'spec:method' do
-  system %(ruby #{spec_files('spec/method')})
+  system %(testrb #{spec_files('spec/method')})
 end
