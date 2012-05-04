@@ -3,9 +3,9 @@
 f(%%
 ## wo comment
 ##
-#> lambda do |x|
-#>   :nil
-#> end
+#" lambda do |x|
+#"   :nil
+#" end
 ##
 %,(
   b = lambda do |x|
@@ -16,10 +16,10 @@ f(%%
 f(%%
 ## w comment
 ##
-#>   lambda do |x|
-#>     # ignore me
-#>     :nil
-#>   end
+#" lambda do |x|
+#"   # ignore me
+#"   :nil
+#" end
 ##
 %,(
   b = lambda do |x|
