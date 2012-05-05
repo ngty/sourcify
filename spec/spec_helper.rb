@@ -26,7 +26,7 @@ module Sourcify
       def extract_args(paragraph)
         lines = paragraph.split("\n")
 
-        description, evaluable, literal, error = %w{## #> #" "#!}.map do |pfx|
+        description, evaluable, literal, error = %w{## #> #" #!}.map do |pfx|
           pattern = /^#{pfx} /
           lines.grep(pattern).map{|s| s.sub(pattern,'') }.join("\n")
         end
