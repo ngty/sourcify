@@ -5,7 +5,7 @@ module Sourcify
 
         def extract_source(block)
           file, line = block.source_location
-          sexp = SexpUtil.new(File.read(file)).extract(:line => line)
+          sexp = SexpUtil.new(::File.read(file)).extract(:line => line)
           Sorcerer.source(sexp)
         end
 

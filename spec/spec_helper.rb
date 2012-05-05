@@ -69,7 +69,7 @@ module Sourcify
   private
 
     def load_examples_file(name)
-      load File.expand_path("../fixtures/#{name}.rb", __FILE__)
+      load ::File.expand_path("../fixtures/#{name}.rb", __FILE__)
     end
 
     def example_for_evaluable(description, expected, block)

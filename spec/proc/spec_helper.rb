@@ -9,7 +9,7 @@ module Sourcify
           extend Sourcify::SpecHelper
 
           def self.load_examples_file(name)
-            load File.expand_path("../#{name}_examples.rb", __FILE__)
+            load ::File.expand_path("../#{name}_examples.rb", __FILE__)
           end
 
         end
