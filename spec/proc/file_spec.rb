@@ -3,7 +3,7 @@ require File.expand_path('../spec_helper', __FILE__)
 describe Sourcify::Proc::File do
   describe '.chunk' do
     it 'should extract chunk specified by from & till positions' do
-      Sourcify::Proc::File.chunk(__FILE__, [25,53], [28,8]).must_equal(%%
+      Sourcify::Proc::File.chunk(__FILE__, [25,52], [28,8]).must_equal(%%
 The
 brightest and most valuable "red" called pigeon blood-red,
 commands a huge premium over other rubies of similar
