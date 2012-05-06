@@ -4,6 +4,7 @@ Sourcify.require_rb(%w{
   proc/sexp_util
   proc/extractor
   proc/source
+  proc/raw_source
 })
 
 module Sourcify

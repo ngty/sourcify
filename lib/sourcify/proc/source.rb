@@ -15,6 +15,10 @@ module Sourcify
         @metadata = Metadata.new(file, sexp, positions[:from], positions[:till])
       end
 
+      def raw
+        RawSource.new(metadata)
+      end
+
     private
 
       Metadata = Class.new(Struct.new(:file, :sexp, :from_pos, :till_pos))
