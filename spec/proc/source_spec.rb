@@ -3,8 +3,12 @@ require File.expand_path('../spec_helper', __FILE__)
 describe Sourcify::Proc::Source do
 
   before do
-    @proc = proc { :nil } # [6,12] .. [6,25]]
-    @line = __LINE__.pred
+    @proc = proc do # [6,12] .. [9,9]]]
+      # blah blah
+      :nil
+    end
+
+    @line = __LINE__ - 5
     @source = Sourcify::Proc::Source.new(__FILE__, @line)
   end
 
@@ -20,20 +24,20 @@ describe Sourcify::Proc::Source do
       @metadata.sexp.must_equal(
         [:method_add_block,
          [:method_add_arg, [:fcall, [:@ident, "proc", [@line, 12]]], [:args_new]],
-         [:brace_block,
+         [:do_block,
           nil,
           [:stmts_add,
            [:stmts_new],
-           [:symbol_literal, [:symbol, [:@kw, "nil", [@line, 20]]]]]]]
+           [:symbol_literal, [:symbol, [:@kw, "nil", [@line+2, 7]]]]]]]
       )
     end
 
     it 'must describe start position' do
-      @metadata.from_pos.must_equal([@line,12])
+      @metadata.from_pos.must_equal([@line, 12])
     end
 
     it 'must describe end position' do
-      @metadata.till_pos.must_equal([@line,25])
+      @metadata.till_pos.must_equal([@line+3, 7])
     end
   end
 
@@ -53,7 +57,7 @@ describe Sourcify::Proc::Source do
 
   describe '#to_s' do
     it 'should return socerer\'s output' do
-      @source.to_s.must_equal('proc { :nil }')
+      @source.to_s.must_equal('proc do :nil end')
     end
   end
 
