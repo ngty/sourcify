@@ -19,6 +19,10 @@ module Sourcify
         RawSource.new(metadata)
       end
 
+      def to_s
+        Sorcerer.source(metadata.sexp)
+      end
+
     private
 
       Metadata = Class.new(Struct.new(:file, :sexp, :from_pos, :till_pos))

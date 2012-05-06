@@ -50,4 +50,11 @@ describe Sourcify::Proc::Source do
     end
   end 
 
+
+  describe '#to_s' do
+    it 'should return socerer\'s output' do
+      @source.to_s.must_equal('proc { :nil }')
+    end
+  end
+
 end
