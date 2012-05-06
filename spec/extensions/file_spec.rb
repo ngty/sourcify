@@ -2,15 +2,23 @@ require File.expand_path('../spec_helper', __FILE__)
 
 describe Sourcify::Extensions::File do
   describe '.chunk' do
+    before { @file = File.new(__FILE__).extend(Sourcify::Extensions::File) }
+
     it 'should extract chunk specified by from to till positions' do
-      file = File.new(__FILE__).extend(Sourcify::Extensions::File)
-      file.chunk(from = [26,52], till = [29,8]).must_equal(%%
+      @file.chunk(from = [34,52], till = [37,8]).must_equal(%%
 The
 brightest and most valuable "red" called pigeon blood-red,
 commands a huge premium over other rubies of similar
 quality.
         %.strip)
     end
+
+    it 'should not chuke if from & till are on same line' do
+      @file.chunk(from = [29,23], till = [29,37]).must_equal(%%
+Latin for red.
+      %.strip)
+    end
+
   end
 end
 
