@@ -10,7 +10,7 @@ module Sourcify
   module Proc
 
     def to_source
-      Source.new
+      Source.new(*source_location)
     end
 
   end
