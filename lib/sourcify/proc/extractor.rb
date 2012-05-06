@@ -12,7 +12,11 @@ module Sourcify
         def extract_raw_source(block)
           file, line = block.source_location
           positions = SexpUtil.new(::File.read(file)).locate(:line => line)
-          normalize_indents(File.chunk(file, positions[:from], positions[:till]))
+
+          File.open(file,'r') do |fh|
+            fh.extend(Extensions::File)
+            normalize_indents(fh.chunk(positions[:from], positions[:till]))
+          end
         end
 
       private

@@ -9,4 +9,4 @@ module Sourcify
   end
 end
 
-Sourcify.require_rb(%w{version proc})
+Sourcify.require_rb(%w{version extensions proc})
