@@ -5,14 +5,13 @@ module Sourcify
       attr_reader :metadata
 
       def initialize(file, line)
-        conditions = {:line => line}
-
-        # TODO: Need to revise SexpUtil to make the following more
-        # efficient
-        positions = SexpUtil.new(File.read(file)).locate(conditions)
-        sexp = SexpUtil.new(File.read(file)).extract(conditions)
-
-        @metadata = Metadata.new(file, sexp, positions[:from], positions[:till])
+        extracted = Extractor.process(file, :line => line)
+        @metadata = Metadata.new(
+          file,
+          extracted[:sexp],
+          extracted[:positions][:from],
+          extracted[:positions][:till]
+        )
       end
 
       def raw
