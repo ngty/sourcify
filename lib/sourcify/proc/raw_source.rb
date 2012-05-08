@@ -1,8 +1,6 @@
 module Sourcify
   module Proc
-    class RawSource
-
-      attr_reader :metadata
+    class RawSource < Source
 
       def initialize(metadata)
         @metadata = metadata
