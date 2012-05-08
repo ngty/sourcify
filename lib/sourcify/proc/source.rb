@@ -1,8 +1,12 @@
+require 'forwardable'
+
 module Sourcify
   module Proc
     class Source
+      extend Forwardable
 
       attr_reader :metadata
+      def_delegators :metadata, *[:object, :file, :sexp, :from_pos, :till_pos]
 
       def initialize(block)
         file, line = block.source_location
