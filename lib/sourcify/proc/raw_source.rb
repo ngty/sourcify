@@ -11,7 +11,7 @@ module Sourcify
       def to_s
         File.open(metadata.file, 'r') do |fh|
           fh.extend(Extensions::File)
-          normalize_indents(fh.chunk(metadata.from_pos, metadata.till_pos))
+          normalize_indents(fh.chunk(metadata.start_pos, metadata.end_pos))
         end
       end
 

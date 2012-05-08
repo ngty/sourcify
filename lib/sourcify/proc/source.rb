@@ -6,7 +6,7 @@ module Sourcify
       extend Forwardable
 
       attr_reader :metadata
-      def_delegators :metadata, *[:object, :file, :sexp, :from_pos, :till_pos]
+      def_delegators :metadata, *[:object, :file, :sexp, :start_pos, :end_pos]
 
       def initialize(block)
         file, line = block.source_location
@@ -31,7 +31,7 @@ module Sourcify
 
     private
 
-      Metadata = Struct.new(:object, :file, :sexp, :from_pos, :till_pos)
+      Metadata = Struct.new(:object, :file, :sexp, :start_pos, :end_pos)
 
     end
   end

@@ -35,13 +35,13 @@ describe Sourcify::Proc::Source do
     end
 
     it 'must capture start position' do
-      @source.from_pos.must_equal(@metadata.from_pos)
-      @metadata.from_pos.must_equal([@line, 12])
+      @source.start_pos.must_equal(@metadata.start_pos)
+      @metadata.start_pos.must_equal([@line, 12])
     end
 
     it 'must capture end position' do
-      @source.till_pos.must_equal(@metadata.till_pos)
-      @metadata.till_pos.must_equal([@line+3, 7])
+      @source.end_pos.must_equal(@metadata.end_pos)
+      @metadata.end_pos.must_equal([@line+3, 7])
     end
 
     it 'must capture reference object' do
