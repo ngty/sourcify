@@ -8,7 +8,7 @@ describe Sourcify::Proc::RawSource do
       :nil
     end
 
-    source = Sourcify::Proc::Source.new(__FILE__, __LINE__ - 5)
+    source = Sourcify::Proc::Source.new(@proc)
     @raw_source = Sourcify::Proc::RawSource.new(source.metadata)
   end
 

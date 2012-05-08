@@ -9,18 +9,18 @@ describe Sourcify::Proc::Source do
     end
 
     @line = __LINE__ - 5
-    @source = Sourcify::Proc::Source.new(__FILE__, @line)
+    @source = Sourcify::Proc::Source.new(@proc)
   end
 
 
   describe '#metadata' do
     before { @metadata = @source.metadata }
 
-    it 'must describe file' do
+    it 'must capture file' do
       @metadata.file.must_equal(__FILE__)
     end
 
-    it 'must describe sexp' do
+    it 'must capture sexp' do
       @metadata.sexp.must_equal(
         [:method_add_block,
          [:method_add_arg, [:fcall, [:@ident, "proc", [@line, 12]]], [:args_new]],
@@ -32,12 +32,17 @@ describe Sourcify::Proc::Source do
       )
     end
 
-    it 'must describe start position' do
+    it 'must capture start position' do
       @metadata.from_pos.must_equal([@line, 12])
     end
 
-    it 'must describe end position' do
+    it 'must capture end position' do
       @metadata.till_pos.must_equal([@line+3, 7])
+    end
+
+    it 'must capture reference object' do
+      @metadata.object.inspect.must_equal(@proc.inspect)
+      #@metadata.object.must_be_same_as(@proc) # Hmm, why this doesn't work ??
     end
   end
 

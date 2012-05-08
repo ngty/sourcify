@@ -4,9 +4,12 @@ module Sourcify
 
       attr_reader :metadata
 
-      def initialize(file, line)
+      def initialize(block)
+        file, line = block.source_location
         extracted = Extractor.process(file, :line => line)
+
         @metadata = Metadata.new(
+          block,
           file,
           extracted[:sexp],
           extracted[:positions][:from],
@@ -24,7 +27,7 @@ module Sourcify
 
     private
 
-      Metadata = Class.new(Struct.new(:file, :sexp, :from_pos, :till_pos))
+      Metadata = Struct.new(:object, :file, :sexp, :from_pos, :till_pos)
 
     end
   end
