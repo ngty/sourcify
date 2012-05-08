@@ -17,12 +17,10 @@ describe Sourcify::Proc::Source do
     before { @metadata = @source.metadata }
 
     it 'must capture file' do
-      @source.file.must_equal(@metadata.file)
       @metadata.file.must_equal(__FILE__)
     end
 
     it 'must capture sexp' do
-      @source.sexp.must_equal(@metadata.sexp)
       @metadata.sexp.must_equal(
         [:method_add_block,
          [:method_add_arg, [:fcall, [:@ident, "proc", [@line, 12]]], [:args_new]],
@@ -35,19 +33,24 @@ describe Sourcify::Proc::Source do
     end
 
     it 'must capture start position' do
-      @source.start_pos.must_equal(@metadata.start_pos)
       @metadata.start_pos.must_equal([@line, 12])
     end
 
     it 'must capture end position' do
-      @source.end_pos.must_equal(@metadata.end_pos)
       @metadata.end_pos.must_equal([@line+3, 7])
     end
 
     it 'must capture reference object' do
       #@metadata.object.must_be_same_as(@proc) # Hmm, why this doesn't work ??
-      @source.object.inspect.must_equal(@metadata.object.inspect)
       @metadata.object.inspect.must_equal(@proc.inspect)
+    end
+
+    it 'must handle delegated metadata-specific calls' do
+      @source.file.must_equal(@metadata.file)
+      @source.sexp.must_equal(@metadata.sexp)
+      @source.start_pos.must_equal(@metadata.start_pos)
+      @source.end_pos.must_equal(@metadata.end_pos)
+      @source.object.inspect.must_equal(@metadata.object.inspect)
     end
   end
 
