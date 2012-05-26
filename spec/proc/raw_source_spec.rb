@@ -5,7 +5,7 @@ describe Sourcify::Proc::RawSource do
   before do
     @proc = proc do
       # blah blah
-      :nil
+      :thing
     end
 
     source = Sourcify::Proc::Source.new(@proc)
@@ -18,7 +18,7 @@ describe Sourcify::Proc::RawSource do
       @raw_source.to_s.must_equal(%%
         proc do
           # blah blah
-          :nil
+          :thing
         end
       %.strip.gsub(/\n        /m, "\n"))
     end

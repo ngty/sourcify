@@ -23,13 +23,13 @@ describe Sourcify::Proc::Extractor do
     #>     nil,
     #>     [:stmts_add,
     #>      [:stmts_new],
-    #>      [:symbol_literal, [:symbol, [:@kw, "nil", [#{__LINE__+6}, 9]]]]]]],
+    #>      [:symbol_literal, [:symbol, [:@ident, "thing", [#{__LINE__+6}, 9]]]]]]],
     #>  :positions =>
     #>   {:from => [#{__LINE__+3}, 10], :till => [#{__LINE__+5}, 9]}
     #> }
     %,(
       b = Proc.new do
-        :nil
+        :thing
       end
     ))
 
@@ -44,13 +44,13 @@ describe Sourcify::Proc::Extractor do
     #>     nil,
     #>     [:stmts_add,
     #>      [:stmts_new],
-    #>      [:symbol_literal, [:symbol, [:@kw, "nil", [#{__LINE__+6}, 9]]]]]]],
+    #>      [:symbol_literal, [:symbol, [:@ident, "thing", [#{__LINE__+6}, 9]]]]]]],
     #>  :positions =>
     #>   {:from => [#{__LINE__+3}, 10], :till => [#{__LINE__+5}, 9]}
     #> }
     %,(
       b = proc do
-        :nil
+        :thing
       end
     ))
 
@@ -66,13 +66,13 @@ describe Sourcify::Proc::Extractor do
     #>     nil,
     #>     [:stmts_add,
     #>      [:stmts_new],
-    #>      [:symbol_literal, [:symbol, [:@kw, "nil", [#{__LINE__+6}, 9]]]]]]],
+    #>      [:symbol_literal, [:symbol, [:@ident, "thing", [#{__LINE__+6}, 9]]]]]]],
     #>  :positions =>
     #>   {:from => [#{__LINE__+3}, 10], :till => [#{__LINE__+5}, 9]}
     #> }
     %,(
       b = proc do
-        :nil
+        :thing
       end
     ))
 
@@ -89,13 +89,13 @@ describe Sourcify::Proc::Extractor do
     #>      nil],
     #>     [:stmts_add,
     #>      [:stmts_new],
-    #>      [:symbol_literal, [:symbol, [:@kw, "nil", [#{__LINE__+6}, 9]]]]]]],
+    #>      [:symbol_literal, [:symbol, [:@ident, "thing", [#{__LINE__+6}, 9]]]]]]],
     #>  :positions =>
     #>   {:from => [#{__LINE__+3}, 10], :till => [#{__LINE__+5}, 9]}
     #> }
     %,(
       b = proc do |x|
-        :nil
+        :thing
       end
     ))
 
@@ -119,13 +119,13 @@ describe Sourcify::Proc::Extractor do
     #>      nil],
     #>     [:stmts_add,
     #>      [:stmts_new],
-    #>      [:symbol_literal, [:symbol, [:@kw, "nil", [#{__LINE__+6}, 9]]]]]]],
+    #>      [:symbol_literal, [:symbol, [:@ident, "thing", [#{__LINE__+6}, 9]]]]]]],
     #>  :positions =>
     #>   {:from => [#{__LINE__+3}, 10], :till => [#{__LINE__+5}, 9]}
     #> }
     %,(
       b = proc do |x, y, z|
-        :nil
+        :thing
       end
     ))
 
@@ -142,13 +142,13 @@ describe Sourcify::Proc::Extractor do
     #>      nil],
     #>     [:stmts_add,
     #>      [:stmts_new],
-    #>      [:symbol_literal, [:symbol, [:@kw, "nil", [#{__LINE__+6}, 9]]]]]]],
+    #>      [:symbol_literal, [:symbol, [:@ident, "thing", [#{__LINE__+6}, 9]]]]]]],
     #>  :positions =>
     #>   {:from => [#{__LINE__+3}, 10], :till => [#{__LINE__+5}, 9]}
     #> }
     %,(
       b = proc do |*x|
-        :nil
+        :thing
       end
     ))
 
@@ -170,13 +170,13 @@ describe Sourcify::Proc::Extractor do
     #>      nil],
     #>     [:stmts_add,
     #>      [:stmts_new],
-    #>      [:symbol_literal, [:symbol, [:@kw, "nil", [#{__LINE__+6}, 9]]]]]]],
+    #>      [:symbol_literal, [:symbol, [:@ident, "thing", [#{__LINE__+6}, 9]]]]]]],
     #>  :positions =>
     #>   {:from => [#{__LINE__+3}, 10], :till => [#{__LINE__+5}, 9]}
     #> }
     %,(
       b = proc do |x, y, *z|
-        :nil
+        :thing
       end
     ))
 
@@ -191,13 +191,13 @@ describe Sourcify::Proc::Extractor do
     #>     nil,
     #>     [:stmts_add,
     #>      [:stmts_new],
-    #>      [:symbol_literal, [:symbol, [:@kw, "nil", [#{__LINE__+6}, 9]]]]]]],
+    #>      [:symbol_literal, [:symbol, [:@ident, "thing", [#{__LINE__+6}, 9]]]]]]],
     #>  :positions =>
     #>   {:from => [#{__LINE__+3}, 10], :till => [#{__LINE__+5}, 9]}
     #> }
     %,(
       b = proc do
-        :nil
+        :thing
       end
     ))
 
@@ -212,13 +212,13 @@ describe Sourcify::Proc::Extractor do
     #>     nil,
     #>     [:stmts_add,
     #>      [:stmts_new],
-    #>      [:symbol_literal, [:symbol, [:@kw, "nil", [#{__LINE__+6}, 9]]]]]]],
+    #>      [:symbol_literal, [:symbol, [:@ident, "thing", [#{__LINE__+6}, 9]]]]]]],
     #>  :positions =>
     #>   {:from => [#{__LINE__+3}, 10], :till => [#{__LINE__+5}, 7]}
     #> }
     %,(
       b = proc {
-        :nil
+        :thing
       }
     ))
 

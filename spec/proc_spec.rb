@@ -5,7 +5,7 @@ describe Proc do
 
   describe '#to_source' do
     it 'must return instance of Sourcify::Proc::Source' do
-      Proc.new { :nil }.to_source.
+      Proc.new { :thing }.to_source.
         must_be_instance_of(Sourcify::Proc::Source)
     end
   end

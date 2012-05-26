@@ -5,7 +5,7 @@ describe Sourcify::Proc::Source do
   before do
     @proc = proc do # [6,12] .. [9,9]]]
       # blah blah
-      :nil
+      :thing
     end
 
     @line = __LINE__ - 5
@@ -28,7 +28,7 @@ describe Sourcify::Proc::Source do
           nil,
           [:stmts_add,
            [:stmts_new],
-           [:symbol_literal, [:symbol, [:@kw, "nil", [@line+2, 7]]]]]]]
+           [:symbol_literal, [:symbol, [:@ident, "thing", [@line+2, 7]]]]]]]
       )
     end
 
@@ -70,7 +70,7 @@ describe Sourcify::Proc::Source do
 
   describe '#to_s' do
     it 'must return socerer\'s output' do
-      @source.to_s.must_equal('proc do :nil end')
+      @source.to_s.must_equal('proc do :thing end')
     end
   end
 
