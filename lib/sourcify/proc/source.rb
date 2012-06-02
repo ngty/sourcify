@@ -10,7 +10,8 @@ module Sourcify
 
       def initialize(block)
         file, line = block.source_location
-        extracted = Extractor.process(file, :line => line)
+        conds = {:params => block.parameters, :line => line}
+        extracted = Extractor.process(file, conds)
 
         @metadata = Metadata.new(
           block,
