@@ -25,7 +25,9 @@ module Sourcify
 
       unless error.empty?
         def error.to_constant
-          Sourcify::SpecHelper.send(:constantize, self)
+          self.to_s.split('::').inject(Object) do |klass, const|
+            klass.const_get(const)
+          end
         end
       end
 
