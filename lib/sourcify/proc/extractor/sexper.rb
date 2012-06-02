@@ -10,7 +10,7 @@ module Sourcify
           @positions, @sexps = [], []
           parse
 
-          # TODO: Need to handle case when we have multiple matches
+          raise MultipleMatchingProcsPerLineError if @sexps.size > 1
           {:sexp => @sexps.first, :positions => @positions.first}
         end
 
@@ -51,7 +51,7 @@ module Sourcify
 
           def match?(sexp)
             @sexp = sexp
-            match_line?
+            match_line? && match_params?
           end
 
         private
@@ -64,6 +64,12 @@ module Sourcify
               else 0
               end
           end
+
+          def match_params?
+            @conditions[:params] ==
+              instance_eval("proc " + Sorcerer.source(@sexp[-1])).parameters
+          end
+
         end
 
       end

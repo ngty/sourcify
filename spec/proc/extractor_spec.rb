@@ -6,7 +6,8 @@ describe Sourcify::Proc::Extractor do
 
     def process(block)
       file, line = block.source_location
-      Sourcify::Proc::Extractor.process(file, :line => line)
+      conds = {:line => line, :params => block.parameters}
+      Sourcify::Proc::Extractor.process(file, conds)
     end
 
     example(%%
@@ -220,6 +221,49 @@ describe Sourcify::Proc::Extractor do
       b = proc {
         :thing
       }
+    ))
+
+    example(%%
+    ## wrt multiple matches, having unique parameters
+    ##
+    #> {
+    #>  :sexp =>
+    #>   [:method_add_block,
+    #>    [:method_add_arg, [:fcall, [:@ident, "proc", [#{__LINE__+22}, 10]]], [:args_new]],
+    #>    [:do_block,
+    #>     [:block_var,
+    #>      [:params, [[:@ident, "x", [#{__LINE__+19}, 19]]], nil, nil, nil, nil],
+    #>      nil],
+    #>     [:stmts_add,
+    #>      [:stmts_add,
+    #>       [:stmts_new],
+    #>       [:method_add_block,
+    #>        [:method_add_arg, [:fcall, [:@ident, "proc", [#{__LINE__+13}, 22]]], [:args_new]],
+    #>        [:brace_block,
+    #>         [:block_var,
+    #>          [:params, [[:@ident, "y", [#{__LINE__+10}, 29]]], nil, nil, nil, nil],
+    #>          nil],
+    #>         [:stmts_add,
+    #>          [:stmts_new],
+    #>          [:symbol_literal, [:symbol, [:@ident, "thing", [#{__LINE__+6}, 33]]]]]]]],
+    #>      [:symbol_literal, [:symbol, [:@ident, "thing", [#{__LINE__+6}, 9]]]]]]],
+    #>  :positions =>
+    #>   {:from => [#{__LINE__+3}, 10], :till => [#{__LINE__+5}, 9]}
+    #> }
+    %,(
+      b = proc do |x| proc {|y| :thing }
+        :thing
+      end
+    ))
+
+    example(%%
+    ## wrt multiple matches, having non-unique parameters
+    ##
+    #! Sourcify::MultipleMatchingProcsPerLineError
+    %,(
+      b = proc do |x| proc {|x| :thing }
+        :thing
+      end
     ))
 
   end

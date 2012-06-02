@@ -5,6 +5,9 @@ Sourcify.require_rb(%w{
 })
 
 module Sourcify
+
+  class MultipleMatchingProcsPerLineError < Exception; end
+
   module Proc
 
     def to_source
