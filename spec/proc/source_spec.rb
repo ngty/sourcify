@@ -69,8 +69,60 @@ describe Sourcify::Proc::Source do
 
 
   describe '#to_s' do
-    it 'must return socerer\'s output' do
-      @source.to_s.must_equal('proc do :thing end')
+    describe 'w block attached to #lambda' do
+      it 'must return lambda representation of socerer\'s output' do
+        x = lambda { :thing }
+        x.to_source.to_s.must_equal('lambda { :thing }')
+      end
+    end
+
+    describe 'w block attached to #proc' do
+      it 'must return proc representation of socerer\'s output' do
+        x = proc { :thing }
+        x.to_source.to_s.must_equal('proc { :thing }')
+      end
+    end
+
+    describe 'w block attached to #method' do
+      def mm(a = 1, &block)
+        block
+      end
+
+      describe 'w no arg' do
+        it 'must return proc representation of socerer\'s output' do
+          x = mm { :thing }
+          x.to_source.to_s.must_equal('proc { :thing }')
+        end
+      end
+
+      describe 'w arg' do
+        it 'must return proc representation of socerer\'s output' do
+          x = mm(0) { :thing }
+          x.to_source.to_s.must_equal('proc { :thing }')
+        end
+      end
+    end
+
+    describe 'w block attached to Thing#method' do
+      thing = Class.new do
+        def self.mm(a = 1, &block)
+          block
+        end
+      end
+
+      describe 'w no arg' do
+        it 'must return proc representation of socerer\'s output' do
+          x = thing.mm { :thing }
+          x.to_source.to_s.must_equal('proc { :thing }')
+        end
+      end
+
+      describe 'w arg' do
+        it 'must return proc representation of socerer\'s output' do
+          x = thing.mm(0) { :thing }
+          x.to_source.to_s.must_equal('proc { :thing }')
+        end
+      end
     end
   end
 
