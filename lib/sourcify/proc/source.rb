@@ -9,9 +9,8 @@ module Sourcify
       def_delegators :metadata, *[:object, :file, :sexp, :start_pos, :end_pos]
 
       def initialize(block)
-        file, line = block.source_location
-        conds = {:params => block.parameters, :line => line}
-        extracted = Extractor.process(file, conds)
+        file, _ = block.source_location
+        extracted = Extractor.process(block)
 
         @metadata = Metadata.new(
           block,

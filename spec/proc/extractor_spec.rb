@@ -5,9 +5,7 @@ describe Sourcify::Proc::Extractor do
     extend Sourcify::SpecHelper
 
     def process(block)
-      file, line = block.source_location
-      conds = {:line => line, :params => block.parameters}
-      Sourcify::Proc::Extractor.process(file, conds)
+      Sourcify::Proc::Extractor.process(block)
     end
 
     example(%%
