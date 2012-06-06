@@ -31,6 +31,7 @@ module Sourcify
 
           def rscan(str, opts)
             results = RawScanner.process(str, opts) || []
+            results.map{ |x| x.respond_to?(:force_encoding) ? x.force_encoding(str.encoding) : x }
             return results if opts[:ignore_nested]
             results.map do |outer|
               [
