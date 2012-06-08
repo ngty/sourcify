@@ -17,7 +17,6 @@ RUBIES = {
     [nil, 'ruby-1.8.7-p334@sourcify'],
     [nil, 'ree-1.8.7-2011.03@sourcify'],
     [nil, 'jruby-1.6.3@sourcify'],
-    [nil, 'ruby-1.9.1-p378@sourcify'],
     ['METHOD_TO_SOURCE=true', 'ruby-1.9.2-p320@sourcify'],
     ['METHOD_TO_SOURCE=true', 'ruby-1.9.3-p194@sourcify'],
 
