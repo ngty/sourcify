@@ -3,22 +3,22 @@ require 'rake'
 require 'bundler'
 Bundler::GemHelper.install_tasks
 
-SPEC_SCRIPT = File.expand_path('../spec/run_spec.sh', __FILE__)
+SPEC_SCRIPT = File.expand_path('../spec/run_build.sh', __FILE__)
 task :default => :spec
 
 RUBIES = {
   :parsetree => [
     [nil, 'ruby-1.8.6-p420@sourcify-parsetree'],
     [nil, 'ruby-1.8.7-p334@sourcify-parsetree'],
-    [nil, 'ree-1.8.7-2011.03@sourcify-parsetree']
+    [nil, 'ree-1.8.7--2012.02@sourcify-parsetree']
   ],
   :static => [
     [nil, 'ruby-1.8.6-p420@sourcify'],
     [nil, 'ruby-1.8.7-p334@sourcify'],
-    [nil, 'ree-1.8.7-2011.03@sourcify'],
+    [nil, 'ree-1.8.7--2012.02@sourcify'],
     [nil, 'jruby-1.6.3@sourcify'],
-    ['METHOD_TO_SOURCE=true', 'ruby-1.9.2-p320@sourcify'],
-    ['METHOD_TO_SOURCE=true', 'ruby-1.9.3-p194@sourcify'],
+    [nil, 'ruby-1.9.2-p320@sourcify'],
+    [nil, 'ruby-1.9.3-p194@sourcify'],
 
     # NOTE: This doesn't support Method#to_source (& friends) yet yet due to
     # jruby's Method#parameters bug, see http://jira.codehaus.org/browse/JRUBY-5954
@@ -27,7 +27,7 @@ RUBIES = {
   ]
 }
 
-def run_spec_script_for(envs_and_rubies)
+def run_build_for(envs_and_rubies)
   envs_and_rubies.group_by{|arry| arry[0..-2] }.each do |envs, arry|
     rubies = arry.map(&:last)
     declared_envs = ['export MUTE_BACON=true']
@@ -50,17 +50,17 @@ end
 
 desc "Run specs in all rubies (both ParseTree & static scanner modes)"
 task :'spec:all' do
-  run_spec_script_for RUBIES.values.flatten(1)
+  run_build_for RUBIES.values.flatten(1)
 end
 
 desc "Run specs in rubies supporting ParseTree mode"
 task :'spec:parsetree' do
-  run_spec_script_for RUBIES[:parsetree]
+  run_build_for RUBIES[:parsetree]
 end
 
 desc "Run specs in rubies supporting static scanner mode"
 task :'spec:static' do
-  run_spec_script_for RUBIES[:static]
+  run_build_for RUBIES[:static]
 end
 
 # ///////////////////////////////////////////////////////////
