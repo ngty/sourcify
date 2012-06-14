@@ -19,7 +19,8 @@ module Sourcify
               reset_attributes
               execute!
             rescue Escape
-              @results
+              return @results unless ''.respond_to?(:force_encoding)
+              @results.map{|result| result.force_encoding(data.encoding) }
             end
           end
 
