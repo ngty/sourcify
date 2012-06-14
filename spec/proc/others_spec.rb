@@ -39,7 +39,11 @@ describe "Misc" do
   end
 
   should "handle proc with UTF-8 string" do
-    lambda { "こんにちは" }.should.be having_sexp(s(:iter, s(:call, nil, :proc, s(:arglist)), nil, s(:str, "こんにちは")))
+    # Addresses https://github.com/ngty/sourcify/issues/15, many thanks
+    # to tomykaira's pull request
+    lambda { "こんにちは" }.should.be having_sexp(
+      s(:iter, s(:call, nil, :proc, s(:arglist)), nil, s(:str, "こんにちは"))
+    )
   end
 
 end

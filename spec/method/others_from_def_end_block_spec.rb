@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
 
 describe "Misc (from def..end block)" do
@@ -44,6 +45,15 @@ describe "Misc (from def..end block)" do
       lambda { eval("def m5; x; end; method(:m5)").to_source }.should.
         raise(Sourcify::CannotParseEvalCodeError)
     end
+  end
+
+  should "handle body as UTF-8 string" do
+    # Addresses https://github.com/ngty/sourcify/issues/15, many thanks
+    # to tomykaira's pull request
+    def m6; "こんにちは"; end
+    method(:m6).should.be having_sexp(
+      s(:defn, :m6, s(:args), s(:scope, s(:block, s(:str, "こんにちは"))))
+    )
   end
 
 end
