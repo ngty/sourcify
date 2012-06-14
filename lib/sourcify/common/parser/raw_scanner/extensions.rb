@@ -12,6 +12,7 @@ module Sourcify
 
           def process(data, opts={})
             begin
+              @encoding = data.encoding if ''.respond_to?(:force_encoding)
               @start_pattern = opts[:start_pattern] || /.*/
               @body_matcher = opts[:body_matcher] || lambda{|_| true }
               @stop_on_newline = opts[:stop_on_newline]
@@ -19,8 +20,8 @@ module Sourcify
               reset_attributes
               execute!
             rescue Escape
-              return @results unless ''.respond_to?(:force_encoding)
-              @results.map{|result| result.force_encoding(data.encoding) }
+              return @results unless @encoding
+              @results.map{|result| result.force_encoding(@encoding) }
             end
           end
 
@@ -34,7 +35,7 @@ module Sourcify
 
           def push_dstring(ts, te)
             data = data_frag(ts .. te.pred)
-            @dstring ||= DString.new(data[%r{^("|`|/|%(?:Q|W|r|x|)(?:\W|_))},1])
+            @dstring ||= DString.new(data[%r{^("|`|/|%(?:Q|W|r|x|)(?:\W|_))},1], @encoding)
             @dstring << data
             return true unless @dstring.closed?
             @tokens << [:dstring, @dstring.to_s]
