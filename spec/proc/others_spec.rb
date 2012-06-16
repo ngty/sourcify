@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
 
 describe "Misc" do
@@ -36,22 +35,6 @@ describe "Misc" do
       lambda { eval("proc {:test }").to_source }.should.
         raise(Sourcify::CannotParseEvalCodeError)
     end
-  end
-
-  should "handle proc with UTF-8 string" do
-    # Addresses https://github.com/ngty/sourcify/issues/15, many thanks
-    # to tomykaira's pull request
-    lambda { "こんにちは" }.should.be having_sexp(
-      s(:iter, s(:call, nil, :proc, s(:arglist)), nil, s(:str, "こんにちは"))
-    )
-  end
-
-  should "handle proc with UTF-8 regexp" do
-    # Addresses https://github.com/ngty/sourcify/issues/15, many thanks
-    # to tomykaira's pull request
-    lambda { /\p{Lu}/ }.should.be having_sexp(
-      s(:iter, s(:call, nil, :proc, s(:arglist)), nil, s(:lit, /\p{Lu}/))
-    )
   end
 
 end
