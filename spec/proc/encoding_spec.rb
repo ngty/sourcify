@@ -20,4 +20,16 @@ describe "Encoding" do
     )
   end
 
+  should "handle proc with UTF-8 heredoc" do
+    (
+      lambda do
+        <<-EOL
+          こんにちは
+        EOL
+      end
+    ).should.be having_sexp(
+      s(:iter, s(:call, nil, :proc, s(:arglist)), nil, s(:str, "          こんにちは"))
+    )
+  end
+
 end

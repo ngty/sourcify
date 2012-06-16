@@ -55,7 +55,7 @@ module Sourcify
             data = data_frag(ts .. te.pred)
             unless @heredoc
               indented, tag = data.match(/\<\<(\-?)['"]?(\w+)['"]?$/)[1..3]
-              @heredoc = Heredoc.new(tag, !indented.empty?)
+              @heredoc = Heredoc.new(tag, !indented.empty?, @encoding)
             end
             @heredoc << data
             return true unless @heredoc.closed?(data_frag(te .. te))

@@ -2,14 +2,17 @@ module Sourcify
   module Common
     class Parser
       module RawScanner #:nodoc:all
-        class Heredoc < Struct.new(:tag, :indented)
+        class Heredoc < Struct.new(:tag, :indented, :encoding)
 
           def <<(content)
             (@contents ||= []) << content
           end
 
           def to_s
-            @contents.join
+            content = @contents.join.split("\n")[1..-2].join.
+              gsub(/\\|'/) {|c| "\\#{c}" }
+            content.force_encoding(encoding) if encoding
+            %('#{content}')
           end
 
           def closed?(sealer)
