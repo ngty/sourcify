@@ -21,7 +21,7 @@ module Sourcify
               execute!
             rescue Escape
               return @results unless @encoding
-              @results.map{|result| result.force_encoding(@encoding) }
+              @results.each{|result| result.force_encoding(@encoding) }
             end
           end
 
