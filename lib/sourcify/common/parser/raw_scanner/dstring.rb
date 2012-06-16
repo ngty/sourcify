@@ -29,18 +29,10 @@ module Sourcify
                 @contents[-1][-1].chr == end_tag
             end
 
-            if HAS_RIPPER
-              def parsable?
-                !!Ripper.sexp(safe_contents) 
-              rescue
-                false
-              end
-            else
-              def parsable?
-                !!RubyParser.new.parse(safe_contents)
-              rescue
-                false
-              end
+            def parsable?
+              !!RubyParser.new.parse(safe_contents)
+            rescue SyntaxError, Racc::ParseError
+              false
             end
 
             def safe_contents
@@ -50,7 +42,7 @@ module Sourcify
                 s =~ /^(%Q|%W|%r|%x|.?%|.?\\)/ ? s : s.sub(/`$/,'%Q`')
               end
 
-              @encoding ? content.force_encoding(@encoding) : content
+              encoding ? content.force_encoding(encoding) : content
             end
 
             def start_tag
