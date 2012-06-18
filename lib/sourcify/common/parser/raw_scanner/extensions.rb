@@ -20,8 +20,7 @@ module Sourcify
               reset_attributes
               execute!
             rescue Escape
-              return @results unless @encoding
-              @results.each{|result| result.force_encoding(@encoding) }
+              @results
             end
           end
 
@@ -82,8 +81,22 @@ module Sourcify
               if @stop_on_newline || !@results.empty? || (@results.empty? && @rejecting_block)
           end
 
-          def codified_tokens
-            @tokens.map(&:last).join
+          def codified_tokens(fix_heredoc = false)
+            (
+              if fix_heredoc
+                @tokens.map do |key, val|
+                  case key
+                  when :heredoc
+                    %('#{
+                      val.split("\n")[1..-2].join("\n").gsub(/\\|'/) {|c| "\\#{c}" }
+                    }')
+                  else val
+                  end
+                end
+              else
+                @tokens.map(&:last)
+              end
+            ).join
           end
 
           def reset_attributes

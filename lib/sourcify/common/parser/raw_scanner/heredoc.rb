@@ -9,10 +9,8 @@ module Sourcify
           end
 
           def to_s
-            content = @contents.join.split("\n")[1..-2].join.
-              gsub(/\\|'/) {|c| "\\#{c}" }
-            content.force_encoding(encoding) if encoding
-            %('#{content}')
+            content = @contents.join
+            encoding ? content.force_encoding(encoding) : content
           end
 
           def closed?(sealer)

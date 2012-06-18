@@ -42,11 +42,15 @@ module Sourcify
           end
 
           def construct_result_code
-            code = %Q(proc #{codified_tokens}).strip
+            codes = [false, true].map do |fix_heredoc|
+              code = %Q(proc #{codified_tokens(fix_heredoc)})
+              code.force_encoding(@encoding) if @encoding
+              code
+            end
 
             begin
-              if valid?(code) && @body_matcher.call(code)
-                @results << code
+              if valid?(codes[1]) && @body_matcher.call(codes[0])
+                @results << codes
                 raise Escape if @stop_on_newline or @lineno != 1
                 reset_attributes
               end
@@ -56,7 +60,7 @@ module Sourcify
           end
 
           def really_false_started?
-            valid?(%Q(#{codified_tokens} 1}), :hash)
+            valid?(%Q(#{codified_tokens(true)} 1}), :hash)
           end
 
           def reset_attributes

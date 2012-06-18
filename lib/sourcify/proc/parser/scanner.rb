@@ -15,7 +15,7 @@ module Sourcify
             }).flatten.select(&matcher)
             case results.size
             when 0 then raise NoMatchingProcError
-            when 1 then results[0]
+            when 2 then results[0..1]
             else raise MultipleMatchingProcsPerLineError
             end
           end
@@ -35,7 +35,7 @@ module Sourcify
             results.map do |outer|
               [
                 outer,
-                rscan(outer.sub(/^proc\s*(do|\{)/,''), opts.merge(:stop_on_newline => true))
+                rscan(outer[1].sub(/^proc\s*(do|\{)/,''), opts.merge(:stop_on_newline => true))
               ]
             end
           end

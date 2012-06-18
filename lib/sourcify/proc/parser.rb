@@ -19,7 +19,7 @@ module Sourcify
 
       def sexp(opts)
         (@sexps ||= {})[opts.hash] ||= (
-          extracted = extracted_source(opts)
+          extracted = extracted_source(opts)[1]
 
           raw_code = ("\n" * @source_code.line) + extracted
           raw_code.force_encoding(extracted.encoding) if ''.respond_to?(:force_encoding)
@@ -31,7 +31,7 @@ module Sourcify
       end
 
       def raw_source(opts)
-        raw_code = extracted_source(opts).strip
+        raw_code = extracted_source(opts)[0].strip
         opts[:strip_enclosure] ?
           raw_code.sub(/^proc\s*(\{|do)\s*(\|[^\|]+\|)?(.*)(\}|end)$/m, '\3').strip : raw_code
       end
@@ -39,9 +39,9 @@ module Sourcify
       private
 
         def extracted_source(opts)
-          Scanner.process(@source_code, opts) do |code|
+          Scanner.process(@source_code, opts) do |(raw, normalized)|
             begin
-              eval(code).arity == @arity
+              eval(raw).arity == @arity
             rescue Exception
               raise ParserInternalError
             end
