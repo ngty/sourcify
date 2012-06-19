@@ -28,7 +28,7 @@ describe "Encoding" do
         EOL
       end
     ).should.be having_sexp(
-      s(:iter, s(:call, nil, :proc, s(:arglist)), nil, s(:str, "          こんにちは"))
+      s(:iter, s(:call, nil, :proc, s(:arglist)), nil, s(:str, "          こんにちは\n"))
     )
   end
 

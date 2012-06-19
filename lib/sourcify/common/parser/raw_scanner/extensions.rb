@@ -87,9 +87,10 @@ module Sourcify
                 @tokens.map do |key, val|
                   case key
                   when :heredoc
-                    %('#{
-                      val.split("\n")[1..-2].join("\n").gsub(/\\|'/) {|c| "\\#{c}" }
-                    }')
+                    %(\n%"#{
+                      val.sub(/^(?:[^\n]+\n)(.*\n)(?:[^\n]+)$/m, '\1').
+                        gsub(/\\|"/) {|c| "\\#{c}" }
+                    }")
                   else val
                   end
                 end
