@@ -32,13 +32,19 @@ module Sourcify
           end
 
           def construct_result_code
-            code = codified_tokens.strip
+            codes = [false, true].map do |fix_heredoc|
+              code = codified_tokens(fix_heredoc)
+              code.force_encoding(@encoding) if @encoding
+              code
+            end
 
             begin
-              if valid?(code) && @body_matcher.call(code)
+              if valid?(codes[1]) && @body_matcher.call(codes[0])
                 # NOTE: Need to fix singleton method to avoid errors (eg. undefined object)
                 # downstream
-                @results << code.sub(%r{^(def\s+)(?:[^\.]+\.)?(#{@name}.*end)$}m, '\1\2')
+                @results << codes.map do |s|
+                  s.sub(%r{^(def\s+)(?:[^\.]+\.)?(#{@name}.*end)$}m, '\1\2')
+                end
                 raise Escape if @stop_on_newline or @lineno != 1
                 reset_attributes
               end

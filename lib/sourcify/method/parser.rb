@@ -16,7 +16,7 @@ module Sourcify
       end
 
       def raw_source(opts)
-        raw_source = extracted_source(opts).strip
+        raw_source = extracted_source(opts)[0].strip
         opts[:strip_enclosure] ? strip_raw_enclosure(raw_source) : raw_source
       end
 
@@ -26,7 +26,11 @@ module Sourcify
 
       def sexp(opts)
         (@sexps ||= {})[opts.hash] ||= (
-          raw_code = ("\n" * @source_code.line) + extracted_source(opts)
+          extracted = extracted_source(opts)[1]
+
+          raw_code = ("\n" * @source_code.line) + extracted
+          raw_code.force_encoding(extracted.encoding) if ''.respond_to?(:force_encoding)
+
           sexp = Converter.to_sexp(raw_code, @source_code.file)
           opts[:strip_enclosure] ? Sexp.from_array(sexp.to_a[-1]) : sexp
         )
@@ -60,20 +64,21 @@ module Sourcify
             extracted_source_from_method(opts)
           rescue ProbablyDefinedByProc
             pattern = /^proc\s*(\{|do)\s*(\|[^\|]*\|)?(.+)(\}|end)$/m
-            match = extracted_source_from_proc(opts).match(pattern)
+            matches = extracted_source_from_proc(opts).map{|s| s.match(pattern) }
+
             if @parameters.empty?
-              %Q(def #{@name}\n#{match[3]}\nend)
+              matches.map{|match| %Q(def #{@name}\n#{match[3]}\nend) }
             else
-              args = match[2].sub(/^\|([^\|]+)\|$/, '\1')
-              %Q(def #{@name}(#{args})\n#{match[3]}\nend)
+              args = matches[0][2].sub(/^\|([^\|]+)\|$/, '\1')
+              matches.map{|match| %Q(def #{@name}(#{args})\n#{match[3]}\nend) }
             end
           end
         end
 
         def extracted_source_from_method(opts)
-          Scanner.process(@source_code, opts) do |code|
+          Scanner.process(@source_code, opts) do |(raw, normalized)|
             begin
-              Object.new.instance_eval("#{code}; self").
+              Object.new.instance_eval("#{raw}; self").
                 method(@name).parameters == @parameters
             rescue NameError
               false
@@ -84,11 +89,11 @@ module Sourcify
         end
 
         def extracted_source_from_proc(opts)
-          Proc::Parser::Scanner.process(@source_code, opts) do |code|
+          Proc::Parser::Scanner.process(@source_code, opts) do |raw|
             begin
               Object.new.instance_eval(%(
                 (class << self; self; end).class_eval do
-                  define_method(:#{@name}, &(#{code}))
+                  define_method(:#{@name}, &(#{raw}))
                 end; self
               )).method(@name).parameters == @parameters
             rescue NameError
