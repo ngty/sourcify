@@ -12,10 +12,11 @@ module Sourcify
               :body_matcher => opts[:body_matcher],
               :ignore_nested => opts[:ignore_nested],
               :stop_on_newline => false,
-            }).flatten.select(&matcher)
+            }).select{|(raw, normalized)| matcher.call(raw) }
+
             case results.size
             when 0 then raise NoMatchingProcError
-            when 2 then results[0..1]
+            when 1 then results[0]
             else raise MultipleMatchingProcsPerLineError
             end
           end
@@ -31,13 +32,14 @@ module Sourcify
 
           def rscan(str, opts)
             results = RawScanner.process(str, opts) || []
+            inner_opts = opts.merge(:stop_on_newline => true)
             return results if opts[:ignore_nested]
             results.map do |outer|
               [
                 outer,
-                rscan(outer[1].sub(/^proc\s*(do|\{)/,''), opts.merge(:stop_on_newline => true))
+                *rscan(outer[1].sub(/^proc\s*(do|\{)/,''), inner_opts)
               ]
-            end
+            end.flatten(1)
           end
 
         end
