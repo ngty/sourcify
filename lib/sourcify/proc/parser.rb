@@ -20,9 +20,7 @@ module Sourcify
       def sexp(opts)
         (@sexps ||= {})[opts.hash] ||= (
           extracted = extracted_source(opts)[1]
-
-          raw_code = ("\n" * @source_code.line) + extracted
-          raw_code.force_encoding(extracted.encoding) if ''.respond_to?(:force_encoding)
+          raw_code = (("\n" * @source_code.line) + extracted).same_encoding_as(extracted)
 
           raw_sexp = Converter.to_sexp(raw_code, @source_code.file)
           sexp = Normalizer.process(raw_sexp, @binding)

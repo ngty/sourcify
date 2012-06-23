@@ -27,9 +27,7 @@ module Sourcify
       def sexp(opts)
         (@sexps ||= {})[opts.hash] ||= (
           extracted = extracted_source(opts)[1]
-
-          raw_code = ("\n" * @source_code.line) + extracted
-          raw_code.force_encoding(extracted.encoding) if ''.respond_to?(:force_encoding)
+          raw_code = (("\n" * @source_code.line) + extracted).same_encoding_as(extracted)
 
           sexp = Converter.to_sexp(raw_code, @source_code.file)
           opts[:strip_enclosure] ? Sexp.from_array(sexp.to_a[-1]) : sexp
@@ -65,31 +63,23 @@ module Sourcify
           rescue ProbablyDefinedByProc
             pattern = /^proc\s*(\{|do)\s*(\|[^\|]*\|)?(.+)(\}|end)$/m
             extracted = extracted_source_from_proc(opts)
-            encoding = extracted[0].encoding if ''.respond_to?(:force_encoding)
             matches = extracted.map{|s| s.match(pattern) }
 
-            if @parameters.empty?
-              matches.map do |match|
-                s = %Q(def #{@name}\n#{match[3]}\nend)
-                encoding ? s.force_encoding(encoding) : s
+            (
+              if @parameters.empty?
+                matches.map{|match| %Q(def #{@name}\n#{match[3]}\nend) }
+              else
+                args = matches[0][2].sub(/^\|([^\|]+)\|$/, '\1')
+                matches.map{|match| %Q(def #{@name}(#{args})\n#{match[3]}\nend) }
               end
-            else
-              args = matches[0][2].sub(/^\|([^\|]+)\|$/, '\1')
-              matches.map do |match|
-                s = %Q(def #{@name}(#{args})\n#{match[3]}\nend)
-                encoding ? s.force_encoding(encoding) : s
-              end
-            end
+            ).map{|s| s.same_encoding_as(extracted[0]) }
           end
         end
 
         def extracted_source_from_method(opts)
           Scanner.process(@source_code, opts) do |(raw, normalized)|
             begin
-              code = "#{raw}; self"
-              code.force_encoding(raw.encoding) if ''.respond_to?(:force_encoding)
-
-              Object.new.instance_eval(code).
+              Object.new.instance_eval("#{raw}; self".same_encoding_as(raw)).
                 method(@name).parameters == @parameters
             rescue NameError
               false
@@ -102,17 +92,14 @@ module Sourcify
         def extracted_source_from_proc(opts)
           Proc::Parser::Scanner.process(@source_code, opts) do |raw|
             begin
-              code = %(
+              Object.new.instance_eval(%(
                 (class << self; self; end).class_eval do
                   define_method(:#{@name}, &(#{raw}))
                 end; self
-              )
-              code.force_encoding(raw.encoding) if ''.respond_to?(:force_encoding)
-              Object.new.instance_eval(code).method(@name).parameters == @parameters
+              ).same_encoding_as(raw)).method(@name).parameters == @parameters
             rescue NameError
               false
             rescue Exception
-              p $!
               raise ParserInternalError
             end
           end

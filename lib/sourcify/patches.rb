@@ -26,3 +26,38 @@ unless binding.respond_to?(:has_local_variable?)
     end
   end
 end
+
+# New way of adding new functionalities
+module Sourcify
+  module Patches
+
+    module String
+      if ''.respond_to?(:force_encoding)
+
+        def same_encoding_as(other)
+          force_encoding(other.encoding)
+        end
+
+      else
+
+        def same_encoding_as(other)
+          self
+        end
+
+        def encoding
+          nil
+        end
+
+        def force_encoding(dummy)
+          self
+        end
+
+      end
+    end
+
+    ::String.class_eval do
+      include Sourcify::Patches::String
+    end
+
+  end
+end

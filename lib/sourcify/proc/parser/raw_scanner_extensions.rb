@@ -43,9 +43,7 @@ module Sourcify
 
           def construct_result_code
             codes = [false, true].map do |fix_heredoc|
-              code = %Q(proc #{codified_tokens(fix_heredoc)})
-              code.force_encoding(@encoding) if @encoding
-              code
+              %Q(proc #{codified_tokens(fix_heredoc)}).force_encoding(@encoding)
             end
 
             begin

@@ -12,7 +12,7 @@ module Sourcify
 
           def process(data, opts={})
             begin
-              @encoding = data.encoding if ''.respond_to?(:force_encoding)
+              @encoding = data.encoding
               @start_pattern = opts[:start_pattern] || /.*/
               @body_matcher = opts[:body_matcher] || lambda{|_| true }
               @stop_on_newline = opts[:stop_on_newline]

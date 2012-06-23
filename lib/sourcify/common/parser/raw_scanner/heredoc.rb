@@ -9,8 +9,7 @@ module Sourcify
           end
 
           def to_s
-            content = @contents.join
-            encoding ? content.force_encoding(encoding) : content
+            @contents.join.force_encoding(encoding)
           end
 
           def closed?(sealer)
