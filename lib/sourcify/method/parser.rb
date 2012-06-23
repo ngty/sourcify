@@ -64,13 +64,21 @@ module Sourcify
             extracted_source_from_method(opts)
           rescue ProbablyDefinedByProc
             pattern = /^proc\s*(\{|do)\s*(\|[^\|]*\|)?(.+)(\}|end)$/m
-            matches = extracted_source_from_proc(opts).map{|s| s.match(pattern) }
+            extracted = extracted_source_from_proc(opts)
+            encoding = extracted[0].encoding if ''.respond_to?(:force_encoding)
+            matches = extracted.map{|s| s.match(pattern) }
 
             if @parameters.empty?
-              matches.map{|match| %Q(def #{@name}\n#{match[3]}\nend) }
+              matches.map do |match|
+                s = %Q(def #{@name}\n#{match[3]}\nend)
+                encoding ? s.force_encoding(encoding) : s
+              end
             else
               args = matches[0][2].sub(/^\|([^\|]+)\|$/, '\1')
-              matches.map{|match| %Q(def #{@name}(#{args})\n#{match[3]}\nend) }
+              matches.map do |match|
+                s = %Q(def #{@name}(#{args})\n#{match[3]}\nend)
+                encoding ? s.force_encoding(encoding) : s
+              end
             end
           end
         end
@@ -78,7 +86,10 @@ module Sourcify
         def extracted_source_from_method(opts)
           Scanner.process(@source_code, opts) do |(raw, normalized)|
             begin
-              Object.new.instance_eval("#{raw}; self").
+              code = "#{raw}; self"
+              code.force_encoding(raw.encoding) if ''.respond_to?(:force_encoding)
+
+              Object.new.instance_eval(code).
                 method(@name).parameters == @parameters
             rescue NameError
               false
@@ -91,14 +102,17 @@ module Sourcify
         def extracted_source_from_proc(opts)
           Proc::Parser::Scanner.process(@source_code, opts) do |raw|
             begin
-              Object.new.instance_eval(%(
+              code = %(
                 (class << self; self; end).class_eval do
                   define_method(:#{@name}, &(#{raw}))
                 end; self
-              )).method(@name).parameters == @parameters
+              )
+              code.force_encoding(raw.encoding) if ''.respond_to?(:force_encoding)
+              Object.new.instance_eval(code).method(@name).parameters == @parameters
             rescue NameError
               false
             rescue Exception
+              p $!
               raise ParserInternalError
             end
           end
