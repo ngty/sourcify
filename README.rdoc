@@ -288,6 +288,14 @@ Under the hood, sourcify relies on RubyParser to yield s-expression, and since R
 does not yet fully handle 1.8.7 & 1.9.* syntax, you will get a nasty Racc::ParseError when
 you have any code that is not compatible with 1.8.6.
 
+=== 4. Lambda operator doesn't work
+
+When a lambda has been created using the lambda operator "->", sourcify can't handle it:
+
+    x = ->{ :blah }
+    x.to_source
+    # >> Sourcify::NoMatchingProcError
+
 
 == Is it really working ??
 
