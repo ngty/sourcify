@@ -7,6 +7,8 @@ module Sourcify
 
     def example(paragraph, block)
       description, expected = extract_args(paragraph)
+      debug_line = caller[0].split(':')[1]
+      description += " (at line #{debug_line})"
 
       expected.each do |type, val|
         send(:"example_for_#{type}", description, val, block)
