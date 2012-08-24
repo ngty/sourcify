@@ -202,5 +202,34 @@ describe Sourcify::Proc::Extractor do
           :thing
         end
     ))
+
+    example(%%
+    ## wrt positioning, attache & block on the different lines (3)
+    ##
+    #" proc do
+    #"           :thing
+    #"         end
+    %,(
+      b = puke \
+        :arg do
+          :thing
+        end
+    ))
+
+    example(%%
+    ## wrt positioning, attache & block on the different lines (4)
+    ##
+    #" proc do
+    #"           :thing
+    #"         end
+    %,(
+      b = puke \
+        :arg \
+        do
+          :thing
+        end
+    ))
+
+
   end
 end
