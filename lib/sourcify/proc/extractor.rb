@@ -28,72 +28,54 @@ module Sourcify
         Result.new(results.first)
       end
 
-      SCANNER_EVENTS.each do |event|
-        case event
-        when :kw
+      def on_kw(*args)
+        super(*args).tap do |_,frag,_|
+          break if lineno < @constraints.line
 
-          def on_kw(*args)
-            super(*args).tap do |expr|
-              frag, pos = expr[1..2]
-              break if pos[0] < @constraints.line
-
-              case frag
-              when "do"
-                if pos[0] == @constraints.line
-                  @blocks.append(frag)
-                  @blocks.create(:do_end, frag, pos)
-                else
-                  @blocks.append(frag)
-                end
-              when "end"
-                @blocks.append!(frag)
-              else
-                @blocks.append(frag)
-              end
-            end
-          end
-
-        when :lbrace
-
-          def on_lbrace(*args)
-            super(*args).tap do |expr|
-              frag, pos = expr[1..2]
-              break if pos[0] < @constraints.line
-
-              if pos[0] == @constraints.line
-                @blocks.append(frag)
-                @blocks.create(:brace, frag, pos)
-              else
-                @blocks.append(frag)
-              end
-            end
-          end
-
-        when :on_rbrace
-
-          def on_rbrace(*args)
-            super(*args).tap do |expr|
-              frag, pos = expr[1..2]
-              break if pos[0] < @constraints.line
-
-              @blocks.append!(frag)
-            end
-          end
-
-        else
-
-          define_method(:"on_#{event}") do |args|
-            super(*args).tap do |expr|
-              frag, pos = expr[1..2]
-              break if pos[0] < @constraints.line
-
+          case frag
+          when "do"
+            if lineno == @constraints.line
+              @blocks.append(frag).create(frag)
+            else
               @blocks.append(frag)
             end
+          when "end"
+            @blocks.append!(frag)
+          else
+            @blocks.append(frag)
           end
-
         end
       end
 
+      def on_lbrace(*args)
+        super(*args).tap do |_,frag,_|
+          break if lineno < @constraints.line
+
+          if lineno == @constraints.line
+            @blocks.append(frag).create(frag)
+          else
+            @blocks.append(frag)
+          end
+        end
+      end
+
+      def on_rbrace(*args)
+        super(*args).tap do |_,frag,_|
+          break if lineno < @constraints.line
+          @blocks.append!(frag)
+        end
+      end
+
+      SCANNER_EVENTS.each do |event|
+        next if [:kw, :lbrace, :rbrace].include?(event)
+
+        define_method(:"on_#{event}") do |args|
+          super(*args).tap do |_,frag,_|
+            break if lineno < @constraints.line
+            @blocks.append(frag)
+          end
+        end
+      end
 
     private
 
@@ -112,7 +94,9 @@ module Sourcify
         end
 
         def append(frag)
-          map{|b| b << frag unless b.done? }
+          tap do
+            map{|b| b << frag unless b.done? }
+          end
         end
 
         def append!(frag)
@@ -128,8 +112,8 @@ module Sourcify
 
         class Single
 
-          def initialize(type, frag, pos)
-            @type, @frags, @pos = type, [frag], pos
+          def initialize(frag)
+            @frags = [frag]
           end
 
           def <<(frag)
