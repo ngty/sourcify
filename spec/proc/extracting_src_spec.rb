@@ -1,5 +1,9 @@
 require File.expand_path('../spec_helper', __FILE__)
 
+def puke(*args, &block)
+  block
+end
+
 describe Sourcify::Proc::Extractor do
   describe '.process (wrt src)' do
     extend Sourcify::SpecHelper
@@ -160,6 +164,43 @@ describe Sourcify::Proc::Extractor do
       }
     ))
 
+    example(%%
+    ## wrt positioning, attache & block on the same line
+    ##
+    #" proc do
+    #"         :thing
+    #"       end
+    %,(
+      b = puke do
+        :thing
+      end
+    ))
 
+    example(%%
+    ## wrt positioning, attache & block on the different lines (1)
+    ##
+    #" proc do
+    #"           :thing
+    #"         end
+    %,(
+      b = puke \
+        do
+          :thing
+        end
+    ))
+
+    example(%%
+    ## wrt positioning, attache & block on the different lines (2)
+    ##
+    #" proc do
+    #"           :thing
+    #"         end
+    %,(
+      b = puke(
+        :arg
+      ) do
+          :thing
+        end
+    ))
   end
 end
