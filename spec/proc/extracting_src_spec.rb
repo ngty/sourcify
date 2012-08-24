@@ -9,7 +9,7 @@ describe Sourcify::Proc::Extractor do
     end
 
     example(%%
-    ## wrt attache, having declared recipient for method
+    ## wrt attache, having explicit recipient for method
     ##
     #" proc do
     #"         :thing
@@ -28,19 +28,6 @@ describe Sourcify::Proc::Extractor do
     #"       end
     %,(
       b = proc do
-        :thing
-      end
-    ))
-
-    example(%%
-    ## wrt attache, having explicit recipient for method
-    ##
-    #" proc do
-    #"         :thing
-    #"       end
-    %,(
-      subject = Proc
-      b = subject.new do
         :thing
       end
     ))
@@ -172,5 +159,7 @@ describe Sourcify::Proc::Extractor do
         :that
       }
     ))
+
+
   end
 end
