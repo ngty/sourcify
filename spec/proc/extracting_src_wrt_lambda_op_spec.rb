@@ -11,7 +11,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt args, having no arg
     ##
-    #" proc do
+    #" lambda do
     #"         :thing
     #"       end
     %,(
@@ -23,7 +23,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt args, having 1 arg
     ##
-    #" proc do |x|
+    #" lambda do |x|
     #"         :thing
     #"       end
     %,(
@@ -35,7 +35,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt args, having multiple args
     ##
-    #" proc do |x, y, z|
+    #" lambda do |x, y, z|
     #"         :thing
     #"       end
     %,(
@@ -47,7 +47,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt args, having only splat args
     ##
-    #" proc do |*x|
+    #" lambda do |*x|
     #"         :thing
     #"       end
     %,(
@@ -59,7 +59,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt args, having multiple & splat args
     ##
-    #" proc do |x, y, *z|
+    #" lambda do |x, y, *z|
     #"         :thing
     #"       end
     %,(
@@ -71,7 +71,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt block type, as do-block
     ##
-    #" proc do
+    #" lambda do
     #"         :thing
     #"       end
     %,(
@@ -83,7 +83,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt block type, as brace-block
     ##
-    #" proc {
+    #" lambda {
     #"         :thing
     #"       }
     %,(
@@ -95,7 +95,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt multiple matches, having unique parameters (1)
     ##
-    #" proc do |x| proc {|y| :this }
+    #" lambda do |x| lambda {|y| :this }
     #"         :that
     #"       end
     %,(
@@ -107,7 +107,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt multiple matches, having unique parameters (2)
     ##
-    #" proc { |x| proc do |y| :this end
+    #" lambda { |x| lambda do |y| :this end
     #"         :that
     #"       }
     %,(
@@ -139,7 +139,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt positioning, operator & block on the same line
     ##
-    #" proc do
+    #" lambda do
     #"         :thing
     #"       end
     %,(
@@ -151,7 +151,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt positioning, operator & block on different lines (1)
     ##
-    #" proc do
+    #" lambda do
     #"           :thing
     #"         end
     %,(
@@ -164,7 +164,21 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt positioning, operator & block on different lines (2)
     ##
-    #" proc do |x|
+    #" lambda do |x|
+    #"           :thing
+    #"         end
+    %,(
+      b = ->(
+          x
+        ) do
+          :thing
+        end
+    ))
+
+    example(%%
+    ## wrt positioning, operator & block on different lines (2)
+    ##
+    #" lambda do |x|
     #"           :thing
     #"         end
     %,(
