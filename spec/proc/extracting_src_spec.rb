@@ -11,7 +11,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt attache, having declared recipient for method
     ##
-    #"           Proc.new do
+    #" proc do
     #"         :thing
     #"       end
     %,(
@@ -23,7 +23,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt attache, having implicit recipient for method
     ##
-    #"           proc do
+    #" proc do
     #"         :thing
     #"       end
     %,(
@@ -35,7 +35,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt attache, having explicit recipient for method
     ##
-    #"           subject.new do
+    #" proc do
     #"         :thing
     #"       end
     %,(
@@ -48,7 +48,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt block args, having no arg
     ##
-    #"           proc do
+    #" proc do
     #"         :thing
     #"       end
     %,(
@@ -60,7 +60,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt block args, having 1 arg
     ##
-    #"           proc do |x|
+    #" proc do |x|
     #"         :thing
     #"       end
     %,(
@@ -72,7 +72,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt block args, having multiple args
     ##
-    #"           proc do |x, y, z|
+    #" proc do |x, y, z|
     #"         :thing
     #"       end
     %,(
@@ -84,7 +84,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt block args, having only splat args
     ##
-    #"           proc do |*x|
+    #" proc do |*x|
     #"         :thing
     #"       end
     %,(
@@ -96,7 +96,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt block args, having multiple & splat args
     ##
-    #"           proc do |x, y, *z|
+    #" proc do |x, y, *z|
     #"         :thing
     #"       end
     %,(
@@ -108,7 +108,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt block type, as do-block
     ##
-    #"           proc do
+    #" proc do
     #"         :thing
     #"       end
     %,(
@@ -120,7 +120,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt block type, as brace-block
     ##
-    #"           proc {
+    #" proc {
     #"         :thing
     #"       }
     %,(
@@ -132,7 +132,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt multiple matches, having unique parameters
     ##
-    #"           proc do |x| proc {|y| :this }
+    #" proc do |x| proc {|y| :this }
     #"         :that
     #"       end
     %,(
