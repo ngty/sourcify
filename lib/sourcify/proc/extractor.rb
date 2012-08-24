@@ -25,6 +25,8 @@ module Sourcify
         end.compact
 
         raise MultipleMatchingProcsPerLineError if results.size > 1
+        raise NoMatchingProcError if results.empty?
+
         Result.new(results.first)
       end
 

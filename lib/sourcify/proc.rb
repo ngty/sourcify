@@ -7,6 +7,7 @@ Sourcify.require_rb(%w{
 module Sourcify
 
   class MultipleMatchingProcsPerLineError < Exception; end
+  class NoMatchingProcError < Exception; end
 
   module Proc
 
