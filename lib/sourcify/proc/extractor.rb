@@ -1,30 +1,31 @@
 require 'ripper'
-require 'sorcerer'
+require 'forwardable'
 
 module Sourcify
   module Proc
     class Extractor < Ripper::SexpBuilder
 
       Result = Struct.new(:src)
+      Constraints = Struct.new(:params, :line)
 
       class << self
         def process(block)
           file, line = block.source_location
-          conditions = {:params => block.parameters, :line => line}
-
-          new(::File.read(file)).process(conditions)
+          constraints = Constraints.new(block.parameters, line)
+          new(::File.read(file)).process(constraints)
         end
       end
 
-      def process(conditions)
-        @blocks = []
-        @conditions = conditions
-        @constraints = Constraints.new(conditions)
-        @positions, @sexps = [], []
-
+      def process(constraints)
+        @blocks, @constraints = Blocks.new, constraints
         catch(:done) { parse }
-        raise MultipleMatchingProcsPerLineError if @blocks.size > 1
-        Result.new(@blocks.first.body)
+
+        results = @blocks.map do |b|
+          b.body if b.params == @constraints.params
+        end.compact
+
+        raise MultipleMatchingProcsPerLineError if results.size > 1
+        Result.new(results.first)
       end
 
       SCANNER_EVENTS.each do |event|
@@ -34,19 +35,20 @@ module Sourcify
           def on_kw(*args)
             super(*args).tap do |expr|
               frag, pos = expr[1..2]
+              break if pos[0] < @constraints.line
 
               case frag
               when "do"
-                if pos[0] == @conditions[:line]
-                  @blocks << Block.new(:do_end, frag, pos)
+                if pos[0] == @constraints.line
+                  @blocks.append(frag)
+                  @blocks.create(:do_end, frag, pos)
                 else
-                  @blocks.each{|b| b << frag unless b.done? }
+                  @blocks.append(frag)
                 end
               when "end"
-                @blocks.each{|b| b << frag unless b.done? }
-                throw :done if @blocks.first && @blocks.map(&:done?).all?
+                @blocks.append!(frag)
               else
-                @blocks.each{|b| b << frag unless b.done? }
+                @blocks.append(frag)
               end
             end
           end
@@ -56,11 +58,13 @@ module Sourcify
           def on_lbrace(*args)
             super(*args).tap do |expr|
               frag, pos = expr[1..2]
+              break if pos[0] < @constraints.line
 
-              if pos[0] == @conditions[:line]
-                @blocks << Block.new(:brace, frag, pos)
+              if pos[0] == @constraints.line
+                @blocks.append(frag)
+                @blocks.create(:brace, frag, pos)
               else
-                @blocks.each{|b| b << frag unless b.done? }
+                @blocks.append(frag)
               end
             end
           end
@@ -70,9 +74,9 @@ module Sourcify
           def on_rbrace(*args)
             super(*args).tap do |expr|
               frag, pos = expr[1..2]
+              break if pos[0] < @constraints.line
 
-              @blocks.each{|b| b << frag unless b.done? }
-              throw :done if @blocks.first && @blocks.map(&:done?).all?
+              @blocks.append!(frag)
             end
           end
 
@@ -80,76 +84,71 @@ module Sourcify
 
           define_method(:"on_#{event}") do |args|
             super(*args).tap do |expr|
-              break if @blocks.empty?
-              @blocks.each{|b| b << expr[1] unless b.done? }
+              frag, pos = expr[1..2]
+              break if pos[0] < @constraints.line
+
+              @blocks.append(frag)
             end
           end
 
         end
       end
 
-      # def on_method_add_block(*args)
-      #   super(*args).tap do |expr|
-      #     if @constraints.match?(expr)
-      #       @sexps << extract_sexp(expr)
-      #     end
-      #   end
-      # end
 
     private
 
-      def extract_sexp(sexp)
-        sexp
-      end
+      class Blocks
+        include Enumerable
+        extend Forwardable
 
-      class Block
+        def_delegators :@blocks, :each
 
-        attr_reader :type
-
-        def initialize(type, frag, pos)
-          @type, @pos, @frags = type, pos, [frag]
+        def initialize
+          @blocks = []
         end
 
-        def <<(frag)
-          @frags << frag
+        def create(*args)
+          @blocks << Single.new(*args)
         end
 
-        def done?
-          @done ||=
-            !!(Ripper.sexp(%(#{body})) rescue nil)
+        def append(frag)
+          map{|b| b << frag unless b.done? }
         end
 
-        def body
-          %(proc #{@frags.join})
-        end
+        def append!(frag)
+          flags = map do |b|
+            b << frag unless b.done?
+            b.done?
+          end
 
-      end
-
-      class Constraints
-
-        def initialize(conditions)
-          @conditions = conditions
-        end
-
-        def match?(sexp)
-          @sexp = sexp
-          match_line? && match_params?
+          throw :done if flags.first && flags.all?
         end
 
       private
 
-        def match_line?
-          @conditions[:line] ==
-            case @sexp[1][0]
-            when :method_add_arg then @sexp[1][1][1][-1][0]
-            when :call then @sexp[1][-1][-1][0]
-            else 0
-            end
-        end
+        class Single
 
-        def match_params?
-          @conditions[:params] ==
-            instance_eval("proc " + Sorcerer.source(@sexp[-1])).parameters
+          def initialize(type, frag, pos)
+            @type, @frags, @pos = type, [frag], pos
+          end
+
+          def <<(frag)
+            @frags << frag
+          end
+
+          def done?
+            @done ||=
+              !!(Ripper.sexp(%(#{body})) rescue nil)
+          end
+
+          def body
+            %(proc #{@frags.join})
+          end
+
+          def params
+            instance_eval(body).parameters
+          end
+
         end
 
       end
