@@ -152,29 +152,30 @@ module Sourcify
           end
 
           def body
-            case @frags[0]
-            when '->'
-              case @frags[1]
-              when '('
-                i_paren, i_do, i_brace = %w") do {".map{|s| @frags.index(s) }
-
-                if i_do && (i_brace.nil? || i_do < i_brace)
-                   %(#{@type} do |#{@frags[2...i_paren]*''}|#{@frags[(i_do+1)..-1]*''})
-                else
-                   %(#{@type} { |#{@frags[2...i_paren]*''}|#{@frags[(i_brace+1)..-1]*''})
-                end
-              when / +/
-                %(#{@type}#{@frags[1..-1]*''})
-              else
-                %(#{@type} #{@frags[1..-1]*''})
-              end
-            else
-              %(#{@type} #{@frags*''})
-            end
+            @type + (lambda_op? ? lambda_op_body : %( #{@frags*''}))
           end
 
           def params
             instance_eval(body).parameters
+          end
+
+        private
+
+          def lambda_op_body
+            case @frags[1]
+            when '('
+              i_paren, i_do, i_brace = %w") do {".map{|s| @frags.index(s) }
+
+              if i_do && (i_brace.nil? || i_do < i_brace)
+                 %( do |#{@frags[2...i_paren]*''}|#{@frags[(i_do+1)..-1]*''})
+              else
+                 %( { |#{@frags[2...i_paren]*''}|#{@frags[(i_brace+1)..-1]*''})
+              end
+            when / +/
+              %(#{@frags[1..-1]*''})
+            else
+              %( #{@frags[1..-1]*''})
+            end
           end
 
         end
