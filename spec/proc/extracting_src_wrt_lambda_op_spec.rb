@@ -95,7 +95,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt multiple matches, having unique parameters (1)
     ##
-    #" lambda do |x| lambda {|y| :this }
+    #" lambda do |x| ->(y) { :this }
     #"         :that
     #"       end
     %,(
@@ -107,7 +107,7 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt multiple matches, having unique parameters (2)
     ##
-    #" lambda { |x| lambda do |y| :this end
+    #" lambda { |x| ->(y) do :this end
     #"         :that
     #"       }
     %,(

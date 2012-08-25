@@ -24,10 +24,11 @@ module Sourcify
           b.body if b.params == @constraints.params
         end.compact
 
-        raise MultipleMatchingProcsPerLineError if results.size > 1
-        raise NoMatchingProcError if results.empty?
-
-        Result.new(results.first)
+        case results.size
+        when 0 then raise NoMatchingProcError
+        when 1 then Result.new(results.first)
+        else raise MultipleMatchingProcsPerLineError
+        end
       end
 
       def on_tlambda(*args)
@@ -56,18 +57,6 @@ module Sourcify
         end
       end
 
-      def on_lbrace(*args)
-        super(*args).tap do |_,frag,_|
-          break if lineno < @constraints.line
-
-          if lineno == @constraints.line
-            @blocks.append(frag).create(frag)
-          else
-            @blocks.append(frag)
-          end
-        end
-      end
-
       def on_rbrace(*args)
         super(*args).tap do |_,frag,_|
           break if lineno < @constraints.line
@@ -75,7 +64,21 @@ module Sourcify
         end
       end
 
-      (SCANNER_EVENTS - [:kw, :lbrace, :rbrace, :tlambda]).each do |event|
+      [:tlambeg, :lbrace].each do |event|
+        define_method(:"on_#{event}") do |args|
+          super(*args).tap do |_,frag,_|
+            break if lineno < @constraints.line
+
+            if lineno == @constraints.line
+              @blocks.append(frag).create(frag)
+            else
+              @blocks.append(frag)
+            end
+          end
+        end
+      end
+
+      (SCANNER_EVENTS - [:kw, :tlambeg, :lbrace, :rbrace, :tlambda]).each do |event|
         define_method(:"on_#{event}") do |args|
           super(*args).tap do |_,frag,_|
             break if lineno < @constraints.line
@@ -112,15 +115,30 @@ module Sourcify
             b.done?
           end
 
-          throw :done if flags.first && flags.all?
+          if flags.first && flags.all?
+            trash_duplicates!
+            throw :done
+          end
         end
 
       private
+
+        def trash_duplicates!
+          @blocks.each_index do |i|
+            next if i.zero?
+            prev = @blocks[i.pred]
+            @blocks[i] = nil if prev && prev.lambda_op?
+          end.compact!
+        end
 
         class Single
 
           def initialize(type, frag)
             @type, @frags = type, [frag]
+          end
+
+          def lambda_op?
+            @is_lambda_op ||= @frags[0] == '->'
           end
 
           def <<(frag)
@@ -134,24 +152,25 @@ module Sourcify
           end
 
           def body
-            "#{@type} " +
-              case @frags[0]
-              when '->'
-                case @frags[1]
-                when '('
-                  i_paren, i_do, i_brace = %w") do {".map{|s| @frags.index(s) }
+            case @frags[0]
+            when '->'
+              case @frags[1]
+              when '('
+                i_paren, i_do, i_brace = %w") do {".map{|s| @frags.index(s) }
 
-                  if i_do && (i_brace.nil? || i_do < i_brace)
-                     %(do |#{@frags[2...i_paren]*''}|#{@frags[(i_do+1)..-1]*''})
-                  else
-                     %({ |#{@frags[2...i_paren]*''}|#{@frags[(i_brace)..-1]*''})
-                  end
+                if i_do && (i_brace.nil? || i_do < i_brace)
+                   %(#{@type} do |#{@frags[2...i_paren]*''}|#{@frags[(i_do+1)..-1]*''})
                 else
-                  @frags[1..-1]*''
+                   %(#{@type} { |#{@frags[2...i_paren]*''}|#{@frags[(i_brace+1)..-1]*''})
                 end
+              when / +/
+                %(#{@type}#{@frags[1..-1]*''})
               else
-                @frags*''
+                %(#{@type} #{@frags[1..-1]*''})
               end
+            else
+              %(#{@type} #{@frags*''})
+            end
           end
 
           def params
