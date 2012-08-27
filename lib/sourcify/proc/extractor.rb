@@ -55,14 +55,14 @@ module Sourcify
 
       def on_tlambda(*args)
         super(*args).tap do |_,frag,_|
-          retry_if_skewed! or break
+          break unless processable?
           @blocks.append(frag).create(frag)
         end
       end
 
       def on_kw(*args)
         super(*args).tap do |_,frag,_|
-          retry_if_skewed! or break
+          break unless processable?
 
           case frag
           when "do"
@@ -81,7 +81,7 @@ module Sourcify
 
       def on_rbrace(*args)
         super(*args).tap do |_,frag,_|
-          retry_if_skewed! or break
+          break unless processable?
           @blocks.append!(frag)
         end
       end
@@ -89,7 +89,7 @@ module Sourcify
       [:tlambeg, :lbrace].each do |event|
         define_method(:"on_#{event}") do |args|
           super(*args).tap do |_,frag,_|
-            retry_if_skewed! or break
+            break unless processable?
 
             if lineno == @constraints.line
               @blocks.append(frag).create(frag)
@@ -103,7 +103,7 @@ module Sourcify
       (SCANNER_EVENTS - [:kw, :tlambeg, :lbrace, :rbrace, :tlambda]).each do |event|
         define_method(:"on_#{event}") do |args|
           super(*args).tap do |_,frag,_|
-            retry_if_skewed! or break
+            break unless processable?
             @blocks.append(frag)
           end
         end
@@ -111,11 +111,11 @@ module Sourcify
 
     private
 
-      def retry_if_skewed!
+      def processable?
         case lineno <=> @constraints.line
         when -1 then false
         when 0 then true
-        else !@blocks.empty? || throw(:retry, nil)
+        else !@blocks.empty? or throw(:retry, nil)
         end
       end
 
