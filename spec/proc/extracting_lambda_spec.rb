@@ -1,7 +1,7 @@
 require File.expand_path('../spec_helper', __FILE__)
 
 describe Sourcify::Proc::Extractor do
-  describe '.process (wrt src & lambda operator)' do
+  describe 'extracting lambda' do
     extend Sourcify::SpecHelper
 
     def process(block)

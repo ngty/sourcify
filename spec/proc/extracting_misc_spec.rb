@@ -6,7 +6,7 @@ def puke(*args, &block)
 end
 
 describe Sourcify::Proc::Extractor do
-  describe '.process (wrt misc)' do
+  describe 'extracting misc' do
     extend Sourcify::SpecHelper
 
     def process(block)
