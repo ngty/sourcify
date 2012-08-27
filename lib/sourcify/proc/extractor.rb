@@ -7,23 +7,22 @@ module Sourcify
     class Extractor < Ripper::SexpBuilder
 
       Result = Struct.new(:src)
-      Constraints = Struct.new(:params, :lambda, :line)
+      Constraints = Struct.new(:params, :line, :is_lambda)
 
       class << self
         def process(block)
           file, line = block.source_location
-          constraints = Constraints.new(block.parameters, block.lambda?, line)
+          constraints = Constraints.new(block.parameters, line, block.lambda?)
 
           offset_constraints =
-            if block.lambda?
-              lambda { raise :NOT_IMPLEMENTED }
+            if constraints.is_lambda
+              lambda { constraints.line = constraints.line.pred }
             else
               lambda { constraints.line = constraints.line.next }
             end
 
           StringIO.open(::File.read(file)) do |io|
             until result = catch(:retry) { new(io).process(constraints) }
-              io.rewind
               io.rewind; offset_constraints.call
             end
 
@@ -33,7 +32,7 @@ module Sourcify
       end
 
       def process(constraints)
-        @blocks, @constraints = Blocks.new(constraints.lambda), constraints
+        @blocks, @constraints = Blocks.new(constraints.is_lambda), constraints
         catch(:done) { parse }
 
         results = @blocks.map do |b|
@@ -41,22 +40,29 @@ module Sourcify
         end.compact
 
         case results.size
-        when 0 then raise NoMatchingProcError
-        when 1 then Result.new(results.first)
-        else raise MultipleMatchingProcsPerLineError
+        when 0
+          if @constraints.is_lambda
+            throw :retry, nil
+          else
+            raise NoMatchingProcError
+          end
+        when 1
+          Result.new(results.first)
+        else
+          raise MultipleMatchingProcsPerLineError
         end
       end
 
       def on_tlambda(*args)
         super(*args).tap do |_,frag,_|
-          retry! or break
+          retry_if_skewed! or break
           @blocks.append(frag).create(frag)
         end
       end
 
       def on_kw(*args)
         super(*args).tap do |_,frag,_|
-          retry! or break
+          retry_if_skewed! or break
 
           case frag
           when "do"
@@ -75,7 +81,7 @@ module Sourcify
 
       def on_rbrace(*args)
         super(*args).tap do |_,frag,_|
-          retry! or break
+          retry_if_skewed! or break
           @blocks.append!(frag)
         end
       end
@@ -83,7 +89,7 @@ module Sourcify
       [:tlambeg, :lbrace].each do |event|
         define_method(:"on_#{event}") do |args|
           super(*args).tap do |_,frag,_|
-            retry! or break
+            retry_if_skewed! or break
 
             if lineno == @constraints.line
               @blocks.append(frag).create(frag)
@@ -97,7 +103,7 @@ module Sourcify
       (SCANNER_EVENTS - [:kw, :tlambeg, :lbrace, :rbrace, :tlambda]).each do |event|
         define_method(:"on_#{event}") do |args|
           super(*args).tap do |_,frag,_|
-            retry! or break
+            retry_if_skewed! or break
             @blocks.append(frag)
           end
         end
@@ -105,7 +111,7 @@ module Sourcify
 
     private
 
-      def retry!
+      def retry_if_skewed!
         case lineno <=> @constraints.line
         when -1 then false
         when 0 then true
@@ -188,12 +194,15 @@ module Sourcify
           def lambda_op_body
             case @frags[1]
             when '('
-              i_paren, i_do, i_brace = %w") do {".map{|s| @frags.index(s) }
+              frags = @frags.dup
+              i_rparen, i_do, i_lbrace = %w") do {".map{|s| frags.index(s) }
+              i_nl = frags[0..i_rparen].rindex("\n")
+              frags[i_nl] = "\\" + frags[i_nl] if i_nl
 
-              if i_do && (i_brace.nil? || i_do < i_brace)
-                 %( do |#{@frags[2...i_paren]*''}|#{@frags[(i_do+1)..-1]*''})
+              if i_do && (i_lbrace.nil? || i_do < i_lbrace)
+                 %( do |#{frags[2...i_rparen]*''}|#{frags[(i_do+1)..-1]*''})
               else
-                 %( { |#{@frags[2...i_paren]*''}|#{@frags[(i_brace+1)..-1]*''})
+                 %( { |#{frags[2...i_rparen]*''}|#{frags[(i_lbrace+1)..-1]*''})
               end
             when / +/
               %(#{@frags[1..-1]*''})

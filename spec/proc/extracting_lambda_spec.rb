@@ -164,7 +164,9 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt positioning, operator & block on different lines (2)
     ##
-    #" lambda do |x|
+    #" lambda do |
+    #"           x\\
+    #"         |
     #"           :thing
     #"         end
     %,(
@@ -178,7 +180,9 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt positioning, operator & block on different lines (2)
     ##
-    #" lambda do |x|
+    #" lambda do |
+    #"           x\\
+    #"         |
     #"           :thing
     #"         end
     %,(
