@@ -1,4 +1,5 @@
 require 'ripper'
+require 'stringio'
 require 'forwardable'
 
 module Sourcify
@@ -12,7 +13,22 @@ module Sourcify
         def process(block)
           file, line = block.source_location
           constraints = Constraints.new(block.parameters, block.lambda?, line)
-          new(::File.read(file)).process(constraints)
+
+          offset_constraints =
+            if block.lambda?
+              lambda { raise :NOT_IMPLEMENTED }
+            else
+              lambda { constraints.line = constraints.line.next }
+            end
+
+          StringIO.open(::File.read(file)) do |io|
+            until result = catch(:retry) { new(io).process(constraints) }
+              io.rewind
+              io.rewind; offset_constraints.call
+            end
+
+            result
+          end
         end
       end
 
@@ -33,14 +49,14 @@ module Sourcify
 
       def on_tlambda(*args)
         super(*args).tap do |_,frag,_|
-          break if lineno < @constraints.line
+          retry! or break
           @blocks.append(frag).create(frag)
         end
       end
 
       def on_kw(*args)
         super(*args).tap do |_,frag,_|
-          break if lineno < @constraints.line
+          retry! or break
 
           case frag
           when "do"
@@ -59,7 +75,7 @@ module Sourcify
 
       def on_rbrace(*args)
         super(*args).tap do |_,frag,_|
-          break if lineno < @constraints.line
+          retry! or break
           @blocks.append!(frag)
         end
       end
@@ -67,7 +83,7 @@ module Sourcify
       [:tlambeg, :lbrace].each do |event|
         define_method(:"on_#{event}") do |args|
           super(*args).tap do |_,frag,_|
-            break if lineno < @constraints.line
+            retry! or break
 
             if lineno == @constraints.line
               @blocks.append(frag).create(frag)
@@ -81,7 +97,7 @@ module Sourcify
       (SCANNER_EVENTS - [:kw, :tlambeg, :lbrace, :rbrace, :tlambda]).each do |event|
         define_method(:"on_#{event}") do |args|
           super(*args).tap do |_,frag,_|
-            break if lineno < @constraints.line
+            retry! or break
             @blocks.append(frag)
           end
         end
@@ -89,11 +105,19 @@ module Sourcify
 
     private
 
+      def retry!
+        case lineno <=> @constraints.line
+        when -1 then false
+        when 0 then true
+        else !@blocks.empty? || throw(:retry, nil)
+        end
+      end
+
       class Blocks
         include Enumerable
         extend Forwardable
 
-        def_delegators :@blocks, :each
+        def_delegators :@blocks, :each, :empty?
 
         def initialize(is_lambda)
           @type, @blocks = is_lambda ? 'lambda' : 'proc', []
