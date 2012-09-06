@@ -43,7 +43,7 @@ describe Sourcify::Proc::Extractor do
     ## wrt encoding, having unicode regexp
     ##
     #" proc {
-    #"         /\p{Lu}/
+    #"         /\\\p{Lu}/
     #"       }
     %,(
       b = proc {

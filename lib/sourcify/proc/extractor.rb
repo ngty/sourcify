@@ -164,7 +164,7 @@ module Sourcify
         class Single
 
           def initialize(type, frag)
-            @type, @frags = type, [frag]
+            @type, @encoding, @frags = type, frag.encoding, [frag]
           end
 
           def lambda_op?
@@ -177,12 +177,21 @@ module Sourcify
 
           def done?
             @done ||=
-              %w(} end).include?(@frags[-1]) &&
-                !!(Ripper.sexp(%(#{body})) rescue nil)
+              begin
+                if %w(} end).include?(@frags[-1]) && !!Ripper.sexp(s = body)
+                  !!(@body = s)
+                end
+              rescue
+                nil
+              end
           end
 
           def body
-            @type + (lambda_op? ? lambda_op_body : %( #{@frags*''}))
+            @body ||
+              begin
+                s = lambda_op? ? lambda_op_body : %( #{@frags*''})
+                (@type + s).force_encoding(@encoding)
+              end
           end
 
           def params
