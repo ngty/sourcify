@@ -108,3 +108,12 @@ def irb_exec(stdin_str)
   (values[-1].nil? && RUBY_VERSION =~ /1.9.(2|3)/) ? values[0 .. -2] : values
 end
 
+def pry_exec(string)
+  sourcify_rb = File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib', 'sourcify.rb')
+  pry_feedback = /^ ?=> /
+
+  %x(#{File.expand_path('../pry.rb', __FILE__)} "#{string}").
+    split("\n").grep(pry_feedback).
+      map{|s| eval(s.sub(pry_feedback,'').strip) }
+end
+
