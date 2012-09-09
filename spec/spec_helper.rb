@@ -49,6 +49,7 @@ def code_to_sexp(code)
     Unifier.new.process(ParseTree.translate(code))
   else
     require 'ruby_parser'
+    p [code]
     RubyParser.new.parse(code)
   end
 end
@@ -95,7 +96,7 @@ def capture(stdin_str = '')
   end
 end
 
-def irb_exec(stdin_str)
+def i2rb_exec(stdin_str)
   # See http://tyenglog.heroku.com/2010/9/how-to-test-irb-specific-support &
   # http://tyenglog.heroku.com/2010/9/how-to-test-irb-specific-support-2-
   sourcify_rb = File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib', 'sourcify.rb')
@@ -108,12 +109,12 @@ def irb_exec(stdin_str)
   (values[-1].nil? && RUBY_VERSION =~ /1.9.(2|3)/) ? values[0 .. -2] : values
 end
 
-def pry_exec(string)
+def pry_exec(stdin_str)
   sourcify_rb = File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib', 'sourcify.rb')
-  pry_feedback = /^ ?=> /
+  pry_feedback = /^=> /
+  pry_opts = '--simple-prompt --no-color'
 
-  %x(#{File.expand_path('../pry.rb', __FILE__)} "#{string}").
-    split("\n").grep(pry_feedback).
-      map{|s| eval(s.sub(pry_feedback,'').strip) }
+  %x(echo "#{stdin_str}" | pry #{pry_opts} -r #{sourcify_rb}).split("\n").
+    grep(pry_feedback).map{|s| eval(s.sub(pry_feedback,'').strip) }[0 .. -1]
 end
 
