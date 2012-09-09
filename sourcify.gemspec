@@ -16,7 +16,9 @@ Gem::Specification.new do |s|
   s.add_dependency 'sexp_processor', '~> 3.2.0'
   s.add_dependency 'ruby_parser', '~> 2.3.1'
   s.add_dependency 'file-tail', '~> 1.0.10'
+
   s.add_development_dependency 'bacon'
+  s.add_development_dependency 'pry'
 
   # ParseTree (better performance + dynamic goodness, but not supported on java & 1.9.*),
   # optional for any 1.8.*.
