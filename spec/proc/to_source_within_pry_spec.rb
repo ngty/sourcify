@@ -25,12 +25,14 @@ describe "Proc#to_source within PRY" do
 
   should 'handle magic variable __FILE__' do
     pry_eval(%Q(
+      # NOTE: this line is needed to fix one-liner issue w pry
       lambda { __FILE__ }.to_source
     )).should.be equal_to('proc { "(pry)" }')
   end
 
   should 'handle magic variable __LINE__' do
     pry_eval(%Q(
+      # NOTE: this line is needed to fix one-liner issue w pry
       lambda { __LINE__ }.to_source
     )).should.be equal_to('proc { 2 }')
   end
