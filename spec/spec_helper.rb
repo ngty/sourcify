@@ -111,10 +111,20 @@ end
 
 def pry_exec(stdin_str)
   sourcify_rb = File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib', 'sourcify.rb')
-  pry_feedback = /^=> /
   pry_opts = '--simple-prompt --no-color'
+  results = []
 
-  %x(echo "#{stdin_str}" | pry #{pry_opts} -r #{sourcify_rb}).split("\n").
-    grep(pry_feedback).map{|s| eval(s.sub(pry_feedback,'').strip) }[0 .. -1]
+  %x(echo "#{stdin_str}" | pry #{pry_opts} -r #{sourcify_rb}).
+    split("\n").each do |line|
+      case line
+      when /^((?:>> |)=> )/
+        results << [line.sub($1,'')]
+      when /^( )/
+        results[-1] << line
+      end
+    end
+
+  results = results.map{|lines| eval(lines.join) }
+  results[-1].nil? ? results[0..-2] : results
 end
 
