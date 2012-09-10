@@ -49,7 +49,6 @@ def code_to_sexp(code)
     Unifier.new.process(ParseTree.translate(code))
   else
     require 'ruby_parser'
-    p [code]
     RubyParser.new.parse(code)
   end
 end
