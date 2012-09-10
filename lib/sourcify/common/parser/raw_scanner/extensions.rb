@@ -21,6 +21,8 @@ module Sourcify
               execute!
             rescue Escape
               @results
+            else
+              @results
             end
           end
 

@@ -16,7 +16,10 @@ describe "Proc#to_sexp within PRY" do
 
   should 'handle non var' do
     expected = s(:iter, s(:call, nil, :proc, s(:arglist)), nil, s(:call, nil, :x, s(:arglist)))
-    pry_eval('lambda { x }.to_sexp').should.be equal_to(expected)
+    pry_eval(%Q(
+      # NOTE: this line is needed to fix one-liner issue w pry
+      lambda { x }.to_sexp
+    )).should.be equal_to(expected)
   end
 
   should 'handle local var' do
