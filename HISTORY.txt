@@ -3,6 +3,7 @@
 * adds Method#to_source, Method#to_sexp & Method#to_raw_source to MRI-1.9.2 (issue#3)
 * extensive refactoring to existing proc support to support the above
 * fixes incorrect encoding for scanner result (issue#19) [#tomykaira]
+* ensures compatibility with pry (issue#22)
 
 === 0.5.0 (May 2, 2011)
 
