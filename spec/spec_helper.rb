@@ -96,7 +96,7 @@ def capture(stdin_str = '')
   end
 end
 
-def i2rb_exec(stdin_str)
+def irb_exec(stdin_str)
   # See http://tyenglog.heroku.com/2010/9/how-to-test-irb-specific-support &
   # http://tyenglog.heroku.com/2010/9/how-to-test-irb-specific-support-2-
   sourcify_rb = File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib', 'sourcify.rb')
