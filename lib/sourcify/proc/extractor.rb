@@ -229,15 +229,6 @@ module Sourcify
 
         private
 
-          def empty_hash?(expr)
-            expr[1] && expr[1][0] == [:hash, nil]
-          end
-
-          def filled_hash?(expr)
-            expr[1] && expr[1][0] &&
-              expr[1][0][0] == :hash && !expr[1][0][1].nil?
-          end
-
           def lambda_op_body
             case @frags[1]
             when '('
