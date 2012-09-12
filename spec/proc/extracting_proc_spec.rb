@@ -145,6 +145,22 @@ describe Sourcify::Proc::Extractor do
     ))
 
     example(%%
+    ## wrt multiple matches, having unique parameters (3)
+    ##
+    #" proc {|y| :that }
+    %,(
+      b = (proc do |x| :this end; proc {|y| :that })
+    ))
+
+    example(%%
+    ## wrt multiple matches, having unique parameters (4)
+    ##
+    #" proc do |y| :that end
+    %,(
+      b = (proc { |x| :this }; proc do |y| :that end)
+    ))
+
+    example(%%
     ## wrt multiple matches, having non-unique parameters (1)
     ##
     #! Sourcify::MultipleMatchingProcsPerLineError
@@ -162,6 +178,22 @@ describe Sourcify::Proc::Extractor do
       b = proc { |x| proc do |x| :this end
         :that
       }
+    ))
+
+    example(%%
+    ## wrt multiple matches, having non-unique parameters (3)
+    ##
+    #! Sourcify::MultipleMatchingProcsPerLineError
+    %,(
+      b = (proc do |x| :this end; proc {|x| :that })
+    ))
+
+    example(%%
+    ## wrt multiple matches, having non-unique parameters (4)
+    ##
+    #! Sourcify::MultipleMatchingProcsPerLineError
+    %,(
+      b = (proc { |x| :this }; proc do |x| :that end)
     ))
 
     example(%%

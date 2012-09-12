@@ -35,6 +35,8 @@ module Sourcify
         @blocks, @constraints = Blocks.new(constraints.is_lambda), constraints
         catch(:done) { parse }
 
+        @blocks.compact!
+
         results = @blocks.map do |b|
           b.body if b.params == @constraints.params
         end.compact
@@ -72,7 +74,7 @@ module Sourcify
               @blocks.append(frag)
             end
           when "end"
-            @blocks.append!(frag)
+            @blocks.append(frag)
           else
             @blocks.append(frag)
           end
@@ -82,7 +84,8 @@ module Sourcify
       def on_rbrace(*args)
         super(*args).tap do |_,frag,_|
           break unless processable?
-          @blocks.append!(frag)
+          @blocks.append(frag)
+          @blocks.done? if lineno > @constraints.line
         end
       end
 
@@ -112,6 +115,10 @@ module Sourcify
     private
 
       def processable?
+        if lineno > @constraints.line && @blocks.done?
+          throw :done
+        end
+
         case lineno <=> @constraints.line
         when -1 then false
         when 0 then true
@@ -139,27 +146,19 @@ module Sourcify
           end
         end
 
-        def append!(frag)
-          flags = map do |b|
-            b << frag unless b.done?
-            b.done?
-          end
-
-          if flags.first && flags.all?
-            trash_duplicates!
-            throw :done
-          end
+        def done?
+          first && all?(&:done?)
         end
 
-      private
-
-        def trash_duplicates!
+        def compact!
           @blocks.each_index do |i|
             next if i.zero?
             prev = @blocks[i.pred]
             @blocks[i] = nil if prev && prev.lambda_op?
           end.compact!
         end
+
+      private
 
         class Single
 
