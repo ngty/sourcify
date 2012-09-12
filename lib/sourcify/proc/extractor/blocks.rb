@@ -1,11 +1,5 @@
 require 'forwardable'
-
-Sourcify.require_rb(
-  'proc/extractor/block',
-  'proc/extractor/lambda_op_block',
-  'proc/extractor/brace_block',
-  'proc/extractor/do_end_block'
-)
+Sourcify.require_rb('proc/extractor/block')
 
 module Sourcify
   module Proc
@@ -22,21 +16,11 @@ module Sourcify
         end
 
         def create(frag)
-          tap do
-            @blocks <<
-              case frag
-              when 'do' then DoEndBlock.new(@type, frag)
-              when '{'  then BraceBlock.new(@type, frag)
-              when '->' then LambdaOpBlock.new(@type, frag)
-              else raise ArgumentError
-              end
-          end
+          tap { @blocks << Block.new(@type, frag) }
         end
 
         def append(frag)
-          tap do
-            map{|b| b << frag unless b.done? }
-          end
+          tap { map{|b| b << frag unless b.done? } }
         end
 
         def done?
