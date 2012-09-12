@@ -1,6 +1,6 @@
 require File.expand_path('../spec_helper', __FILE__)
 
-def puke(*args, &block)
+def m(*args, &block)
   block
 end
 
@@ -203,7 +203,7 @@ describe Sourcify::Proc::Extractor do
     #"         :thing
     #"       end
     %,(
-      b = puke do
+      b = m do
         :thing
       end
     ))
@@ -215,7 +215,7 @@ describe Sourcify::Proc::Extractor do
     #"           :thing
     #"         end
     %,(
-      b = puke \
+      b = m \
         do
           :thing
         end
@@ -228,7 +228,7 @@ describe Sourcify::Proc::Extractor do
     #"           :thing
     #"         end
     %,(
-      b = puke(
+      b = m(
         :arg
       ) do
           :thing
@@ -242,7 +242,7 @@ describe Sourcify::Proc::Extractor do
     #"           :thing
     #"         end
     %,(
-      b = puke \
+      b = m \
         :arg do
           :thing
         end
@@ -255,7 +255,7 @@ describe Sourcify::Proc::Extractor do
     #"           :thing
     #"         end
     %,(
-      b = puke \
+      b = m \
         :arg \
         do
           :thing
