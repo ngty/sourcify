@@ -38,8 +38,12 @@ module Sourcify
         @blocks.compact!
 
         results = @blocks.map do |b|
-          b.body if b.params == @constraints.params
+          b.body if b.params == @constraints.params && !b.dubious?
         end.compact
+
+        if results.empty? && @constraints.params.empty?
+          results = @blocks.select(&:dubious?)[-1..-1].map(&:body)
+        end
 
         case results.size
         when 0
@@ -156,6 +160,8 @@ module Sourcify
             prev = @blocks[i.pred]
             @blocks[i] = nil if prev && prev.lambda_op?
           end.compact!
+
+          @blocks.reject!(&:invalid?)
         end
 
       private
@@ -164,6 +170,15 @@ module Sourcify
 
           def initialize(type, frag)
             @type, @encoding, @frags = type, frag.encoding, [frag]
+            @valid, @dubious = true, false
+          end
+
+          def dubious?
+            !!@dubious
+          end
+
+          def invalid?
+            !@valid
           end
 
           def lambda_op?
@@ -175,21 +190,36 @@ module Sourcify
           end
 
           def done?
-            @done ||=
-              begin
-                if %w(} end).include?(@frags[-1]) && !!Ripper.sexp(s = body)
-                  !!(@body = s)
+            if invalid?
+              true
+            else
+              @done ||=
+                begin
+                  if %w(} end).include?(@frags[-1]) && !!Ripper.sexp(s = body)
+                    !!(@body = s)
+                  end
+                rescue
+                  nil
                 end
-              rescue
-                nil
-              end
+            end
           end
 
           def body
             @body ||
               begin
-                s = lambda_op? ? lambda_op_body : %( #{@frags*''})
-                (@type + s).force_encoding(@encoding)
+                block = lambda_op? ? lambda_op_body : %( #{@frags*''})
+
+                if @frags[0] == '{' && expr = Ripper.sexp(block)
+                  if expr[1] && (e = expr[1][0])[0] == :hash
+                    if e[1].nil?
+                      @dubious = true
+                    else
+                      @valid = false; return
+                    end
+                  end
+                end
+
+                (@type + block).force_encoding(@encoding)
               end
           end
 
@@ -198,6 +228,15 @@ module Sourcify
           end
 
         private
+
+          def empty_hash?(expr)
+            expr[1] && expr[1][0] == [:hash, nil]
+          end
+
+          def filled_hash?(expr)
+            expr[1] && expr[1][0] &&
+              expr[1][0][0] == :hash && !expr[1][0][1].nil?
+          end
 
           def lambda_op_body
             case @frags[1]
