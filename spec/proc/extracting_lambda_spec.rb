@@ -209,21 +209,5 @@ describe Sourcify::Proc::Extractor do
         end
     ))
 
-    example(%%
-    ## wrt positioning, operator & block on different lines (2)
-    ##
-    #" lambda do |
-    #"           x\\
-    #"         |
-    #"           :thing
-    #"         end
-    %,(
-      b = ->(
-          x
-        ) do
-          :thing
-        end
-    ))
-
   end
 end
