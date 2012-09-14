@@ -17,10 +17,10 @@ describe Sourcify::Proc::Extractor do
     ## wrt heredoc (1)
     ##
     #" proc do
-    #"         s = <<-EOL
+    #"   s = <<-EOL
     #"           thing
-    #"         EOL
-    #"       end
+    #"   EOL
+    #" end
     %,(
       b = proc do
         s = <<-EOL
@@ -33,10 +33,10 @@ describe Sourcify::Proc::Extractor do
     ## wrt heredoc (2)
     ##
     #" proc do
-    #"         s = <<-EOL.strip
+    #"   s = <<-EOL.strip
     #"           thing
-    #"         EOL
-    #"       end
+    #"   EOL
+    #" end
     %,(
       b = proc do
         s = <<-EOL.strip
@@ -49,10 +49,10 @@ describe Sourcify::Proc::Extractor do
     ## wrt heredoc (3)
     ##
     #" proc do
-    #"         s = <<-'EOL'
+    #"   s = <<-'EOL'
     #"           thing
-    #"         EOL
-    #"       end
+    #"   EOL
+    #" end
     %,(
       b = proc do
         s = <<-'EOL'
@@ -64,47 +64,47 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt comments
     ##
-    #" proc {
-    #"         # shouldnt remove me !!
-    #"         :thing
-    #"       }
+    #" proc do
+    #"   # shouldnt remove me !!
+    #"   :thing
+    #" end
     %,(
-      b = proc {
+      b = proc do
         # shouldnt remove me !!
         :thing
-      }
+      end
     ))
 
     example(%%
     ## wrt encoding, having utf8 string
     ##
-    #" proc {
-    #"         "こんにちは"
-    #"       }
+    #" proc do
+    #"   "こんにちは"
+    #" end
     %,(
-      b = proc {
+      b = proc do
         "こんにちは"
-      }
+      end
     ))
 
     example(%%
     ## wrt encoding, having unicode regexp
     ##
-    #" proc {
-    #"         /\\\p{Lu}/
-    #"       }
+    #" proc do
+    #"   /\\\p{Lu}/
+    #" end
     %,(
-      b = proc {
+      b = proc do
         /\p{Lu}/
-      }
+      end
     ))
 
     example(%%
     ## wrt preceding hash, having no items (1)
     ##
     #" proc do
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = m({}) do
         :thing
@@ -131,8 +131,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt preceding hash, having items (1)
     ##
     #" proc do
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = m({:a => 1, :b => 2}) do
         :thing

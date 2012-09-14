@@ -12,8 +12,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt args, having no arg
     ##
     #" lambda do
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = -> do
         :thing
@@ -24,8 +24,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt args, having 1 arg
     ##
     #" lambda do |x|
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = ->(x) do
         :thing
@@ -36,8 +36,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt args, having multiple args
     ##
     #" lambda do |x, y, z|
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = ->(x, y, z) do
         :thing
@@ -48,8 +48,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt args, having only splat args
     ##
     #" lambda do |*x|
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = ->(*x) do
         :thing
@@ -60,8 +60,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt args, having multiple & splat args
     ##
     #" lambda do |x, y, *z|
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = ->(x, y, *z) do
         :thing
@@ -72,8 +72,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt block type, as do-block
     ##
     #" lambda do
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = -> do
         :thing
@@ -84,8 +84,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt block type, as brace-block
     ##
     #" lambda {
-    #"         :thing
-    #"       }
+    #"   :thing
+    #" }
     %,(
       b = -> {
         :thing
@@ -96,8 +96,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt multiple matches, having unique parameters (1)
     ##
     #" lambda do |x| ->(y) { :this }
-    #"         :that
-    #"       end
+    #"   :that
+    #" end
     %,(
       b = ->(x) do ->(y) { :this }
         :that
@@ -108,8 +108,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt multiple matches, having unique parameters (2)
     ##
     #" lambda { |x| ->(y) do :this end
-    #"         :that
-    #"       }
+    #"   :that
+    #" }
     %,(
       b = ->(x) { ->(y) do :this end
         :that
@@ -172,8 +172,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt positioning, operator & block on the same line
     ##
     #" lambda do
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = -> do
         :thing
@@ -184,8 +184,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt positioning, operator & block on different lines (1)
     ##
     #" lambda do
-    #"           :thing
-    #"         end
+    #"   :thing
+    #" end
     %,(
       b = -> \
         do
@@ -197,10 +197,10 @@ describe Sourcify::Proc::Extractor do
     ## wrt positioning, operator & block on different lines (2)
     ##
     #" lambda do |
-    #"           x\\
-    #"         |
-    #"           :thing
-    #"         end
+    #"   x\\
+    #"   |
+    #"   :thing
+    #" end
     %,(
       b = ->(
           x

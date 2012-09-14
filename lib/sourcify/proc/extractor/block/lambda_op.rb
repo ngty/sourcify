@@ -10,8 +10,8 @@ module Sourcify
 
           def done?
             @done ||=
-              if %w(} end).include?(frags[-1]) && correct?(s = body)
-                !!(@body = s)
+              if %w(} end).include?(frags[-1]) && correct?(body)
+                !!(@body = indented_body)
               end
           end
 

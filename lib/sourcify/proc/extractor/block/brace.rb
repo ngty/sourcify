@@ -16,8 +16,8 @@ module Sourcify
             return true if invalid?
 
             @done ||=
-              if frags[-1] == '}' && correct?(s = body)
-                !!(@body = s)
+              if frags[-1] == '}' && correct?(body)
+                !!(@body = indented_body)
               end
           end
 

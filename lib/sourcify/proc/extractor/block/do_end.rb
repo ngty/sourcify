@@ -6,8 +6,8 @@ module Sourcify
 
           def done?
             @done ||=
-              if frags[-1] == 'end' && correct?(s = body)
-                !!(@body = s)
+              if frags[-1] == 'end' && correct?(body)
+                !!(@body = indented_body)
               end
           end
 

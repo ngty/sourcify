@@ -40,13 +40,13 @@ module Sourcify
 
         def on_tlambda(frag)
           return unless processable?
-          token = [pos, frag]
+          token = [pos, :tlambda, frag]
           @blocks.append(token).create(token)
         end
 
         def on_kw(frag)
           return unless processable?
-          token = [pos, frag]
+          token = [pos, :"#{frag}", frag]
 
           case frag
           when 'do'
@@ -65,7 +65,7 @@ module Sourcify
         [:tlambeg, :lbrace].each do |event|
           define_method(:"on_#{event}") do |frag|
             return unless processable?
-            token = [pos, frag]
+            token = [pos, :"#{event}", frag]
 
             if lineno == @constraints.line
               @blocks.append(token).create(token)
@@ -78,7 +78,7 @@ module Sourcify
         (SCANNER_EVENTS - [:kw, :tlambeg, :lbrace, :tlambda]).each do |event|
           define_method(:"on_#{event}") do |frag|
             return unless processable?
-            token = [pos, frag]
+            token = [pos, :"#{event}", frag]
             @blocks.append(token)
           end
         end

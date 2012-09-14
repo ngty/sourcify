@@ -16,8 +16,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt attache, having explicit recipient for method
     ##
     #" proc do
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = Proc.new do
         :thing
@@ -28,8 +28,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt attache, having implicit recipient for method
     ##
     #" proc do
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = proc do
         :thing
@@ -40,8 +40,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt block args, having no arg
     ##
     #" proc do
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = proc do
         :thing
@@ -52,8 +52,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt block args, having 1 arg
     ##
     #" proc do |x|
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = proc do |x|
         :thing
@@ -64,8 +64,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt block args, having multiple args
     ##
     #" proc do |x, y, z|
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = proc do |x, y, z|
         :thing
@@ -76,8 +76,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt block args, having only splat args
     ##
     #" proc do |*x|
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = proc do |*x|
         :thing
@@ -88,8 +88,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt block args, having multiple & splat args
     ##
     #" proc do |x, y, *z|
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = proc do |x, y, *z|
         :thing
@@ -100,8 +100,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt block type, as do-block
     ##
     #" proc do
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = proc do
         :thing
@@ -112,8 +112,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt block type, as brace-block
     ##
     #" proc {
-    #"         :thing
-    #"       }
+    #"   :thing
+    #" }
     %,(
       b = proc {
         :thing
@@ -124,8 +124,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt multiple matches, having unique parameters (1)
     ##
     #" proc do |x| proc {|y| :this }
-    #"         :that
-    #"       end
+    #"   :that
+    #" end
     %,(
       b = proc do |x| proc {|y| :this }
         :that
@@ -136,8 +136,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt multiple matches, having unique parameters (2)
     ##
     #" proc { |x| proc do |y| :this end
-    #"         :that
-    #"       }
+    #"   :that
+    #" }
     %,(
       b = proc { |x| proc do |y| :this end
         :that
@@ -200,8 +200,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt positioning, attache & block on the same line
     ##
     #" proc do
-    #"         :thing
-    #"       end
+    #"   :thing
+    #" end
     %,(
       b = m do
         :thing
@@ -212,8 +212,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt positioning, attache & block on the different lines (1)
     ##
     #" proc do
-    #"           :thing
-    #"         end
+    #"   :thing
+    #" end
     %,(
       b = m \
         do
@@ -225,8 +225,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt positioning, attache & block on the different lines (2)
     ##
     #" proc do
-    #"           :thing
-    #"         end
+    #"   :thing
+    #" end
     %,(
       b = m(
         :arg
@@ -239,8 +239,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt positioning, attache & block on the different lines (3)
     ##
     #" proc do
-    #"           :thing
-    #"         end
+    #"   :thing
+    #" end
     %,(
       b = m \
         :arg do
@@ -252,8 +252,8 @@ describe Sourcify::Proc::Extractor do
     ## wrt positioning, attache & block on the different lines (4)
     ##
     #" proc do
-    #"           :thing
-    #"         end
+    #"   :thing
+    #" end
     %,(
       b = m \
         :arg \
