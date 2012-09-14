@@ -16,28 +16,31 @@ module Sourcify
             return true if invalid?
 
             @done ||=
-              if @frags[-1] == '}' && correct?(s = body)
+              if frags[-1] == '}' && correct?(s = body)
                 !!(@body = s)
               end
           end
 
           def body
-            @body ||
-              begin
-                block = %( #{@frags*''})
-                expr = sexp(block)
+            @body || finalize(block)
+          end
 
-                if expr && expr[1] && (e = expr[1][0])[0] == :hash
-                  if e[1].nil?
-                    @dubious = true
-                  else
-                    @invalid = true
-                    return
-                  end
-                end
+        private
 
-                encode(@type + block)
+          def block
+            block = %( #{frags*''})
+            expr = sexp(block)
+
+            if expr && expr[1] && (e = expr[1][0])[0] == :hash
+              if e[1].nil?
+                @dubious = true
+              else
+                @invalid = true
+                return
               end
+            end
+
+            block
           end
 
         end

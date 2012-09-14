@@ -6,13 +6,13 @@ module Sourcify
 
           def done?
             @done ||=
-              if @frags[-1] == 'end' && correct?(s = body)
+              if frags[-1] == 'end' && correct?(s = body)
                 !!(@body = s)
               end
           end
 
           def body
-            @body || encode(%(#{@type} #{@frags*''}))
+            @body || finalize(%( #{frags*''}))
           end
 
         end

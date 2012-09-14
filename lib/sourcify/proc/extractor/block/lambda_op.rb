@@ -10,21 +10,21 @@ module Sourcify
 
           def done?
             @done ||=
-              if %w(} end).include?(@frags[-1]) && correct?(s = body)
+              if %w(} end).include?(frags[-1]) && correct?(s = body)
                 !!(@body = s)
               end
           end
 
           def body
-            @body || encode(@type + block)
+            @body || finalize(block)
           end
 
         private
 
           def block
-            case @frags[1]
+            case self.frags[1]
             when '('
-              frags = @frags.dup
+              frags = self.frags.dup
               i_rparen, i_do, i_lbrace = %w") do {".map{|s| frags.index(s) }
               i_nl = frags[0..i_rparen].rindex("\n")
               frags[i_nl] = "\\" + frags[i_nl] if i_nl
@@ -35,9 +35,9 @@ module Sourcify
                  %( { |#{frags[2...i_rparen]*''}|#{frags[(i_lbrace+1)..-1]*''})
               end
             when / +/
-              %(#{@frags[1..-1]*''})
+              %(#{self.frags[1..-1]*''})
             else
-              %( #{@frags[1..-1]*''})
+              %( #{self.frags[1..-1]*''})
             end
           end
 

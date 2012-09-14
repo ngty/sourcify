@@ -10,11 +10,11 @@ module Sourcify
     module Extractor
       module Block
 
-        def self.new(type, frag)
-          case frag
-          when 'do' then DoEnd.new(type, frag)
-          when '{'  then Brace.new(type, frag)
-          when '->' then LambdaOp.new(type, frag)
+        def self.new(type, token)
+          case token[-1]
+          when 'do' then DoEnd.new(type, token)
+          when '{'  then Brace.new(type, token)
+          when '->' then LambdaOp.new(type, token)
           else raise ArgumentError
           end
         end

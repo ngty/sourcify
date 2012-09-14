@@ -1,5 +1,5 @@
 require 'stringio'
-Sourcify.require_rb('proc/extractor/sexp')
+Sourcify.require_rb('proc/extractor/lexer')
 
 module Sourcify
   module Proc
@@ -23,7 +23,7 @@ module Sourcify
             end
 
           StringIO.open(::File.read(file)) do |io|
-            until extracted = catch(:retry) { Sexp.process(io, constraints) }
+            until extracted = catch(:retry) { Lexer.process(io, constraints) }
               io.rewind; offset_constraints.call
             end
 

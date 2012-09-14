@@ -4,8 +4,8 @@ module Sourcify
       module Block
         class Base
 
-          def initialize(type, frag)
-            @encoding, @type, @frags = frag.encoding, type, [frag]
+          def initialize(type, token)
+            @encoding, @type, @tokens = token[-1].encoding, type, [token]
           end
 
           def dubious?
@@ -20,8 +20,8 @@ module Sourcify
             false
           end
 
-          def <<(frag)
-            @frags << frag
+          def <<(token)
+            @tokens << token
           end
 
           def params
@@ -30,8 +30,16 @@ module Sourcify
 
         protected
 
-          def encode(string)
-            string.force_encoding(@encoding)
+          def tokens
+            @tokens.sort_by{|pos, *_| pos }
+          end
+
+          def frags
+            tokens.map(&:last)
+          end
+
+          def finalize(string)
+            string && (@type + string).force_encoding(@encoding)
           end
 
           def correct?(string)
