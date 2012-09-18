@@ -46,7 +46,7 @@ module Sourcify
 
         def on_kw(frag)
           return unless processable?
-          token = [pos, :"#{frag}", frag]
+          token = [pos, :"kw_#{frag}", frag]
 
           case frag
           when 'do'
