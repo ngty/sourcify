@@ -12,7 +12,7 @@ module Sourcify
           end
 
           def body
-            @body || finalize(%( #{frags*''}))
+            @body || finalize(%(#{frags*''}))
           end
 
         end

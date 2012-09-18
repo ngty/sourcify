@@ -70,7 +70,7 @@ module Sourcify
           end
 
           def finalize(string)
-            string && (@type + string).force_encoding(@encoding)
+            string && ("#{@type} #{string.strip}").force_encoding(@encoding)
           end
 
           def correct?(string)
