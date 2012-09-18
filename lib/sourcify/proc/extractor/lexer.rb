@@ -86,14 +86,17 @@ module Sourcify
       private
 
         def processable?
-          if lineno > @constraints.line && @blocks.done?
-            throw :done
-          end
-
           case lineno <=> @constraints.line
           when -1 then false
           when 0 then true
-          else !@blocks.empty? or throw(:retry, nil)
+          else
+            if @blocks.empty?
+              throw :retry, nil
+            elsif @blocks.done?
+              throw :done
+            else
+              true
+            end
           end
         end
 
