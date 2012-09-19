@@ -65,20 +65,18 @@ module Sourcify
           end
         end
 
-        [:tlambeg, :lbrace].each do |event|
-          define_method(:"on_#{event}") do |frag|
-            return unless processable?
-            token = Token.new(pos, :"#{event}", frag)
+        def on_lbrace(frag)
+          return unless processable?
+          token = Token.new(pos, :lbrace, frag)
 
-            if lineno == @constraints.line
-              @blocks.append(token).create(token)
-            else
-              @blocks.append(token)
-            end
+          if lineno == @constraints.line
+            @blocks.append(token).create(token)
+          else
+            @blocks.append(token)
           end
         end
 
-        (SCANNER_EVENTS - [:kw, :tlambeg, :lbrace, :tlambda]).each do |event|
+        (SCANNER_EVENTS - [:kw, :lbrace, :tlambda]).each do |event|
           define_method(:"on_#{event}") do |frag|
             return unless processable?
             token = Token.new(pos, :"#{event}", frag)

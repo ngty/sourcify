@@ -4,6 +4,8 @@ module Sourcify
       module Block
         class LambdaOp < Base
 
+          attr_reader :block
+
           def initialize(*args)
             @block = nil
             super

@@ -30,8 +30,12 @@ module Sourcify
         def compact!
           @blocks.each_index do |i|
             next if i.zero?
-            prev = @blocks[i.pred]
-            @blocks[i] = nil if prev && prev.lambda_op?
+            prev, curr = @blocks[i.pred], @blocks[i]
+
+            if prev && prev.lambda_op? && prev.block.do_end? &&
+               curr.do_end? && prev.block.body == curr.body
+              @blocks[i] = nil
+            end
           end.compact!
 
           @blocks.reject!(&:invalid?)
