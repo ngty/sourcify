@@ -16,6 +16,14 @@ module Sourcify
             true
           end
 
+          def first
+            '{'
+          end
+
+          def last
+            '}'
+          end
+
           def done?
             return true if invalid?
 

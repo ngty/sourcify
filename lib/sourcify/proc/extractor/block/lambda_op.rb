@@ -29,7 +29,7 @@ module Sourcify
 
           def done?
             @done ||=
-              if @block && @block.done?
+              if block && block.done?
                 !!(@body = finalize(indented_body))
               end
           end
@@ -41,8 +41,7 @@ module Sourcify
         private
 
           def indented_body
-            tokens, body = self.tokens, @block.body.sub(/^lambda\ +/,'')
-            start = @block.is_a?(Brace) ? '{' : 'do'
+            tokens, body = self.tokens, block.body.sub(/^lambda\ +/,'')
 
             params =
               if tokens[1].lparen?
@@ -55,11 +54,11 @@ module Sourcify
                   tokens[i_rparen-1].frag = "\\\n"
                 end
 
-                tokens[2 ... i_rparen].map {|t| t.frag(@block.indent) }.join
+                tokens[2 ... i_rparen].map {|t| t.frag(block.indent) }.join
               end
 
             if params
-              body.sub(start, "#{start} |#{params}|")
+              body.sub(block.first, "#{block.first} |#{params}|")
             else
               body
             end

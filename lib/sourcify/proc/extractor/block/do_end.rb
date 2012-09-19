@@ -8,6 +8,14 @@ module Sourcify
             true
           end
 
+          def first
+            'do'
+          end
+
+          def last
+            'end'
+          end
+
           def done?
             @done ||=
               if frags[-1] == 'end' && correct?(body)
