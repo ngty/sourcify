@@ -12,6 +12,10 @@ module Sourcify
             !!@dubious
           end
 
+          def brace?
+            true
+          end
+
           def done?
             return true if invalid?
 

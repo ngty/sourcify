@@ -16,6 +16,14 @@ module Sourcify
             false
           end
 
+          def do_end?
+            false
+          end
+
+          def brace?
+            false
+          end
+
           def indent
             @indent || ''
           end
