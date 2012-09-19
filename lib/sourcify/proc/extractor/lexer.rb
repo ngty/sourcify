@@ -44,7 +44,7 @@ module Sourcify
         def on_tlambda(frag)
           return unless processable?
           token = Token.new(pos, :tlambda, frag)
-          @blocks.append(token).create(token)
+          @blocks.append_create(token)
         end
 
         def on_kw(frag)
@@ -54,7 +54,7 @@ module Sourcify
           case frag
           when 'do'
             if lineno == @constraints.line
-              @blocks.append(token).create(token)
+              @blocks.append_create(token)
             else
               @blocks.append(token)
             end
@@ -70,7 +70,7 @@ module Sourcify
           token = Token.new(pos, :lbrace, frag)
 
           if lineno == @constraints.line
-            @blocks.append(token).create(token)
+            @blocks.append_create(token)
           else
             @blocks.append(token)
           end
