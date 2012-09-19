@@ -209,5 +209,53 @@ describe Sourcify::Proc::Extractor do
         end
     ))
 
+    example(%%
+    ## wrt preceding hash, having no items (1)
+    ##
+    #" lambda do |x = {}|
+    #"   :thing
+    #" end
+    %,(
+      b = ->(x = {}) do
+        :thing
+      end
+    ))
+
+    example(%%
+    ## wrt preceding hash, having no items (2)
+    ##
+    #" lambda { |x = {}| :thing }
+    %,(
+      b = ->(x = {}) { :thing }
+    ))
+
+    example(%%
+    ## wrt preceding hash, having no items (3)
+    ##
+    #" lambda { |x = {}| }
+    %,(
+      b = ->(x = {}) { }
+    ))
+
+    example(%%
+    ## wrt preceding hash, having items (1)
+    ##
+    #" lambda do |x = {:a => 1}|
+    #"   :thing
+    #" end
+    %,(
+      b = ->(x = {:a => 1}) do
+        :thing
+      end
+    ))
+
+    example(%%
+    ## wrt preceding hash, having items (2)
+    ##
+    #" lambda { |x = {:a => 1}| :thing }
+    %,(
+      b = ->(x = {:a => 1}) { :thing }
+    ))
+
   end
 end

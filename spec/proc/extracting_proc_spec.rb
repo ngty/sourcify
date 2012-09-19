@@ -262,6 +262,53 @@ describe Sourcify::Proc::Extractor do
         end
     ))
 
+    example(%%
+    ## wrt preceding hash, having no items (1)
+    ##
+    #" proc do
+    #"   :thing
+    #" end
+    %,(
+      b = m({}) do
+        :thing
+      end
+    ))
+
+    example(%%
+    ## wrt preceding hash, having no items (2)
+    ##
+    #" proc { :thing }
+    %,(
+      b = m({}) { :thing }
+    ))
+
+    example(%%
+    ## wrt preceding hash, having no items (3)
+    ##
+    #" proc { }
+    %,(
+      b = m({}) { }
+    ))
+
+    example(%%
+    ## wrt preceding hash, having items (1)
+    ##
+    #" proc do
+    #"   :thing
+    #" end
+    %,(
+      b = m({:a => 1, :b => 2}) do
+        :thing
+      end
+    ))
+
+    example(%%
+    ## wrt preceding hash, having items (2)
+    ##
+    #" proc { :thing }
+    %,(
+      b = m({:a => 1, :b => 2}) { :thing }
+    ))
 
   end
 end
