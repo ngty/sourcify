@@ -4,12 +4,8 @@ module Sourcify
       module Block
         class Base
 
-          POS = 0
-          EVT = 1
-          FRG = 2
-
           def initialize(type, token)
-            @encoding, @type, @tokens = token[FRG].encoding, type, [token]
+            @encoding, @type, @tokens = token.frag.encoding, type, [token]
           end
 
           def dubious?
@@ -41,21 +37,21 @@ module Sourcify
           def indented_body
             ts = self.tokens
 
-            if ts[-2][EVT] == :sp && (ts[-3][EVT] == :nl || ts[-3][FRG][-1].end_with?("\n"))
-              @indent = ts[-2][FRG]
+            if ts[-2].sp? && (ts[-3].nl? || ts[-3].end_with_nl?)
+              @indent = ts[-2].frag
               frags = []
 
               ts.each_with_index do |t, i|
                 next unless ts[i.pred]
 
-                if t[EVT] == :heredoc_end
-                  frags << t[FRG].sub(@indent,'')
-                elsif (_t = ts[i.succ]) && _t[EVT] == :sp && (t[EVT] == :nl || t[FRG].end_with?("\n"))
-                  frags << t[FRG] << _t[FRG].sub(@indent,'')
-                elsif t[EVT] == :sp && ((_t = ts[i.pred])[EVT] == :nl || _t[FRG].end_with?("\n"))
+                if t.heredoc_end?
+                  frags << t.frag(indent)
+                elsif (_t = ts[i.succ]) && _t.sp? && (t.nl? || t.end_with_nl?)
+                  frags << t.frag << _t.frag(indent)
+                elsif t.sp? && ((_t = ts[i.pred]).nl? || _t.end_with_nl?)
                   # do nothing
                 else
-                  frags << t[FRG]
+                  frags << t.frag
                 end
               end
 
@@ -66,11 +62,11 @@ module Sourcify
           end
 
           def tokens
-            @tokens.sort_by{|pos, *_| pos }
+            @tokens.sort_by(&:pos)
           end
 
           def frags
-            tokens.map(&:last)
+            tokens.map(&:frag)
           end
 
           def finalize(string)

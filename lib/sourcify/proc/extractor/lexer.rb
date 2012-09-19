@@ -1,5 +1,8 @@
 require 'ripper'
-Sourcify.require_rb('proc/extractor/blocks')
+Sourcify.require_rb(
+  'proc/extractor/blocks',
+  'proc/extractor/token'
+)
 
 module Sourcify
   module Proc
@@ -40,13 +43,13 @@ module Sourcify
 
         def on_tlambda(frag)
           return unless processable?
-          token = [pos, :tlambda, frag]
+          token = Token.new(pos, :tlambda, frag)
           @blocks.append(token).create(token)
         end
 
         def on_kw(frag)
           return unless processable?
-          token = [pos, :"kw_#{frag}", frag]
+          token = Token.new(pos, :"kw_#{frag}", frag)
 
           case frag
           when 'do'
@@ -65,7 +68,7 @@ module Sourcify
         [:tlambeg, :lbrace].each do |event|
           define_method(:"on_#{event}") do |frag|
             return unless processable?
-            token = [pos, :"#{event}", frag]
+            token = Token.new(pos, :"#{event}", frag)
 
             if lineno == @constraints.line
               @blocks.append(token).create(token)
@@ -78,7 +81,7 @@ module Sourcify
         (SCANNER_EVENTS - [:kw, :tlambeg, :lbrace, :tlambda]).each do |event|
           define_method(:"on_#{event}") do |frag|
             return unless processable?
-            token = [pos, :"#{event}", frag]
+            token = Token.new(pos, :"#{event}", frag)
             @blocks.append(token)
           end
         end
