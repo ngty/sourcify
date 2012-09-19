@@ -49,17 +49,17 @@ module Sourcify
               @indent = ts[-2].frag
               frags = []
 
-              ts.each_with_index do |t, i|
+              ts.each_with_index do |t_curr, i|
                 next unless ts[i.pred]
 
-                if t.heredoc_end?
-                  frags << t.frag(indent)
-                elsif (_t = ts[i.succ]) && _t.sp? && (t.nl? || t.end_with_nl?)
-                  frags << t.frag << _t.frag(indent)
-                elsif t.sp? && ((_t = ts[i.pred]).nl? || _t.end_with_nl?)
+                if t_curr.heredoc_end?
+                  frags << t_curr.frag(indent)
+                elsif (t_next = ts[i.succ]) && t_next.sp? && (t_curr.nl? || t_curr.end_with_nl?)
+                  frags << t_curr.frag << t_next.frag(indent)
+                elsif t_curr.sp? && ((t_next = ts[i.pred]).nl? || t_next.end_with_nl?)
                   # do nothing
                 else
-                  frags << t.frag
+                  frags << t_curr.frag
                 end
               end
 
