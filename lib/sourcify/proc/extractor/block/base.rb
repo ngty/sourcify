@@ -4,6 +4,8 @@ module Sourcify
       module Block
         class Base
 
+          attr_reader :body
+
           def initialize(type, token)
             @encoding, @type, @tokens = token.frag.encoding, type, [token]
           end
@@ -44,7 +46,18 @@ module Sourcify
             body == other.body
           end
 
+          def done?
+            @done ||=
+              if frags.last == last && correct?(raw_body)
+                !!(@body = indented_body)
+              end
+          end
+
         protected
+
+          def raw_body
+            finalize(block)
+          end
 
           def indented_body
             ts = self.tokens
@@ -69,7 +82,7 @@ module Sourcify
 
               finalize(' ' + frags.join)
             else
-              body
+              finalize(block)
             end
           end
 

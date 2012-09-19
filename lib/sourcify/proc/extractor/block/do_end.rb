@@ -16,15 +16,10 @@ module Sourcify
             'end'
           end
 
-          def done?
-            @done ||=
-              if frags[-1] == 'end' && correct?(body)
-                !!(@body = indented_body)
-              end
-          end
+        private
 
-          def body
-            @body || finalize(%(#{frags*''}))
+          def block
+            frags.join
           end
 
         end

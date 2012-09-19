@@ -4,6 +4,8 @@ module Sourcify
       module Block
         class Brace < Base
 
+          attr_reader :body
+
           def invalid?
             !!@invalid
           end
@@ -25,16 +27,11 @@ module Sourcify
           end
 
           def done?
-            return true if invalid?
-
-            @done ||=
-              if frags[-1] == '}' && correct?(body)
-                !!(@body = indented_body)
-              end
-          end
-
-          def body
-            @body || finalize(block)
+            if invalid?
+              true
+            else
+              @done ||= super
+            end
           end
 
         private

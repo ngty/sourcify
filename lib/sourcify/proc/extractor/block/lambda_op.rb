@@ -34,10 +34,6 @@ module Sourcify
               end
           end
 
-          def body
-            @body
-          end
-
         private
 
           def indented_body
