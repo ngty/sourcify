@@ -198,7 +198,7 @@ describe Sourcify::Proc::Extractor do
     ##
     #" lambda do |
     #"   x\\
-    #"   |
+    #" |
     #"   :thing
     #" end
     %,(

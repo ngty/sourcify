@@ -20,6 +20,10 @@ module Sourcify
             false
           end
 
+          def indent
+            @indent || ''
+          end
+
           def invalid?
             false
           end
@@ -38,16 +42,16 @@ module Sourcify
             ts = self.tokens
 
             if ts[-2][EVT] == :sp && (ts[-3][EVT] == :nl || ts[-3][FRG][-1].end_with?("\n"))
-              indent = ts[-2][FRG]
+              @indent = ts[-2][FRG]
               frags = []
 
               ts.each_with_index do |t, i|
                 next unless ts[i.pred]
 
                 if t[EVT] == :heredoc_end
-                  frags << t[FRG].sub(indent,'')
+                  frags << t[FRG].sub(@indent,'')
                 elsif (_t = ts[i.succ]) && _t[EVT] == :sp && (t[EVT] == :nl || t[FRG].end_with?("\n"))
-                  frags << t[FRG] << _t[FRG].sub(indent,'')
+                  frags << t[FRG] << _t[FRG].sub(@indent,'')
                 elsif t[EVT] == :sp && ((_t = ts[i.pred])[EVT] == :nl || _t[FRG].end_with?("\n"))
                   # do nothing
                 else

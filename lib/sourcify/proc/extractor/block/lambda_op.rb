@@ -41,11 +41,20 @@ module Sourcify
           def indented_body
             tokens, body = self.tokens, @block.body.sub(/^lambda\ +/,'')
             start = @block.is_a?(Brace) ? '{' : 'do'
+            indent = @block.indent
 
             params =
               if tokens[1][EVT] == :lparen
                 i_rparen = tokens.rindex{|t| t[EVT] == :rparen }
-                tokens[2 ... i_rparen].map{|t| t[EVT] == :nl ? ' ' : t[FRG] }.join
+                t_evts = tokens[(i_rparen-2) ... i_rparen].map{|t| t[EVT] }
+
+                if t_evts == [:nl, :sp]
+                  tokens[i_rparen-2][FRG] = "\\\n"
+                elsif t_evts[-1] == :nl
+                  tokens[i_rparen-1][FRG] = "\\\n"
+                end
+
+                tokens[2 ... i_rparen].map {|t| t[FRG].sub(indent,'') }.join
               end
 
             if params
