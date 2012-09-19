@@ -15,12 +15,12 @@ module Sourcify
           @type, @blocks = is_lambda ? 'lambda' : 'proc', []
         end
 
-        def create(frag)
-          tap { @blocks << Block.new(@type, frag) }
+        def create(token)
+          tap { @blocks << Block.new(@type, token) }
         end
 
-        def append(frag)
-          tap { map{|b| b << frag unless b.done? } }
+        def append(token)
+          tap { map{|b| b << token unless b.done? } }
         end
 
         def done?
