@@ -7,5 +7,5 @@ module Sourcify
   end
 end
 
-Sourcify.require_rb(%w{version extensions proc})
+Sourcify.require_rb(%w{version extensions source proc})
 Proc.class_eval { include Sourcify::Proc }
