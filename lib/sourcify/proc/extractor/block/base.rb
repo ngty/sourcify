@@ -40,6 +40,10 @@ module Sourcify
             instance_eval(body).parameters
           end
 
+          def ==(other)
+            body == other.body
+          end
+
         protected
 
           def indented_body
