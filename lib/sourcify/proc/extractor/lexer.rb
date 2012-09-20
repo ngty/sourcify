@@ -35,7 +35,7 @@ module Sourcify
               raise NoMatchingProcError
             end
           when 1
-            results.first
+            Source.new(results.first, results.first)
           else
             raise MultipleMatchingProcsPerLineError
           end

@@ -5,7 +5,6 @@ module Sourcify
   module Proc
     module Extractor
 
-      Result = Struct.new(:src)
       Constraints = Struct.new(:params, :line, :is_lambda) do
         alias_method :lambda?, :is_lambda
       end
@@ -27,7 +26,7 @@ module Sourcify
               io.rewind; offset_constraints.call
             end
 
-            Result.new(extracted)
+            extracted
           end
         end
       end

@@ -9,7 +9,7 @@ describe Sourcify::Proc::Extractor do
     extend Sourcify::SpecHelper
 
     def process(block)
-      Sourcify::Proc::Extractor.process(block).src
+      Sourcify::Proc::Extractor.process(block)
     end
 
     example(%%
