@@ -1,8 +1,4 @@
-Sourcify.require_rb(%w{
-  proc/extractor
-  proc/source
-  proc/raw_source
-})
+Sourcify.require_rb(%w{proc/extractor})
 
 module Sourcify
 
