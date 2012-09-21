@@ -34,6 +34,10 @@ module Sourcify
               end
           end
 
+          def stripped_body
+            block.stripped_body
+          end
+
         private
 
           def indented_body

@@ -4,7 +4,7 @@ module Sourcify
       class Token < Struct.new(:pos, :evt, :frag)
 
         def nl?
-          evt == :nl
+          [:nl, :ignored_nl].include?(evt)
         end
 
         def sp?
@@ -21,6 +21,10 @@ module Sourcify
 
         def rparen?
           evt == :rparen
+        end
+
+        def op?
+          evt == :op
         end
 
         def end_with_nl?

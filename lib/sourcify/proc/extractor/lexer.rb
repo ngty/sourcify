@@ -19,12 +19,12 @@ module Sourcify
 
           @blocks.compact!
 
-          results = @blocks.map do |b|
-            b.body if b.params == @constraints.params && !b.dubious?
+          results = @blocks.select do |b|
+            b.params == @constraints.params && !b.dubious?
           end.compact
 
           if results.empty? && @constraints.params.empty?
-            results = @blocks.select(&:dubious?)[-1..-1].map(&:body)
+            results = @blocks.select(&:dubious?)[-1..-1]
           end
 
           case results.size
@@ -35,7 +35,8 @@ module Sourcify
               raise NoMatchingProcError
             end
           when 1
-            Source.new(results.first, results.first)
+            rs = results.first
+            Source.new(rs.body, rs.stripped_body)
           else
             raise MultipleMatchingProcsPerLineError
           end
