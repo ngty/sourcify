@@ -4,9 +4,7 @@ module Sourcify
       module Block
         class DoEnd < Base
 
-          def do_end?
-            true
-          end
+          always_true :do_end?
 
           def first
             'do'

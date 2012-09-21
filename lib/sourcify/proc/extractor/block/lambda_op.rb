@@ -5,6 +5,7 @@ module Sourcify
         class LambdaOp < Base
 
           attr_reader :block
+          always_true :lambda_op?
 
           def initialize(*args)
             @block = nil
@@ -21,10 +22,6 @@ module Sourcify
               else super
               end
             end
-          end
-
-          def lambda_op?
-            true
           end
 
           def done?

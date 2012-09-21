@@ -5,6 +5,7 @@ module Sourcify
         class Brace < Base
 
           attr_reader :body
+          always_true :brace?
 
           def invalid?
             !!@invalid
@@ -12,10 +13,6 @@ module Sourcify
 
           def dubious?
             !!@dubious
-          end
-
-          def brace?
-            true
           end
 
           def first

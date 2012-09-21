@@ -1,37 +1,21 @@
+Sourcify.require_rb('proc/extractor/block/always')
+
 module Sourcify
   module Proc
     module Extractor
       module Block
         class Base
+          extend Block::Always
 
           attr_reader :body
+          always_false :dubious?, :lambda_op?, :do_end?, :brace?, :invalid?
 
           def initialize(type, token)
             @encoding, @type, @tokens = token.frag.encoding, type, [token]
           end
 
-          def dubious?
-            false
-          end
-
-          def lambda_op?
-            false
-          end
-
-          def do_end?
-            false
-          end
-
-          def brace?
-            false
-          end
-
           def indent
             @indent || ''
-          end
-
-          def invalid?
-            false
           end
 
           def <<(token)
