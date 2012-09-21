@@ -11,8 +11,6 @@ Gem::Specification.new do |s|
   s.summary     = %q{Workarounds before ruby-core officially supports Proc#to_source (& friends)}
   s.description = %q{}
 
-  s.add_dependency 'sorcerer', '~> 0.0.7'
-
   # TODO: Fix shelling out to run "git ls-files" !!
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
