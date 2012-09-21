@@ -39,7 +39,7 @@ describe Sourcify::Proc::Extractor do
     ))
 
     example(%%
-    ## wrt heredoc
+    ## wrt heredoc (1)
     ##
     #" s = <<-EOL
     #"           thing
@@ -49,6 +49,20 @@ describe Sourcify::Proc::Extractor do
         s = <<-EOL
           thing
         EOL
+      end
+    ))
+
+    example(%%
+    ## wrt heredoc (2)
+    ##
+    #" s = <<EOL
+    #"           thing
+    #" EOL
+    %,(
+      b = proc do
+        s = <<EOL
+          thing
+EOL
       end
     ))
 

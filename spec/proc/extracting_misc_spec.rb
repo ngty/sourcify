@@ -62,6 +62,22 @@ describe Sourcify::Proc::Extractor do
     ))
 
     example(%%
+    ## wrt heredoc (4)
+    ##
+    #" proc do
+    #"   s = <<EOL
+    #"           thing
+    #" EOL
+    #" end
+    %,(
+      b = proc do
+        s = <<EOL
+          thing
+EOL
+      end
+    ))
+
+    example(%%
     ## wrt comments
     ##
     #" proc do
