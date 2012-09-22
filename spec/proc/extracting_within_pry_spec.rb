@@ -8,7 +8,7 @@ describe Sourcify::Proc::Extractor do
       pry_exec \
         <<-RUBY
           block = #{string}
-          Sourcify::Proc::Extractor.process(block)
+          Sourcify::Proc::Extractor.process(block).to_s
         RUBY
     end
 
