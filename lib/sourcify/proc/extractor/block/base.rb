@@ -11,6 +11,8 @@ module Sourcify
       module Block
         class Base
 
+          attr_reader :type
+
           extend Forwardable
           def_delegators :@tokens, :<<
 
@@ -38,32 +40,34 @@ module Sourcify
           end
 
           def to_source
-            Source.new(
-              finalize(@tokens.indent),
-              finalize(@tokens.strip.indent)
-            )
+            Source.new(body(:indented), body(:stripped))
           end
 
-          def body
-            @body ||
-              begin
-                finalize(block)
-              end
+          def body(style = :raw)
+            case style
+            when :raw
+              @body || finalize(block)
+            when :indented
+              finalize(@tokens.indented)
+            when :stripped
+              encode(@tokens.stripped.indented)
+            else
+              raise ArgumentError
+            end
           end
 
         protected
 
           def tokens
-            @tokens.sort!
-            @tokens
+            @tokens.sorted
           end
 
           def finalize(thing)
-            thing && encode("#{@type} #{thing.to_s.strip}")
+            thing && encode("#{@type} #{thing}")
           end
 
-          def encode(string)
-            string.force_encoding(@encoding)
+          def encode(thing)
+            thing.to_s.force_encoding(@encoding)
           end
 
           def completed?(string)
