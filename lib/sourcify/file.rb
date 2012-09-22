@@ -20,12 +20,18 @@ module Sourcify
     def content
       case src
       when '(irb)' then irb_content
+      when '(pry)' then pry_content
       else file_content
       end
     end
 
     def irb_content
       IRB.CurrentContext.io.line(0 .. -1).join
+    end
+
+    def pry_content
+      i = Pry.history.instance_variable_get(:@original_lines)
+      Pry.history.instance_variable_get(:@history)[i .. -1].join("\n")
     end
 
     def file_content
