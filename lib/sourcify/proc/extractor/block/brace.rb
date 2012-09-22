@@ -4,7 +4,6 @@ module Sourcify
       module Block
         class Brace < Base
 
-          attr_reader :body
           always_true :brace?
 
           def invalid?
@@ -34,7 +33,7 @@ module Sourcify
         private
 
           def block
-            block = %( #{frags*''})
+            block = %( #{tokens})
             expr = sexp(block)
 
             if expr && expr[1] && (e = expr[1][0])[0] == :hash

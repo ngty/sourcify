@@ -31,8 +31,8 @@ module Sourcify
           frag.end_with?("\n")
         end
 
-        def frag(indent = nil)
-          indent ? super().sub(indent,'') : super()
+        def trim(indent)
+          Token.new(pos, evt, frag.sub(indent,''))
         end
 
       end

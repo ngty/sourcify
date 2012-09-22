@@ -17,7 +17,7 @@ module Sourcify
         private
 
           def block
-            frags.join
+            tokens.to_s
           end
 
         end

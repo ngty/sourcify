@@ -1,25 +1,25 @@
-Sourcify.require_rb('proc/extractor/block/always')
+require 'forwardable'
+
+Sourcify.require_rb(
+  'proc/extractor/tokens',
+  'proc/extractor/block/always'
+)
 
 module Sourcify
   module Proc
     module Extractor
       module Block
         class Base
-          extend Block::Always
 
-          attr_reader :body
+          extend Forwardable
+          def_delegators :@tokens, :<<
+
+          extend Block::Always
           always_false :dubious?, :lambda_op?, :do_end?, :brace?, :invalid?
 
           def initialize(type, token)
-            @encoding, @type, @tokens = token.frag.encoding, type, [token]
-          end
-
-          def indent
-            @indent || ''
-          end
-
-          def <<(token)
-            @tokens << token
+            @encoding, @type = token.frag.encoding, type
+            @tokens = Tokens.new([token])
           end
 
           def params
@@ -32,103 +32,41 @@ module Sourcify
 
           def done?
             @done ||=
-              if frags.last == last && correct?(raw_body)
-                !!(@body = indented_body)
+              if @tokens.end_with?(last) && completed?(s = body)
+                !!(@body = s)
               end
           end
 
-          def stripped_body
-            ts = strip_params(self.tokens[1 ... -1])
+          def to_source
+            Source.new(
+              finalize(@tokens.indent),
+              finalize(@tokens.strip.indent)
+            )
+          end
 
-            # Trim appending sp & nl
-            if i = ts.rindex{|t| !t.sp? && !t.nl? }
-              ts.slice!(i.succ .. -1)
-            end
-
-            # Trim prepending sp & nl
-            if i = ts.index{|t| !t.sp? && !t.nl? }
-              if (t_prev = ts[i.pred]) && t_prev.sp?
-                ts.slice!(0 ... i.pred)
-              else
-                ts.slice!(0 ... i)
+          def body
+            @body ||
+              begin
+                finalize(block)
               end
-            end
-
-            encode(apply_indent(ts))
           end
 
         protected
 
-          def raw_body
-            finalize(block)
-          end
-
-          def indented_body
-            finalize(' ' + apply_indent(self.tokens))
-          end
-
-          def strip_params(ts)
-            count = 0
-
-            ts.each_with_index do |t, i|
-              case count
-              when 2
-                return ts[i..-1]
-              when 1
-                count += 1 if t.op?
-              else
-                if t.op?
-                  count = 1
-                elsif !t.nl? && !t.sp?
-                  return ts[i..-1]
-                end
-              end
-            end
-          end
-
-          def apply_indent(ts)
-            if ts.index(&:nl?).nil? or not \
-               ts[-2].sp? && (ts[-3].nl? || ts[-3].end_with_nl?)
-              return ts.map(&:frag).join.strip
-            end
-
-            @indent = ts[-2].frag # NOTE: unintended side-effect, potential bug !!
-            frags = []
-
-            ts.each_with_index do |t_curr, i|
-              next unless ts[i.pred]
-
-              if t_curr.heredoc_end?
-                frags << t_curr.frag(@indent)
-              elsif (t_next = ts[i.succ]) && t_next.sp? && (t_curr.nl? || t_curr.end_with_nl?)
-                frags << t_curr.frag << t_next.frag(@indent)
-              elsif t_curr.sp? && ((t_next = ts[i.pred]).nl? || t_next.end_with_nl?)
-                # do nothing
-              else
-                frags << t_curr.frag
-              end
-            end
-
-            frags.join.strip
-          end
-
           def tokens
-            @tokens.sort_by(&:pos)
+            @tokens.sort!
+            @tokens
           end
 
-          def frags
-            tokens.map(&:frag)
-          end
-
-          def finalize(string)
-            string && encode("#{@type} #{string.strip}")
+          def finalize(thing)
+            thing && encode("#{@type} #{thing.to_s.strip}")
           end
 
           def encode(string)
             string.force_encoding(@encoding)
           end
 
-          def correct?(string)
+          def completed?(string)
             !!sexp(string)
           end
 

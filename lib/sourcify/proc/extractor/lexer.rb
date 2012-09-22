@@ -1,7 +1,7 @@
 require 'ripper'
 Sourcify.require_rb(
   'proc/extractor/blocks',
-  'proc/extractor/token'
+  'proc/extractor/tokens'
 )
 
 module Sourcify
@@ -35,8 +35,7 @@ module Sourcify
               raise NoMatchingProcError
             end
           when 1
-            rs = results.first
-            Source.new(rs.body, rs.stripped_body)
+            results.first.to_source
           else
             raise MultipleMatchingProcsPerLineError
           end
