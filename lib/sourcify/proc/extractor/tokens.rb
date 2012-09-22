@@ -7,7 +7,7 @@ module Sourcify
       class Tokens
 
         extend Forwardable
-        def_delegators :@tokens, :map, :<<, :last
+        def_delegators :@tokens, :map, :<<, :last, :[], :rindex
 
         def initialize(tokens = [])
           @tokens = tokens

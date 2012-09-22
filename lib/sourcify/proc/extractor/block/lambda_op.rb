@@ -17,51 +17,66 @@ module Sourcify
               @block << token
             else
               case token.evt
-              when :tlambeg then @block = Brace.new(@type, token)
-              when :kw_do then @block = DoEnd.new(@type, token)
-              else super
+              when :tlambeg
+                @block = Brace.new(type, token)
+              when :kw_do
+                @block = DoEnd.new(type, token)
+              else
+                super
               end
             end
           end
 
           def done?
             @done ||=
-              if block && block.done?
-                !!(@body = finalize(indented_body))
+              if @block && @block.done?
+                !!(@body = body)
               end
           end
 
-          def stripped_body
-            block.stripped_body
+          def body(style = :raw)
+            case style
+            when :raw
+              @body || encode(%(#{tokens}#{@block.tokens}))
+            when :indented
+              finalize(combined_tokens)
+            when :stripped
+              @block.body(:stripped)
+            else
+              raise ArgumentError
+            end
           end
 
         private
 
-          def indented_body
-            body = block.body.sub(/^lambda\ +/,'')
+          def combined_tokens
+            block_ts, params_ts = block.tokens, fixed_tokens
+            return block_ts.indented unless params_ts[1].lparen?
 
-            if params = extract_params
-              body.sub(block.first, "#{block.first} |#{params}|")
-            else
-              body
-            end
+            Tokens.new([
+              block_ts[0],
+              Token.new(nil, :sp, ' '),
+              Token.new(nil, :op, '|'),
+              params_ts[2 ... params_ts.rindex(&:rparen?)],
+              Token.new(nil, :op, '|'),
+              block_ts[1 .. -1]
+            ].flatten).indented
           end
 
-          def extract_params
-            tokens = self.tokens
+          def fixed_tokens
+            ts = tokens
+            return ts unless ts[1].lparen?
 
-            if tokens[1].lparen?
-              i_rparen = tokens.rindex(&:rparen?)
-              t_evts = tokens[(i_rparen-2) ... i_rparen].map(&:evt)
+            i_rparen = ts.rindex(&:rparen?)
+            t_evts = ts[(i_rparen-2) ... i_rparen].map(&:evt)
 
-              if t_evts == [:nl, :sp]
-                tokens[i_rparen-2].frag = "\\\n"
-              elsif t_evts[-1] == :nl
-                tokens[i_rparen-1].frag = "\\\n"
-              end
-
-              tokens[2 ... i_rparen].map {|t| t.frag(block.indent) }.join
+            if t_evts == [:nl, :sp]
+              ts[i_rparen-2].frag = "\\\n"
+            elsif t_evts[-1] == :nl
+              ts[i_rparen-1].frag = "\\\n"
             end
+
+            ts
           end
 
         end

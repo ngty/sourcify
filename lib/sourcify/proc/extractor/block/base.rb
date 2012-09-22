@@ -48,19 +48,19 @@ module Sourcify
             when :raw
               @body || finalize(block)
             when :indented
-              finalize(@tokens.indented)
+              finalize(tokens.indented)
             when :stripped
-              encode(@tokens.stripped.indented)
+              encode(tokens.stripped.indented)
             else
               raise ArgumentError
             end
           end
 
-        protected
-
           def tokens
             @tokens.sorted
           end
+
+        protected
 
           def finalize(thing)
             thing && encode("#{@type} #{thing}")
