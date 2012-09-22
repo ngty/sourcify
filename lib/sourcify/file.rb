@@ -18,6 +18,17 @@ module Sourcify
   private
 
     def content
+      case src
+      when '(irb)' then irb_content
+      else file_content
+      end
+    end
+
+    def irb_content
+      IRB.CurrentContext.io.line(0 .. -1).join
+    end
+
+    def file_content
       ::File.read(src)
     end
 
