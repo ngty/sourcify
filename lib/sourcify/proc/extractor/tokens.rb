@@ -17,11 +17,11 @@ module Sourcify
           last.frag == frag
         end
 
-        def sort!
-          @tokens.sort!{|x,y| x.pos <=> y.pos }
+        def sorted
+          Tokens.new(@tokens.sort_by(&:pos))
         end
 
-        def strip
+        def stripped
           count, ts = 0, @tokens[1..-1]
 
           # Trim params (if any)
@@ -59,7 +59,7 @@ module Sourcify
           Tokens.new(ts)
         end
 
-        def indent
+        def indented
           ts = @tokens.dup
 
           if ts.index(&:nl?).nil? or not \
