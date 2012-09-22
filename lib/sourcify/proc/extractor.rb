@@ -1,4 +1,3 @@
-require 'stringio'
 Sourcify.require_rb('proc/extractor/lexer')
 
 module Sourcify
@@ -11,8 +10,8 @@ module Sourcify
 
       class << self
         def process(block)
-          file, line = block.source_location
-          constraints = Constraints.new(block.parameters, line, block.lambda?)
+          file = File.new(block)
+          constraints = Constraints.new(block.parameters, file.line, block.lambda?)
 
           offset_constraints =
             if constraints.is_lambda
@@ -21,7 +20,7 @@ module Sourcify
               lambda { constraints.line = constraints.line.next }
             end
 
-          StringIO.open(::File.read(file)) do |io|
+          file.open do |io|
             until extracted = catch(:retry) { Lexer.process(io, constraints) }
               io.rewind; offset_constraints.call
             end
