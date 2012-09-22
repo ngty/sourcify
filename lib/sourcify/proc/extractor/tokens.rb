@@ -22,7 +22,7 @@ module Sourcify
         end
 
         def stripped
-          count, ts = 0, @tokens[1..-1]
+          count, ts = 0, @tokens[1 ... -1]
 
           # Trim params (if any)
           ts.each_with_index do |t, i|
