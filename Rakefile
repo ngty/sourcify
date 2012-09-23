@@ -18,3 +18,6 @@ desc "Run only method specs"
 task :'spec:method' do
   system %(testrb #{spec_files('spec/method')})
 end
+
+task :default => [:spec]
+

@@ -1,0 +1,6 @@
+language: ruby
+script: ./spec/run_build.sh
+rvm:
+  - 1.9.3
+env:
+  - TRAVIS=true
