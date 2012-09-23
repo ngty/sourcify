@@ -78,6 +78,30 @@ EOL
     ))
 
     example(%%
+    ## wrt elaborated indentation
+    ##
+    #" proc do
+    #"   x = {
+    #"     :a => {
+    #"       :b => 1,
+    #"       :c => 2
+    #"     },
+    #"     :d => 3
+    #"   }
+    #" end
+    %,(
+      b = proc do
+        x = {
+          :a => {
+            :b => 1,
+            :c => 2
+          },
+          :d => 3
+        }
+      end
+    ))
+
+    example(%%
     ## wrt comments
     ##
     #" proc do
