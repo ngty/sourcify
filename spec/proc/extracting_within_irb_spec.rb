@@ -22,7 +22,7 @@ describe Sourcify::Proc::Extractor do
       proc do
         :thing
       end
-    %.strip)
+    %)
 
     example(%%
     ## wrt lambda
@@ -34,7 +34,7 @@ describe Sourcify::Proc::Extractor do
       -> do
         :thing
       end
-    %.strip)
+    %)
 
   end
 end
