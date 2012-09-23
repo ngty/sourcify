@@ -16,17 +16,11 @@ describe Sourcify::Proc::Extractor do
     ## wrt proc
     ##
     #" proc do
-    #"   x = {
-    #"     a: 1,
-    #"     b: 2
-    #"   }
+    #"   :thing
     #" end
     %,%%
       proc do
-        x = {
-          a: 1,
-          b: 2
-        }
+        :thing
       end
     %.strip)
 
@@ -34,17 +28,11 @@ describe Sourcify::Proc::Extractor do
     ## wrt lambda
     ##
     #" lambda do
-    #"   x = {
-    #"     a: 1,
-    #"     b: 2
-    #"   }
+    #"   :thing
     #" end
     %,%%
       -> do
-        x = {
-          a: 1,
-          b: 2
-        }
+        :thing
       end
     %.strip)
 
