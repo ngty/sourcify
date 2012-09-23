@@ -1,6 +1,9 @@
 require 'stringio'
 
 module Sourcify
+
+  class CannotHandleEvalCodeError < Exception; end
+
   class File < Struct.new(:block)
 
     def open(&process)
@@ -21,6 +24,7 @@ module Sourcify
       case src
       when '(irb)' then irb_content
       when '(pry)' then pry_content
+      when '(eval)' then raise CannotHandleEvalCodeError
       else file_content
       end
     end

@@ -115,5 +115,13 @@ EOL
       end
     ))
 
+    example(%%
+    ## wrt proc created by eval
+    ##
+    #! Sourcify::CannotHandleEvalCodeError
+    %,(
+      eval(%%b = proc { :thing }%)
+    ))
+
   end
 end
