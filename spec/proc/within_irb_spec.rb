@@ -1,11 +1,11 @@
 require File.expand_path('../spec_helper', __FILE__)
 
-describe Sourcify::Proc::Extractor do
-  describe 'extracting within pry' do
+describe Sourcify::Proc do
+  describe 'within irb' do
     extend Sourcify::SpecHelper
 
     def process(string)
-      pry_exec \
+      irb_exec \
         <<-RUBY
           block = #{string}
           Sourcify::Proc::Extractor.process(block).to_s

@@ -8,7 +8,7 @@ module Sourcify
   module Proc
 
     def to_source
-      Source.new(self)
+      Extractor.process(self)
     end
 
   end

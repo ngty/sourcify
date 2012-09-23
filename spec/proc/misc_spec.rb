@@ -5,12 +5,12 @@ def m(*args, &block)
   block
 end
 
-describe Sourcify::Proc::Extractor do
-  describe 'extracting misc' do
+describe Sourcify::Proc do
+  describe 'with misc' do
     extend Sourcify::SpecHelper
 
     def process(block)
-      Sourcify::Proc::Extractor.process(block)
+      block.to_source
     end
 
     example(%%

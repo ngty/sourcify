@@ -1,11 +1,11 @@
 require File.expand_path('../spec_helper', __FILE__)
 
-describe Sourcify::Proc::Extractor do
+describe Sourcify::Proc do
   describe 'stripping lambda' do
     extend Sourcify::SpecHelper
 
     def process(block)
-      Sourcify::Proc::Extractor.process(block).strip
+      block.to_source.strip
     end
 
     example(%%

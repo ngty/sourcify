@@ -1,69 +1,97 @@
 require File.expand_path('../spec_helper', __FILE__)
 
-describe Sourcify::Proc::Extractor do
-  describe 'extracting lambda' do
+def m(*args, &block)
+  block
+end
+
+describe Sourcify::Proc do
+  describe 'with proc' do
     extend Sourcify::SpecHelper
 
     def process(block)
-      Sourcify::Proc::Extractor.process(block)
+      block.to_source
     end
 
     example(%%
-    ## wrt args, having no arg
+    ## wrt attache, having explicit recipient for method
     ##
-    #" lambda do
+    #" proc do
     #"   :thing
     #" end
     %,(
-      b = -> do
+      b = Proc.new do
         :thing
       end
     ))
 
     example(%%
-    ## wrt args, having 1 arg
+    ## wrt attache, having implicit recipient for method
     ##
-    #" lambda do |x|
+    #" proc do
     #"   :thing
     #" end
     %,(
-      b = ->(x) do
+      b = proc do
         :thing
       end
     ))
 
     example(%%
-    ## wrt args, having multiple args
+    ## wrt block args, having no arg
     ##
-    #" lambda do |x, y, z|
+    #" proc do
     #"   :thing
     #" end
     %,(
-      b = ->(x, y, z) do
+      b = proc do
         :thing
       end
     ))
 
     example(%%
-    ## wrt args, having only splat args
+    ## wrt block args, having 1 arg
     ##
-    #" lambda do |*x|
+    #" proc do |x|
     #"   :thing
     #" end
     %,(
-      b = ->(*x) do
+      b = proc do |x|
         :thing
       end
     ))
 
     example(%%
-    ## wrt args, having multiple & splat args
+    ## wrt block args, having multiple args
     ##
-    #" lambda do |x, y, *z|
+    #" proc do |x, y, z|
     #"   :thing
     #" end
     %,(
-      b = ->(x, y, *z) do
+      b = proc do |x, y, z|
+        :thing
+      end
+    ))
+
+    example(%%
+    ## wrt block args, having only splat args
+    ##
+    #" proc do |*x|
+    #"   :thing
+    #" end
+    %,(
+      b = proc do |*x|
+        :thing
+      end
+    ))
+
+    example(%%
+    ## wrt block args, having multiple & splat args
+    ##
+    #" proc do |x, y, *z|
+    #"   :thing
+    #" end
+    %,(
+      b = proc do |x, y, *z|
         :thing
       end
     ))
@@ -71,11 +99,11 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt block type, as do-block
     ##
-    #" lambda do
+    #" proc do
     #"   :thing
     #" end
     %,(
-      b = -> do
+      b = proc do
         :thing
       end
     ))
@@ -83,11 +111,11 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt block type, as brace-block
     ##
-    #" lambda {
+    #" proc {
     #"   :thing
     #" }
     %,(
-      b = -> {
+      b = proc {
         :thing
       }
     ))
@@ -95,11 +123,11 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt multiple matches, having unique parameters (1)
     ##
-    #" lambda do |x| ->(y) { :this }
+    #" proc do |x| proc {|y| :this }
     #"   :that
     #" end
     %,(
-      b = ->(x) do ->(y) { :this }
+      b = proc do |x| proc {|y| :this }
         :that
       end
     ))
@@ -107,11 +135,11 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt multiple matches, having unique parameters (2)
     ##
-    #" lambda { |x| ->(y) do :this end
+    #" proc { |x| proc do |y| :this end
     #"   :that
     #" }
     %,(
-      b = ->(x) { ->(y) do :this end
+      b = proc { |x| proc do |y| :this end
         :that
       }
     ))
@@ -119,17 +147,17 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt multiple matches, having unique parameters (3)
     ##
-    #" lambda { |y| :that }
+    #" proc {|y| :that }
     %,(
-      b = (->(x) do :this end; ->(y) { :that })
+      b = (proc do |x| :this end; proc {|y| :that })
     ))
 
     example(%%
     ## wrt multiple matches, having unique parameters (4)
     ##
-    #" lambda do |y| :that end
+    #" proc do |y| :that end
     %,(
-      b = (->(x) { :this }; ->(y) do :that end)
+      b = (proc { |x| :this }; proc do |y| :that end)
     ))
 
     example(%%
@@ -137,7 +165,7 @@ describe Sourcify::Proc::Extractor do
     ##
     #! Sourcify::MultipleMatchingProcsPerLineError
     %,(
-      b = ->(x) do ->(x) { :this }
+      b = proc do |x| proc {|x| :this }
         :that
       end
     ))
@@ -147,7 +175,7 @@ describe Sourcify::Proc::Extractor do
     ##
     #! Sourcify::MultipleMatchingProcsPerLineError
     %,(
-      b = ->(x) { ->(x) do :this end
+      b = proc { |x| proc do |x| :this end
         :that
       }
     ))
@@ -157,7 +185,7 @@ describe Sourcify::Proc::Extractor do
     ##
     #! Sourcify::MultipleMatchingProcsPerLineError
     %,(
-      b = (->(x) do :this end; ->(x) { :that })
+      b = (proc do |x| :this end; proc {|x| :that })
     ))
 
     example(%%
@@ -165,46 +193,71 @@ describe Sourcify::Proc::Extractor do
     ##
     #! Sourcify::MultipleMatchingProcsPerLineError
     %,(
-      b = (->(x) { :this }; ->(x) do :that end)
+      b = (proc { |x| :this }; proc do |x| :that end)
     ))
 
     example(%%
-    ## wrt positioning, operator & block on the same line
+    ## wrt positioning, attache & block on the same line
     ##
-    #" lambda do
+    #" proc do
     #"   :thing
     #" end
     %,(
-      b = -> do
+      b = m do
         :thing
       end
     ))
 
     example(%%
-    ## wrt positioning, operator & block on different lines (1)
+    ## wrt positioning, attache & block on the different lines (1)
     ##
-    #" lambda do
+    #" proc do
     #"   :thing
     #" end
     %,(
-      b = -> \
+      b = m \
         do
           :thing
         end
     ))
 
     example(%%
-    ## wrt positioning, operator & block on different lines (2)
+    ## wrt positioning, attache & block on the different lines (2)
     ##
-    #" lambda do |
-    #"   x\\
-    #" |
+    #" proc do
     #"   :thing
     #" end
     %,(
-      b = ->(
-          x
-        ) do
+      b = m(
+        :arg
+      ) do
+          :thing
+        end
+    ))
+
+    example(%%
+    ## wrt positioning, attache & block on the different lines (3)
+    ##
+    #" proc do
+    #"   :thing
+    #" end
+    %,(
+      b = m \
+        :arg do
+          :thing
+        end
+    ))
+
+    example(%%
+    ## wrt positioning, attache & block on the different lines (4)
+    ##
+    #" proc do
+    #"   :thing
+    #" end
+    %,(
+      b = m \
+        :arg \
+        do
           :thing
         end
     ))
@@ -212,11 +265,11 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt preceding hash, having no items (1)
     ##
-    #" lambda do |x = {}|
+    #" proc do
     #"   :thing
     #" end
     %,(
-      b = ->(x = {}) do
+      b = m({}) do
         :thing
       end
     ))
@@ -224,27 +277,27 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt preceding hash, having no items (2)
     ##
-    #" lambda { |x = {}| :thing }
+    #" proc { :thing }
     %,(
-      b = ->(x = {}) { :thing }
+      b = m({}) { :thing }
     ))
 
     example(%%
     ## wrt preceding hash, having no items (3)
     ##
-    #" lambda { |x = {}| }
+    #" proc { }
     %,(
-      b = ->(x = {}) { }
+      b = m({}) { }
     ))
 
     example(%%
     ## wrt preceding hash, having items (1)
     ##
-    #" lambda do |x = {:a => 1}|
+    #" proc do
     #"   :thing
     #" end
     %,(
-      b = ->(x = {:a => 1}) do
+      b = m({:a => 1, :b => 2}) do
         :thing
       end
     ))
@@ -252,9 +305,9 @@ describe Sourcify::Proc::Extractor do
     example(%%
     ## wrt preceding hash, having items (2)
     ##
-    #" lambda { |x = {:a => 1}| :thing }
+    #" proc { :thing }
     %,(
-      b = ->(x = {:a => 1}) { :thing }
+      b = m({:a => 1, :b => 2}) { :thing }
     ))
 
   end
