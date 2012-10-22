@@ -1,7 +1,7 @@
 require 'rubygems'
-require 'ruby2ruby'
-require 'sexp_processor'
 require 'ruby_parser'
+require 'sexp_processor'
+require 'ruby2ruby'
 require 'file/tail'
 
 begin
