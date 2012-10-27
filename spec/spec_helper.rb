@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'ruby_parser'
 require 'ruby2ruby'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
