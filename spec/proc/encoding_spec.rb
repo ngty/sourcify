@@ -6,6 +6,7 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
 
 describe "Encoding" do
+  next unless Sourcify::IS_19x
 
   should "handle proc with UTF-8 string" do
     lambda { "こんにちは" }.should.be having_sexp(

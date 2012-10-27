@@ -2,6 +2,7 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), 'spec_helper')
 
 describe "Encoding (from def..end block)" do
+  next unless Sourcify::IS_19x
 
   should "handle body as UTF-8 string" do
     def m1; "こんにちは"; end
