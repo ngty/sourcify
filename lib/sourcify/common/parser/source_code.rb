@@ -9,7 +9,7 @@ module Sourcify
 
         def to_s
           case file
-          when /\(irb\)/ then from_irb_to_s
+          when /\(irb\)/, /\(irb\#\d+\)/ then from_irb_to_s
           when /\(pry\)/ then from_pry_to_s
           else from_file_to_s
           end
