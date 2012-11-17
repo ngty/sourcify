@@ -22,7 +22,7 @@ module Sourcify
           # Grab only procs w matching parameters
           results = @blocks.select do |b|
             b.params == @constraints.params && !b.dubious?
-          end.compact
+          end
 
           # OOPS, empty results .. let's cater for cases where
           # the procs look like an empty hash (the dubious scenario)
