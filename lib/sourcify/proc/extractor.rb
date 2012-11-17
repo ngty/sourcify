@@ -1,17 +1,28 @@
-Sourcify.require_rb('proc/extractor/lexer')
+Sourcify.require_rb(
+  'proc/extractor/lexer',
+  'proc/match'
+)
 
 module Sourcify
   module Proc
     module Extractor
 
-      Constraints = Struct.new(:params, :line, :is_lambda) do
+      Constraints = Struct.new(:params, :line, :is_lambda, :matcher) do
         alias_method :lambda?, :is_lambda
+
+        def match?(nth, total, block)
+          return true unless matcher
+          matcher.call(Match.new(nth, total, block))
+        end
       end
 
       class << self
-        def process(block)
+        def process(block, &matcher)
           file = File.new(block)
-          constraints = Constraints.new(block.parameters, file.line, block.lambda?)
+
+          constraints = Constraints.new(
+            block.parameters, file.line, block.lambda?, matcher
+          )
 
           offset_constraints =
             if constraints.is_lambda

@@ -8,8 +8,14 @@ describe Sourcify::Proc do
   describe 'with proc' do
     extend Sourcify::SpecHelper
 
-    def process(block)
-      block.to_source
+    def process(args)
+      block, matcher = args
+
+      if matcher
+        block.to_source(&matcher)
+      else
+        block.to_source
+      end
     end
 
     example(%%
@@ -195,6 +201,60 @@ describe Sourcify::Proc do
     %,(
       b = (proc { |x| :this }; proc do |x| :that end)
     ))
+
+    example(%%
+    ## wrt multiple matches, having matcher w specified #index (1)
+    ##
+    #" proc { |x| :this }
+    %,([
+      (proc { |x| :this }; proc { |x| :that }), # block
+      proc { |match| match.index == 0 }         # matcher
+    ]))
+
+    example(%%
+    ## wrt multiple matches, having matcher w specified #index (2)
+    ##
+    #" proc { |x| :that }
+    %,[
+      (proc { |x| :this }; proc { |x| :that }), # block
+      proc { |match| match.index == 1 }         # matcher
+    ])
+
+    example(%%
+    ## wrt multiple matches, having matcher w specified #first?
+    ##
+    #" proc { |x| :this }
+    %,[
+      (proc { |x| :this }; proc { |x| :that }), # block
+      proc { |match| match.first? }             # matcher
+    ])
+
+    example(%%
+    ## wrt multiple matches, having matcher w specified #last?
+    ##
+    #" proc { |x| :that }
+    %,[
+      (proc { |x| :this }; proc { |x| :that }), # block
+      proc { |match| match.last? }              # matcher
+    ])
+
+    example(%%
+    ## wrt multiple matches, having matcher w specified #body (1)
+    ##
+    #" proc { |x| :this }
+    %,[
+       (proc { |x| :this }; proc { |x| :that }), # block
+       proc { |match| match.body =~ /:this/ }    # matcher
+    ])
+
+    example(%%
+    ## wrt multiple matches, having matcher w specified #body (2)
+    ##
+    #" proc { |x| :that }
+    %,[
+      (proc { |x| :this }; proc { |x| :that }), # block
+      proc { |match| match.body =~ /:that/ }    # matcher
+    ])
 
     example(%%
     ## wrt positioning, attache & block on the same line

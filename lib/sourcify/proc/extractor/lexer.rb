@@ -19,13 +19,22 @@ module Sourcify
 
           @blocks.compact!
 
+          # Grab only procs w matching parameters
           results = @blocks.select do |b|
             b.params == @constraints.params && !b.dubious?
           end.compact
 
+          # OOPS, empty results .. let's cater for cases where
+          # the procs look like an empty hash (the dubious scenario)
           if results.empty? && @constraints.params.empty?
             results = @blocks.select(&:dubious?)[-1..-1]
           end
+
+          # Last pass, make sure we satisfy custom matcher specified
+          results.each_with_index do |block, nth|
+            next if constraints.match?(nth, results.size, block)
+            results[nth] = nil
+          end.compact!
 
           case results.size
           when 0
