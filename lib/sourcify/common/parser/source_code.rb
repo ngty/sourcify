@@ -4,6 +4,7 @@ module Sourcify
       class SourceCode < Struct.new(:file, :line)
 
         def line
+          p ['LINE', super, super.pred]
           super.pred
         end
 
@@ -29,8 +30,12 @@ module Sourcify
         end
 
         def from_pry_to_s
-          start = Pry.history.instance_variable_get(:@original_lines) + line
-          Pry.history.instance_variable_get(:@history)[start .. -1].join("\n")
+          start = Pry.history.session_line_count
+          history = Pry.history.to_a[-start .. -1]
+          lines = history[line .. -1] * "\n"
+
+          #p ['DEBUG', start, line, history, history[line], history[line .. -1]]
+          lines
         end
 
       end
