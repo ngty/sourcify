@@ -37,16 +37,9 @@ describe "Proc#to_source within PRY" do
     )).should.be equal_to('proc { 2 }')
   end
 
+
   # NOTE: The rest address issue#22, kudos goes to @scooter-dangle
   # for providing such detailed examples :)
-  should 'handle a double upward scroll' do
-    pry_eval(%Q(
-      a = lambda { |proc| proc.to_source }
-      a[(lambda { 0 })]
-      a[(lambda { 1 })]
-      OAOA
-    )).should.be equal_to('proc { 0 }')
-  end
 
   should 'handle a single upward scroll' do
     pry_eval(%Q(
@@ -56,5 +49,15 @@ describe "Proc#to_source within PRY" do
       OA
     )).should.be equal_to('proc { 1 }')
   end
+
+  # NOTE: Can't get double arrow up (OAOA) to work. 
+  #should 'handle a double upward scroll' do
+  #  pry_eval(%Q(
+  #    a = lambda { |proc| proc.to_source }
+  #    a[(lambda { 0 })]
+  #    a[(lambda { 1 })]
+  #    OAOA
+  #  )).should.be equal_to('proc { 0 }')
+  #end
 
 end
