@@ -4,7 +4,6 @@ module Sourcify
       class SourceCode < Struct.new(:file, :line)
 
         def line
-          p ['LINE', super, super.pred]
           super.pred
         end
 
@@ -30,12 +29,14 @@ module Sourcify
         end
 
         def from_pry_to_s
-          start = Pry.history.session_line_count
-          history = Pry.history.to_a[-start .. -1]
-          lines = history[line .. -1] * "\n"
-
-          #p ['DEBUG', start, line, history, history[line], history[line .. -1]]
-          lines
+          # NOTE: HACK to reliably construct the lines required, as:
+          # * Pry.line_buffer always fail to show the last entry
+          # * Pry.history deliberately skips duplicated consecutive lines,
+          #   yet it reliably shows the last
+          [
+            Pry.line_buffer,
+            Pry.history.to_a[-1]
+          ].flatten[line.succ .. -1] * ""
         end
 
       end
