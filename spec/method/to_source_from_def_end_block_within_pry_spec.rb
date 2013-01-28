@@ -26,5 +26,20 @@ describe 'Method#to_source (from def..end block)' do
       ))
     end
 
+    should 'handle upward scroll' do
+      pry_eval(%Q(
+        def m1; x1; end
+        def m2; x2; end
+        method(:m1)
+        method(:m1).to_source
+        method(:m2).to_source
+        [A[A
+      )).should.be equal_to(%(
+        def m1
+          x1
+        end
+      ))
+    end
+  
   end
 end
