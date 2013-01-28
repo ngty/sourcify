@@ -40,23 +40,22 @@ describe "Proc#to_source within PRY" do
 
   # NOTE: The rest address issue#22, kudos goes to @scooter-dangle
   # for providing such detailed examples :)
-  #
-  #should 'handle a single upward scroll' do
-  #  pry_eval(%Q(
-  #    a = lambda { |proc| proc.to_source }
-  #    a[(lambda { 0 })]
-  #    a[(lambda { 1 })]
-  #    OA
-  #  )).should.be equal_to('proc { 1 }')
-  #end
-  #
-  #should 'handle a double upward scroll' do
-  #  pry_eval(%Q(
-  #    a = lambda { |proc| proc.to_source }
-  #    a[(lambda { 0 })]
-  #    a[(lambda { 1 })]
-  #    OAOA
-  #  )).should.be equal_to('proc { 0 }')
-  #end
+  should 'handle a single upward scroll' do
+   pry_eval(%Q(
+     a = lambda { |proc| proc.to_source }
+     a[(lambda { 0 })]
+     a[(lambda { 1 })]
+     [A
+   )).should.be equal_to('proc { 1 }')
+  end
+  
+  should 'handle a double upward scroll' do
+   pry_eval(%Q(
+     a = lambda { |proc| proc.to_source }
+     a[(lambda { 0 })]
+     a[(lambda { 1 })]
+     [A[A
+   )).should.be equal_to('proc { 0 }')
+  end
 
 end
