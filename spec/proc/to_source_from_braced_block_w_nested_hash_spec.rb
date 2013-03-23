@@ -26,7 +26,7 @@ describe "Proc#to_source from { ... } block (w nested hash)" do
     \)
   end
 
-  should 'handle method w only hash args' do
+  should 'handle method w only hash args (wo parens)' do
     (
       lambda {
         test :a => 2
@@ -38,10 +38,34 @@ describe "Proc#to_source from { ... } block (w nested hash)" do
     \)
   end
 
-  should 'handle method w mixed args' do
+  should 'handle method w only hash args (w parens)' do
+    (
+      lambda {
+        test(:a => 2)
+      }
+    ).should.be having_source(%Q\
+      proc do
+        test(:a => 2)
+      end
+    \)
+  end
+
+  should 'handle method w mixed args (wo parens)' do
     (
       lambda {
         test 1, :a => 2
+      }
+    ).should.be having_source(%Q\
+      proc do
+        test(1, :a => 2)
+      end
+    \)
+  end
+
+  should 'handle method w mixed args (w parens)' do
+    (
+      lambda {
+        test(1, :a => 2)
       }
     ).should.be having_source(%Q\
       proc do

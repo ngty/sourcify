@@ -116,10 +116,11 @@ module Sourcify
 
             def valid?(snippet, validate_as = nil)
               sexp = Ripper.sexp(snippet)
+              return false unless sexp
 
               case validate_as
               when :hash then sexp[-1][0][0] == :hash
-              when nil then sexp && true
+              when nil then true
               else raise ArgumentError
               end
             end
