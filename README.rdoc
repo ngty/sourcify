@@ -1,5 +1,8 @@
 = Sourcify
 
+== IMPORTANT#1: Sourcify was written in the days of ruby 1.9.x, it should be buggy for anything beyond that.
+== IMPORTANT#2: Sourcify is no longer maintained, use it at your own risk, & expect no bug fixes.
+
 ParseTree[http://github.com/seattlerb/parsetree] is great, it accesses the runtime AST
 (abstract syntax tree) and makes it possible to convert any object to ruby code &
 S-expression, BUT ParseTree doesn't work for 1.9.* & JRuby.
