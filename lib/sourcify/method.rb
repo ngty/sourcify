@@ -132,3 +132,7 @@ end
 Method.class_eval do
   include Sourcify::Method
 end
+
+UnboundMethod.class_eval do
+  include Sourcify::Method
+end
